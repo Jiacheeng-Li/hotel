@@ -53,14 +53,25 @@ class User(UserMixin, db.Model):
     
     def get_points_multiplier(self):
         """Return points multiplier based on membership tier"""
+        # Normalize membership level to handle variations like "Gold" vs "Gold Elite"
+        tier = self.membership_level
+        if tier == 'Gold':
+            tier = 'Gold Elite'
+        elif tier == 'Silver':
+            tier = 'Silver Elite'
+        elif tier == 'Diamond':
+            tier = 'Diamond Elite'
+        elif tier == 'Platinum':
+            tier = 'Platinum Elite'
+        
         multipliers = {
             'Club Member': 1.0,
             'Silver Elite': 1.2,
             'Gold Elite': 1.5,
-            'Platinum Elite': 2.0,
-            'Diamond Elite': 2.5
+            'Diamond Elite': 2.0,  # Fixed: Diamond is 2.0x, not 2.5x
+            'Platinum Elite': 2.5   # Fixed: Platinum is 2.5x, not 2.0x
         }
-        return multipliers.get(self.membership_level, 1.0)
+        return multipliers.get(tier, 1.0)
     
     def calculate_tier(self):
         """Calculate and update membership tier based on lifetime points OR nights stayed (whichever is higher)"""

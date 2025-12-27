@@ -1326,11 +1326,11 @@
                     <tbody>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Points Multiplier</td>
-                            <td>1.0x</td>
-                            <td>1.2x</td>
-                            <td>1.5x</td>
-                            <td>2.0x</td>
-                            <td>2.5x</td>
+                            <td>{{ multipliers.get('Club Member', 1.0) }}x</td>
+                            <td>{{ multipliers.get('Silver Elite', 1.2) }}x</td>
+                            <td>{{ multipliers.get('Gold Elite', 1.5) }}x</td>
+                            <td>{{ multipliers.get('Diamond Elite', 2.0) }}x</td>
+                            <td>{{ multipliers.get('Platinum Elite', 2.5) }}x</td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Earn Points on Stays</td>

@@ -418,6 +418,15 @@ def account():
     next_tier = current_user.next_tier_name()
     tier_benefits = current_user.get_tier_benefits()
     
+    # Define multipliers for comparison table (ensures consistency)
+    multipliers = {
+        'Club Member': 1.0,
+        'Silver Elite': 1.2,
+        'Gold Elite': 1.5,
+        'Diamond Elite': 2.0,
+        'Platinum Elite': 2.5
+    }
+    
     # Calculate nights-based tier progress
     # Tier thresholds (consistent with models.py): 
     # 10 nights = Silver Elite, 20 nights = Gold Elite, 70 nights = Diamond Elite, 200 nights = Platinum Elite
@@ -535,6 +544,7 @@ def account():
                          nights_bar_color=nights_bar_color,
                          points_total_progress_pct=points_total_progress_pct,
                          points_bar_color=points_bar_color,
+                         multipliers=multipliers,
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,
