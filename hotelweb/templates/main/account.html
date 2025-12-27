@@ -1047,42 +1047,85 @@
 
                     <!-- Points Tracker (Hidden by default) -->
                     <div id="points-tracker" class="tracker-content" style="display: none;">
-                <div class="progress-info">
-                    <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
-                            <span><strong>{{ "{:,}".format(points_to_next) }}</strong> more to <strong>{{ next_tier }}</strong></span>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: {{ progress_percent }}%"></div>
-                </div>
-                <div class="tier-milestones">
+                        <div class="progress-info">
+                            <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
+                            {% if points_to_next > 0 %}
+                            <span style="color: #6b7280; font-size: 0.9rem;">{{ "{:,}".format(points_to_next) }} more to <a href="#" onclick="switchTab('benefits'); return false;" class="next-tier-badge tier-{{ next_tier.lower() }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ next_tier }} Elite</a></span>
+                            {% else %}
+                            <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
+                            {% endif %}
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="tier-markers">
+                                <div class="tier-marker member {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: 0%; transform: translateX(-50%);">
+                                    <div class="tier-marker-dot"></div>
+                                    <div class="tier-marker-label">0</div>
+                                </div>
+                                <div class="tier-marker silver {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: 5%; transform: translateX(-50%);">
+                                    <div class="tier-marker-dot"></div>
+                                    <div class="tier-marker-label">50K</div>
+                                </div>
+                                <div class="tier-marker gold {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: 10%; transform: translateX(-50%);">
+                                    <div class="tier-marker-dot"></div>
+                                    <div class="tier-marker-label">100K</div>
+                                </div>
+                                <div class="tier-marker diamond {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: 50%; transform: translateX(-50%);">
+                                    <div class="tier-marker-dot"></div>
+                                    <div class="tier-marker-label">500K</div>
+                                </div>
+                                <div class="tier-marker ambassador {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: 100%; transform: translateX(-50%);">
+                                    <div class="tier-marker-dot"></div>
+                                    <div class="tier-marker-label">1M</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar-segments">
+                                {% if current_user.lifetime_points >= 1000000 %}
+                                    <div class="progress-segment diamond" style="width: 50%;"></div>
+                                    <div class="progress-segment ambassador" style="width: 50%;"></div>
+                                {% elif current_user.lifetime_points >= 500000 %}
+                                    <div class="progress-segment diamond" style="width: 50%;"></div>
+                                    {% set ambassador_progress = ((current_user.lifetime_points - 500000) / 500000) * 50 %}
+                                    <div class="progress-segment ambassador" style="width: {{ ambassador_progress }}%;"></div>
+                                {% elif current_user.lifetime_points >= 100000 %}
+                                    <div class="progress-segment gold-20" style="width: 10%;"></div>
+                                    {% set diamond_progress = ((current_user.lifetime_points - 100000) / 400000) * 40 %}
+                                    <div class="progress-segment diamond" style="width: {{ diamond_progress }}%;"></div>
+                                {% elif current_user.lifetime_points >= 50000 %}
+                                    <div class="progress-segment silver" style="width: 5%;"></div>
+                                    {% set gold_progress = ((current_user.lifetime_points - 50000) / 50000) * 5 %}
+                                    <div class="progress-segment gold-20" style="width: {{ gold_progress }}%;"></div>
+                                {% else %}
+                                    {% set silver_progress = (current_user.lifetime_points / 50000) * 5 %}
+                                    <div class="progress-segment silver" style="width: {{ silver_progress }}%;"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tier-milestones">
                             <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
-                        <div class="milestone-name">Member</div>
-                        <div class="milestone-points">0</div>
-                    </div>
+                                <div class="milestone-name">Member</div>
+                                <div class="milestone-points">0 points</div>
+                            </div>
                             <div class="milestone silver {% if current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver' %}current{% endif %}">
-                        <div class="milestone-name">Silver</div>
-                        <div class="milestone-points">50K</div>
-                    </div>
+                                <div class="milestone-name">Silver</div>
+                                <div class="milestone-points">50K points</div>
+                            </div>
                             <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
-                        <div class="milestone-name">Gold</div>
-                        <div class="milestone-points">100K</div>
-                    </div>
+                                <div class="milestone-name">Gold</div>
+                                <div class="milestone-points">100K points</div>
+                            </div>
                             <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
-                        <div class="milestone-name">Diamond</div>
-                        <div class="milestone-points">500K</div>
-                    </div>
+                                <div class="milestone-name">Diamond</div>
+                                <div class="milestone-points">500K points</div>
+                            </div>
                             <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
-                        <div class="milestone-name">Ambassador</div>
-                        <div class="milestone-points">1M</div>
+                                <div class="milestone-name">Ambassador</div>
+                                <div class="milestone-points">1M points</div>
+                            </div>
+                        </div>
+                        <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
+                            Earn qualifying nights or points to unlock more member benefits.
+                        </p>
                     </div>
-                </div>
-                        {% if points_to_next > 0 %}
-                        <div class="next-tier-info">
-                            <div>{{ "{:,}".format(points_to_next) }} more to <span class="next-tier-badge tier-{{ next_tier.lower() }}">{{ next_tier }} Elite</span> ></div>
-            </div>
-                        {% endif %}
-                </div>
-                </div>
                 </div>
 
             <!-- Milestone Rewards Card -->
