@@ -126,8 +126,7 @@ def register():
         
     return render_template('auth/register.html', show_recaptcha=show_recaptcha)
 
-@bp.route('/logout', methods=['POST'])
-@login_required
+@bp.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('main.index'))

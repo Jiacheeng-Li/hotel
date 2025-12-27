@@ -222,9 +222,13 @@ def book_room(roomtype_id):
     total_cost = subtotal + taxes + fees
     
     # Calculate points with tier multiplier
-    base_points = int(total_cost * 10)  # $1 = 10 base points
+    # Formula: Base Points = (Room Rate × 1.15) × 10 per night
+    # Then multiply by tier multiplier
+    per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
+    base_points_per_night = int(per_night_total * 10)
     multiplier = current_user.get_points_multiplier()
-    points_earned = int(base_points * multiplier)
+    points_per_night = int(base_points_per_night * multiplier)
+    points_earned = points_per_night * nights * rooms_needed
     
     # Create booking
     booking = Booking(
