@@ -35,6 +35,12 @@ class User(UserMixin, db.Model):
     membership_level = db.Column(db.String(20), default='Club Member')  # Club Member, Silver Elite, Gold Elite, Platinum Elite, Diamond Elite
     member_number = db.Column(db.String(20), unique=True)  # Unique member ID
     
+    # Tier Retention (保级系统)
+    tier_earned_date = db.Column(db.Date)  # Date when current tier was first earned
+    tier_expiry_date = db.Column(db.Date)  # Date when current tier expires (for retention)
+    current_year_nights = db.Column(db.Integer, default=0)  # Nights stayed in current tier year
+    current_year_points = db.Column(db.Integer, default=0)  # Points earned in current tier year
+    
     # Profile Information
     phone = db.Column(db.String(20))
     address = db.Column(db.String(200))
@@ -125,9 +131,80 @@ class User(UserMixin, db.Model):
             current_tier = 'Club Member' if current_tier == 'Member' else 'Platinum Elite'
         
         if new_tier != current_tier:
+            # Tier upgraded - update tier dates
+            from datetime import date, timedelta
+            today = date.today()
             self.membership_level = new_tier
+            # If this is a new tier (higher than before), reset tier dates
+            tier_order = {'Club Member': 0, 'Silver Elite': 1, 'Gold Elite': 2, 'Diamond Elite': 3, 'Platinum Elite': 4}
+            old_level = tier_order.get(current_tier, 0)
+            new_level = tier_order.get(new_tier, 0)
+            if new_level > old_level:
+                # Tier upgraded - set new tier dates
+                self.tier_earned_date = today
+                # Set expiry date to one year from today
+                self.tier_expiry_date = today + timedelta(days=365)
+                # Reset current year counters
+                self.current_year_nights = 0
+                self.current_year_points = 0
             return True  # Tier upgraded
         return False
+    
+    def get_tier_retention_requirements(self):
+        """
+        Get tier retention requirements for current tier.
+        Returns dict with nights and points needed to retain tier for next year.
+        """
+        requirements = {
+            'Club Member': {'nights': 0, 'points': 0, 'note': 'No retention required - permanent status'},
+            'Silver Elite': {'nights': 10, 'points': 50000, 'note': 'Earn 10 qualifying nights OR 50,000 points per year'},
+            'Gold Elite': {'nights': 20, 'points': 100000, 'note': 'Earn 20 qualifying nights OR 100,000 points per year'},
+            'Diamond Elite': {'nights': 70, 'points': 500000, 'note': 'Earn 70 qualifying nights OR 500,000 points per year'},
+            'Platinum Elite': {'nights': 200, 'points': 1000000, 'note': 'Earn 200 qualifying nights OR 1,000,000 points per year'}
+        }
+        return requirements.get(self.membership_level, requirements['Club Member'])
+    
+    def check_tier_retention_status(self):
+        """
+        Check if user meets retention requirements for current tier.
+        Returns dict with status and progress info.
+        """
+        from datetime import date
+        requirements = self.get_tier_retention_requirements()
+        
+        if self.membership_level == 'Club Member':
+            return {
+                'status': 'permanent',
+                'meets_requirement': True,
+                'note': 'Club Member status is permanent'
+            }
+        
+        if not self.tier_expiry_date:
+            # No expiry date set - set it to one year from now
+            from datetime import timedelta
+            if not self.tier_earned_date:
+                self.tier_earned_date = date.today()
+            self.tier_expiry_date = self.tier_earned_date + timedelta(days=365)
+        
+        today = date.today()
+        days_until_expiry = (self.tier_expiry_date - today).days
+        
+        # Check if user meets retention requirement (nights OR points)
+        meets_nights = self.current_year_nights >= requirements['nights']
+        meets_points = self.current_year_points >= requirements['points']
+        meets_requirement = meets_nights or meets_points
+        
+        return {
+            'status': 'active' if meets_requirement else 'at_risk',
+            'meets_requirement': meets_requirement,
+            'expiry_date': self.tier_expiry_date,
+            'days_until_expiry': days_until_expiry,
+            'current_nights': self.current_year_nights,
+            'current_points': self.current_year_points,
+            'required_nights': requirements['nights'],
+            'required_points': requirements['points'],
+            'note': requirements['note']
+        }
     
     def get_tier_benefits(self):
         """Return list of benefits for current tier - matches comparison table"""

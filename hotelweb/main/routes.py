@@ -569,6 +569,8 @@ def account():
                          points_marker_500k_pct=points_marker_500k_pct,
                          points_marker_1m_pct=points_marker_1m_pct,
                          multipliers=multipliers,
+                         tier_retention=current_user.check_tier_retention_status(),
+                         tier_requirements=current_user.get_tier_retention_requirements(),
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,

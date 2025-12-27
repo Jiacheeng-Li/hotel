@@ -937,8 +937,19 @@
                     <h3 class="card-title">Current Status</h3>
             </div>
                 <div>
-                    <div class="current-tier-badge tier-{{ current_user.membership_level.lower().replace(' ', '-') }}">
-                        {{ current_user.membership_level }}
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="current-tier-badge tier-{{ current_user.membership_level.lower().replace(' ', '-') }}">
+                            {{ current_user.membership_level }}
+                        </div>
+                        {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #6b7280; font-size: 0.9rem;">until</span>
+                            <span style="color: #1a1a1a; font-weight: 600; font-size: 0.95rem;">{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</span>
+                            <span style="cursor: pointer; color: #6b7280; font-size: 0.85rem; text-decoration: underline;" onclick="toggleRetentionRules()" title="Click to view retention rules">
+                                <i class="bi bi-info-circle"></i>
+                            </span>
+                        </div>
+                        {% endif %}
                     </div>
                     <p class="mb-3" style="color: #6b7280; font-size: 0.9rem;">
                         Here's your status tracker
@@ -964,24 +975,24 @@
                             <div class="progress-marker {% if current_user.nights_stayed >= 0 %}active{% endif %}" style="left: {{ nights_marker_0_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ nights_marker_10_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
                                 <div class="progress-marker-label">10</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ nights_marker_20_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #A07A0D; border-color: #A07A0D;"></div>
                                 <div class="progress-marker-label">20</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: {{ nights_marker_70_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
                                 <div class="progress-marker-label">70</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: {{ nights_marker_200_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
                                 <div class="progress-marker-label">200</div>
-                            </div>
-                        </div>
+                    </div>
+                    </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: {{ nights_bar_color }};"></div>
                 </div>
@@ -1012,6 +1023,66 @@
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
                             Earn qualifying nights or points to unlock more member benefits.
                         </p>
+                        
+                        <!-- Tier Retention Rules (Hidden by default) -->
+                        {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
+                        <div id="retention-rules" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid #e5e7eb;">
+                            <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1a1a1a;">Tier Retention Rules</h4>
+                            <div style="margin-bottom: 1rem;">
+                                <p style="color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong>How Tier Retention Works:</strong><br>
+                                    To maintain your {{ current_user.membership_level }} status, you need to meet the retention requirements each year. 
+                                    Your tier status is valid until <strong>{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</strong>.
+                                </p>
+                                
+                                <div style="background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                    <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Your Retention Requirements:</p>
+                                    <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
+                                        <li><strong>{{ tier_requirements.nights }} qualifying nights</strong> OR</li>
+                                        <li><strong>{{ "{:,}".format(tier_requirements.points) }} points</strong></li>
+                                    </ul>
+                                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #9ca3af; font-style: italic;">
+                                        {{ tier_requirements.note }}
+                                    </p>
+                                </div>
+                                
+                                <div style="background: {% if tier_retention.meets_requirement %}#d1fae5{% else %}#fee2e2{% endif %}; padding: 1rem; border-radius: 8px; border-left: 4px solid {% if tier_retention.meets_requirement %}#10b981{% else %}#ef4444{% endif %};">
+                                    <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                                        {% if tier_retention.meets_requirement %}
+                                        ✓ Retention Requirement Met
+                                        {% else %}
+                                        ⚠ Retention Requirement Not Met
+                                        {% endif %}
+                                    </p>
+                                    <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">
+                                        Current Progress (this tier year):
+                                    </p>
+                                    <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
+                                        <li>{{ tier_retention.current_nights }} / {{ tier_retention.required_nights }} nights</li>
+                                        <li>{{ "{:,}".format(tier_retention.current_points) }} / {{ "{:,}".format(tier_retention.required_points) }} points</li>
+                                    </ul>
+                                    {% if not tier_retention.meets_requirement %}
+                                    <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #dc2626; font-weight: 600;">
+                                        You have {{ tier_retention.days_until_expiry }} days to meet the requirement to maintain your status.
+                                    </p>
+                                    {% endif %}
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                                    <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 0.5rem;"><strong>Important Notes:</strong></p>
+                                    <ul style="margin: 0; padding-left: 1.5rem; color: #9ca3af; font-size: 0.85rem; line-height: 1.6;">
+                                        <li>Retention requirements reset each year on your tier anniversary date</li>
+                                        <li>You only need to meet ONE requirement (nights OR points) to retain your status</li>
+                                        <li>If you don't meet the requirement, you'll be downgraded to the tier you qualify for based on your lifetime nights/points</li>
+                                        <li>Qualifying nights and points are counted from stays completed during your tier year</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button onclick="toggleRetentionRules()" style="background: #6b7280; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                                Close
+                            </button>
+                        </div>
+                        {% endif %}
             </div>
 
                     <!-- Points Tracker (Hidden by default) -->
@@ -1030,24 +1101,24 @@
                             <div class="progress-marker {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: {{ points_marker_0_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: {{ points_marker_50k_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
                                 <div class="progress-marker-label">50K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: {{ points_marker_100k_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #A07A0D; border-color: #A07A0D;"></div>
                                 <div class="progress-marker-label">100K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: {{ points_marker_500k_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
                                 <div class="progress-marker-label">500K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: {{ points_marker_1m_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
                                 <div class="progress-marker-label">1M</div>
-                            </div>
-                        </div>
+                    </div>
+                    </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: {{ points_bar_color }};"></div>
                 </div>
@@ -1511,6 +1582,13 @@
             icon.className = 'bi bi-chevron-down';
         }
         return false;
+    }
+
+    function toggleRetentionRules() {
+        const rules = document.getElementById('retention-rules');
+        if (rules) {
+            rules.style.display = rules.style.display === 'none' ? 'block' : 'none';
+        }
     }
 
     function toggleEdit() {
