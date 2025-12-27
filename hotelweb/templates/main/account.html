@@ -105,10 +105,19 @@
         display: inline-block;
     }
 
-    .btn-header:hover {
-        background: white;
-        color: #4a5568;
-    }
+    {% if current_user.membership_level == 'Club Member' %}
+    .btn-header:hover { background: #0B254E; border-color: #0B254E; }
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .btn-header:hover { background: #606060; border-color: #606060; }
+    {% elif current_user.membership_level == 'Gold Elite' %}
+    .btn-header:hover { background: #A07A0D; border-color: #A07A0D; }
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .btn-header:hover { background: #37283F; border-color: #37283F; }
+    {% elif current_user.membership_level == 'Platinum Elite' %}
+    .btn-header:hover { background: #253639; border-color: #253639; }
+    {% else %}
+    .btn-header:hover { background: white; color: #4a5568; }
+    {% endif %}
 
     .account-nav {
         max-width: 1200px;
@@ -242,21 +251,20 @@
         height: auto;
     }
 
-    .toggle-btn.active {
-        border-color: #37283F;
-        background: #37283F;
-        color: white;
-    }
-    
-    {% if current_user.membership_level == 'Silver Elite' %}
-    .toggle-btn.active { border-color: #606060; background: #606060; }
+    {% if current_user.membership_level == 'Club Member' %}
+    .toggle-btn.active { border-color: #0B254E; background: #0B254E; color: white; }
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .toggle-btn.active { border-color: #606060; background: #606060; color: white; }
     {% elif current_user.membership_level == 'Gold Elite' %}
-    .toggle-btn.active { border-color: #A07A0D; background: #A07A0D; }
+    .toggle-btn.active { border-color: #A07A0D; background: #A07A0D; color: white; }
     {% elif current_user.membership_level == 'Diamond Elite' %}
-    .toggle-btn.active { border-color: #37283F; background: #37283F; }
+    .toggle-btn.active { border-color: #37283F; background: #37283F; color: white; }
     {% elif current_user.membership_level == 'Platinum Elite' %}
-    .toggle-btn.active { border-color: #253639; background: #253639; }
+    .toggle-btn.active { border-color: #253639; background: #253639; color: white; }
+    {% else %}
+    .toggle-btn.active { border-color: #37283F; background: #37283F; color: white; }
     {% endif %}
+    
 
     .progress-section {
         margin-bottom: 1.5rem;
@@ -542,7 +550,10 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
-    {% if current_user.membership_level == 'Silver Elite' %}
+    {% if current_user.membership_level == 'Club Member' %}
+    .btn-premium { background: #0B254E; }
+    .btn-premium:hover { background: #091d3d; }
+    {% elif current_user.membership_level == 'Silver Elite' %}
     .btn-premium { background: #606060; }
     .btn-premium:hover { background: #9a9ca8; }
     {% elif current_user.membership_level == 'Gold Elite' %}
@@ -921,11 +932,12 @@
     }
 </style>
 
+{% set tier_display_name = current_user.membership_level + ' Member' if current_user.membership_level != 'Club Member' else 'Club Member' %}
 <div class="account-header">
     <div class="header-content">
         <div class="header-left">
             <h1>Hello {{ current_user.username }},</h1>
-            <h2>{{ current_user.membership_level }}</h2>
+            <h2>{{ tier_display_name }}</h2>
             <p class="member-number">Member #{{ current_user.member_number or 'N/A' }}</p>
         </div>
         <div class="header-right">
@@ -1125,12 +1137,12 @@
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
                             Earn qualifying nights or points to unlock more member benefits.
                         </p>
-                    </div>
-                </div>
             </div>
+                </div>
+        </div>
 
-            <!-- Milestone Rewards Card -->
-            <div class="card">
+        <!-- Milestone Rewards Card -->
+        <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">{{ current_year }} Milestone Rewards</h3>
                 </div>
@@ -1139,7 +1151,7 @@
                     <div class="milestone-description">
                         Choose your first reward at 20 nights, and again every 10 nights you stay this year, up to 100 nights.
                     </div>
-                    <div class="milestone-circle">
+            <div class="milestone-circle">
                         <div class="milestone-circle-inner">
                             <div class="milestone-number">{{ nights_to_milestone_year }}</div>
                             <div class="milestone-label">nights to next milestone</div>
@@ -1153,8 +1165,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+                </div>
+            </div>
 
     <!-- Rewards Wallet Tab -->
     <div id="rewards" class="tab-content">
