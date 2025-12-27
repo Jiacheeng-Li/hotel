@@ -1525,9 +1525,17 @@
     }
 
     function toggleRetentionRules() {
-        const rules = document.getElementById('retention-rules');
-        if (rules) {
-            rules.style.display = rules.style.display === 'none' ? 'block' : 'none';
+        const modal = document.getElementById('retention-rules-modal');
+        if (modal) {
+            modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+        }
+    }
+    
+    // Close modal when clicking on backdrop
+    window.onclick = function(event) {
+        const modal = document.getElementById('retention-rules-modal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
         }
     }
 
@@ -1551,4 +1559,76 @@
         formActions.style.display = 'none';
     }
 </script>
+
+<!-- Tier Retention Rules Modal -->
+{% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
+<div id="retention-rules-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
+    <div style="background-color: white; margin: auto; padding: 0; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative;">
+        <!-- Modal Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1a1a1a;">Tier Retention Rules</h3>
+            <span onclick="toggleRetentionRules()" style="color: #6b7280; font-size: 1.5rem; font-weight: 700; cursor: pointer; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b7280'">&times;</span>
+        </div>
+        
+        <!-- Modal Body -->
+        <div style="padding: 1.5rem;">
+            <p style="color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                <strong>How Tier Retention Works:</strong><br>
+                To maintain your {{ current_user.membership_level }} status, you need to meet the retention requirements each year. 
+                Your tier status is valid until <strong>{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</strong>.
+            </p>
+            
+            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Your Retention Requirements:</p>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
+                    <li><strong>{{ tier_requirements.nights }} qualifying nights</strong> OR</li>
+                    <li><strong>{{ "{:,}".format(tier_requirements.points) }} points</strong></li>
+                </ul>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #9ca3af; font-style: italic;">
+                    {{ tier_requirements.note }}
+                </p>
+            </div>
+            
+            <div style="background: {% if tier_retention.meets_requirement %}#d1fae5{% else %}#fee2e2{% endif %}; padding: 1rem; border-radius: 8px; border-left: 4px solid {% if tier_retention.meets_requirement %}#10b981{% else %}#ef4444{% endif %}; margin-bottom: 1rem;">
+                <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                    {% if tier_retention.meets_requirement %}
+                    ✓ Retention Requirement Met
+                    {% else %}
+                    ⚠ Retention Requirement Not Met
+                    {% endif %}
+                </p>
+                <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">
+                    Current Progress (this tier year):
+                </p>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
+                    <li>{{ tier_retention.current_nights }} / {{ tier_retention.required_nights }} nights</li>
+                    <li>{{ "{:,}".format(tier_retention.current_points) }} / {{ "{:,}".format(tier_retention.required_points) }} points</li>
+                </ul>
+                {% if not tier_retention.meets_requirement %}
+                <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #dc2626; font-weight: 600;">
+                    You have {{ tier_retention.days_until_expiry }} days to meet the requirement to maintain your status.
+                </p>
+                {% endif %}
+            </div>
+            
+            <div style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 0.5rem;"><strong>Important Notes:</strong></p>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #9ca3af; font-size: 0.85rem; line-height: 1.6;">
+                    <li>Retention requirements reset each year on your tier anniversary date</li>
+                    <li>You only need to meet ONE requirement (nights OR points) to retain your status</li>
+                    <li>If you don't meet the requirement, you'll be downgraded to the tier you qualify for based on your lifetime nights/points</li>
+                    <li>Qualifying nights and points are counted from stays completed during your tier year</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Modal Footer -->
+        <div style="padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; text-align: right;">
+            <button onclick="toggleRetentionRules()" style="background: #6b7280; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='#6b7280'">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
