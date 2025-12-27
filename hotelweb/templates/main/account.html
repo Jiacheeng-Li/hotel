@@ -925,8 +925,8 @@
     <div class="header-content">
         <div class="header-left">
             <h1>Hello {{ current_user.username }},</h1>
-            <h2>{{ current_user.membership_level }} Club Member</h2>
-            <p class="member-number">Club Member #{{ current_user.member_number or 'N/A' }}</p>
+            <h2>{{ current_user.membership_level }}</h2>
+            <p class="member-number">Member #{{ current_user.member_number or 'N/A' }}</p>
         </div>
         <div class="header-right">
             <div class="points-label">YOUR POINTS</div>
@@ -943,7 +943,7 @@
     <a href="#" class="nav-tab" onclick="switchTab('rewards'); return false;">Rewards Wallet</a>
     <a href="#" class="nav-tab" onclick="switchTab('activity'); return false;">Account Activity</a>
     <a href="#" class="nav-tab" onclick="switchTab('settings'); return false;">Settings</a>
-    <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Club Member Benefits</a>
+    <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Member Benefits</a>
 </div>
 
 <div class="account-container">
@@ -956,8 +956,8 @@
                     <h3 class="card-title">Current Status</h3>
             </div>
                 <div>
-                    <div class="current-tier-badge tier-{{ current_user.membership_level.lower() }}">
-                        {{ current_user.membership_level }} Elite
+                    <div class="current-tier-badge tier-{{ current_user.membership_level.lower().replace(' ', '-') }}">
+                        {{ current_user.membership_level }}
                     </div>
                     <p class="mb-3" style="color: #6b7280; font-size: 0.9rem;">
                         Here's your status tracker
@@ -995,7 +995,7 @@
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">70</div>
                                 </div>
-                                <div class="tier-marker ambassador {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: 100%; transform: translateX(-50%);">
+                                <div class="tier-marker platinum {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: 100%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">200</div>
                                 </div>
