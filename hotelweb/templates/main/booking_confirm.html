@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Booking - HotelWeb{% endblock %}
+
+{% block breadcrumb %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="py-1">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.roomtype_detail', roomtype_id=roomtype.id) }}">{{ roomtype.name }}</a></li>
+            <li class="breadcrumb-item active">Confirm Booking</li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2 class="fw-bold mb-4">Confirm Your Booking</h2>
+            
+            <!-- Booking Summary -->
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Booking Details</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <span class="text-muted">Hotel:</span>
+                                <strong class="ms-2">{{ roomtype.hotel.name }}</strong>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted">Room Type:</span>
+                                <strong class="ms-2">{{ roomtype.name }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <span class="text-muted">Check-in:</span>
+                                <strong class="ms-2">{{ check_in.strftime('%B %d, %Y') }}</strong>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted">Check-out:</span>
+                                <strong class="ms-2">{{ check_out.strftime('%B %d, %Y') }}</strong>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted">Nights:</span>
+                                <strong class="ms-2">{{ nights }} night{{ 's' if nights != 1 else '' }}</strong>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted">Rooms:</span>
+                                <strong class="ms-2">{{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Price Breakdown</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Base Rate ({{ nights }} night{{ 's' if nights != 1 else '' }} × {{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }})</span>
+                        <span class="fw-bold">${{ "{:,.2f}".format(subtotal) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Taxes (10%)</span>
+                        <span class="fw-bold">${{ "{:,.2f}".format(taxes) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Service Fee (5%)</span>
+                        <span class="fw-bold">${{ "{:,.2f}".format(fees) }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="fs-5 fw-bold">Total</span>
+                        <span class="fs-5 fw-bold text-success">${{ "{:,.2f}".format(total_cost) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points Earned -->
+            {% if points_earned > 0 %}
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px; background: #fef3c7;">
+                <div class="card-body p-4 text-center">
+                    <div class="text-muted mb-1">You will earn</div>
+                    <div class="fw-bold" style="font-size: 1.5rem; color: #d97706;">{{ "{:,}".format(points_earned) }} points</div>
+                    <div class="text-muted small">after your stay</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Payment Section -->
+        <div class="col-lg-4">
+            <div class="card shadow-lg border-0 sticky-top" style="top: 90px; z-index: 1010; border-radius: 12px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Payment</h5>
+                    
+                    <form action="{{ url_for('main.book_room', roomtype_id=roomtype.id) }}" method="post">
+                        <input type="hidden" name="check_in" value="{{ check_in.strftime('%Y-%m-%d') }}">
+                        <input type="hidden" name="check_out" value="{{ check_out.strftime('%Y-%m-%d') }}">
+                        <input type="hidden" name="rooms_needed" value="{{ rooms_needed }}">
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3">Payment Method</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay_now" value="pay_now" checked>
+                                <label class="form-check-label" for="pay_now">
+                                    <strong>Pay Now</strong>
+                                    <div class="small text-muted">Credit Card / Debit Card</div>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay_at_hotel" value="pay_at_hotel">
+                                <label class="form-check-label" for="pay_at_hotel">
+                                    <strong>Pay at Hotel</strong>
+                                    <div class="small text-muted">Pay upon arrival</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Total Amount</span>
+                                <span class="fw-bold fs-5 text-success">${{ "{:,.2f}".format(total_cost) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-lg fw-bold text-white" style="background: #1e3a8a; border: none;">
+                                Complete Booking
+                            </button>
+                            <a href="{{ url_for('main.roomtype_detail', roomtype_id=roomtype.id, check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d'), rooms_needed=rooms_needed) }}" class="btn btn-outline-secondary">
+                                Back to Room Details
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

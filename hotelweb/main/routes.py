@@ -250,6 +250,65 @@ def roomtype_detail(roomtype_id):
         
     return render_template('main/roomtype_detail.html', roomtype=rt, estimated_points_per_night=estimated_points_per_night)
 
+@bp.route('/book/<int:roomtype_id>/confirm')
+@login_required
+def booking_confirm(roomtype_id):
+    """Display booking confirmation page with price breakdown and payment options"""
+    rt = RoomType.query.get_or_404(roomtype_id)
+    
+    # Get booking parameters from query string
+    check_in_str = request.args.get('check_in')
+    check_out_str = request.args.get('check_out')
+    rooms_needed = int(request.args.get('rooms_needed', 1))
+    
+    if not check_in_str or not check_out_str:
+        flash('Please select check-in and check-out dates.', 'warning')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    try:
+        check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
+        check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        flash('Invalid date format.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    # Validation
+    if check_in < date.today():
+        flash('Cannot book dates in the past.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    if check_out <= check_in:
+        flash('Check-out date must be after check-in date.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    # Calculate billing
+    nights = (check_out - check_in).days
+    base_rate = float(rt.price_per_night)
+    subtotal = base_rate * nights * rooms_needed
+    taxes = subtotal * 0.10  # 10% tax
+    fees = subtotal * 0.05   # 5% service fee
+    total_cost = subtotal + taxes + fees
+    
+    # Calculate points
+    per_night_total = base_rate * 1.15
+    base_points_per_night = int(per_night_total * 10)
+    multiplier = current_user.get_points_multiplier()
+    points_per_night = int(base_points_per_night * multiplier)
+    points_earned = points_per_night * nights * rooms_needed
+    
+    return render_template('main/booking_confirm.html',
+                         roomtype=rt,
+                         check_in=check_in,
+                         check_out=check_out,
+                         rooms_needed=rooms_needed,
+                         nights=nights,
+                         base_rate=base_rate,
+                         subtotal=subtotal,
+                         taxes=taxes,
+                         fees=fees,
+                         total_cost=total_cost,
+                         points_earned=points_earned)
+
 @bp.route('/book/<int:roomtype_id>', methods=['POST'])
 @login_required
 def book_room(roomtype_id):
@@ -260,6 +319,7 @@ def book_room(roomtype_id):
     check_in_str = request.form.get('check_in')
     check_out_str = request.form.get('check_out')
     rooms_needed = int(request.form.get('rooms_needed', 1))
+    payment_method = request.form.get('payment_method', 'pay_now')
     
     try:
         check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
@@ -271,6 +331,10 @@ def book_room(roomtype_id):
     # Strict Validation
     if check_in < date.today():
         flash('Cannot book dates in the past.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    if check_out <= check_in:
+        flash('Check-out date must be after check-in date.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
 
     # Calculate billing
@@ -315,9 +379,12 @@ def book_room(roomtype_id):
     
     db.session.commit()
     
+    # Payment method message
+    payment_msg = "Payment will be processed now." if payment_method == 'pay_now' else "Payment will be collected at the hotel upon arrival."
+    
     if tier_upgraded:
         flash(f'🎉 Congratulations! You\'ve been upgraded to {current_user.membership_level} status!', 'success')
-    flash(f'Booking Confirmed! Points will be awarded after your stay ends.', 'success')
+    flash(f'Booking Confirmed! {payment_msg} Points will be awarded after your stay ends.', 'success')
     return redirect(url_for('main.my_stays'))
 
 @bp.route('/my/stays')

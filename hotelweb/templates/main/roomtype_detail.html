@@ -95,19 +95,23 @@
         <div class="card shadow-lg border-0 sticky-top" style="top: 90px; z-index: 1010;">
             <div class="card-body p-4">
                 <div class="text-center mb-3">
+                    {% set tax_rate = 0.10 %}
+                    {% set service_fee_rate = 0.05 %}
+                    {% set price_with_tax = roomtype.price_per_night * (1 + tax_rate + service_fee_rate) %}
+                    <div class="text-muted mb-1" style="font-size: 0.85rem;">${{ "{:,.2f}".format(price_with_tax) }} incl. tax</div>
                     <h3 class="text-success fw-bold mb-0">${{ "{:,.0f}".format(roomtype.price_per_night) }}</h3>
                     <small class="text-muted">per night</small>
                 </div>
 
                 {% if current_user.is_authenticated and estimated_points_per_night > 0 %}
-                <div class="text-center mb-3 p-3" style="background: #1e3a8a; border-radius: 12px;">
-                    <span class="text-white" style="font-size: 0.9rem;">Earn <span class="fw-bold" style="font-size: 1.3rem; color: #fbbf24;">{{ "{:,}".format(estimated_points_per_night) }}</span> points per night</span>
+                <div class="text-center mb-3 p-3" style="background: #fef3c7; border-radius: 12px;">
+                    <span class="text-dark" style="font-size: 0.9rem;">Earn <span class="fw-bold" style="font-size: 1.3rem; color: #d97706;">{{ "{:,}".format(estimated_points_per_night) }}</span> points per night</span>
                 </div>
                 {% endif %}
 
                 <hr>
 
-                <form action="{{ url_for('main.book_room', roomtype_id=roomtype.id) }}" method="post">
+                <form action="{{ url_for('main.booking_confirm', roomtype_id=roomtype.id) }}" method="get">
                     {% set default_check_in = request.args.get('check_in', '') %}
                     {% set default_check_out = request.args.get('check_out', '') %}
                     {% set default_rooms = request.args.get('rooms_needed', 1) %}
