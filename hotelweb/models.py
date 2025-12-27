@@ -183,6 +183,7 @@ class RoomType(db.Model):
     price_per_night = db.Column(db.Numeric(10, 2), nullable=False)
     inventory = db.Column(db.Integer, default=1, nullable=False)
     description = db.Column(db.Text)
+    image_url = db.Column(db.String(200))
 
     amenities = db.relationship('Amenity', secondary=roomtype_amenity, lazy='subquery',
         backref=db.backref('room_types', lazy=True))

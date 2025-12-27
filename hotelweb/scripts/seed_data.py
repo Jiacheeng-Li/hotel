@@ -177,6 +177,15 @@ def seed():
                         brand_rts = rt_templates[:4]
                         price_mult = 1.2
 
+                    # Assign RoomType Images
+                    room_type_images = {
+                        "Standard Room": "https://images.unsplash.com/photo-1560440021-33f9bde03080?auto=format&fit=crop&w=800&q=80",
+                        "Deluxe Room": "https://images.unsplash.com/photo-1590447179489-d779722d390b?auto=format&fit=crop&w=800&q=80",
+                        "Family Suite": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+                        "Executive Suite": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80",
+                        "Penthouse": "https://images.unsplash.com/photo-1578683010236-d716f9d3f2f7?auto=format&fit=crop&w=800&q=80",
+                    }
+                    
                     for rt_temp in brand_rts:
                          # Vary price slightly per hotel
                         price = int(rt_temp["price_base"] * price_mult * (0.9 + random.random()*0.2))
@@ -187,7 +196,8 @@ def seed():
                             description=f"A comfortable stay in {city_name}.",
                             price_per_night=price,
                             capacity=rt_temp["cap"],
-                            inventory=random.randint(5, 20)
+                            inventory=random.randint(5, 20),
+                            image_url=room_type_images.get(rt_temp["name"], "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80")
                         )
                         
                         # Assign Amenities
