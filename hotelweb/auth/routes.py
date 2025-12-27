@@ -29,24 +29,43 @@ def login():
         return redirect(url_for('main.index'))
     
     show_recaptcha = False
+    email_value = ''
     
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        email_value = email  # Preserve email for form
         
         # Check if there were previous failed attempts
         failed_attempts = session.get('login_failed_attempts', 0)
         
         # If there were failed attempts, require reCAPTCHA
+        recaptcha_verified = False
         if failed_attempts > 0:
             recaptcha_response = request.form.get('g-recaptcha-response')
-            if not recaptcha_response or not verify_recaptcha(recaptcha_response):
+            if not recaptcha_response:
                 flash('Please complete the reCAPTCHA verification', 'danger')
                 session['login_failed_attempts'] = failed_attempts + 1
-                return render_template('auth/login.html', show_recaptcha=True)
+                return render_template('auth/login.html', show_recaptcha=True, email=email_value)
+            
+            # Verify reCAPTCHA
+            if not verify_recaptcha(recaptcha_response):
+                flash('reCAPTCHA verification failed. Please try again.', 'danger')
+                session['login_failed_attempts'] = failed_attempts + 1
+                return render_template('auth/login.html', show_recaptcha=True, email=email_value)
+            
+            # reCAPTCHA verified successfully
+            recaptcha_verified = True
+        
+        # Validate credentials
+        if not email or not password:
+            flash('Email and password are required.', 'danger')
+            session['login_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/login.html', show_recaptcha=(failed_attempts + 1 > 0), email=email_value)
         
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
+            # Login successful
             login_user(user)
             session['login_failed_attempts'] = 0
             session['trusted_email_login'] = True
@@ -63,11 +82,11 @@ def login():
             flash('You have been logged in successfully.', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.index'))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
+            # Login failed - increment failed attempts
             session['login_failed_attempts'] = failed_attempts + 1
             show_recaptcha = True  # Show reCAPTCHA after failure
             
-    return render_template('auth/login.html', show_recaptcha=show_recaptcha)
+    return render_template('auth/login.html', show_recaptcha=show_recaptcha, email=email_value)
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
