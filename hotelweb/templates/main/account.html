@@ -302,151 +302,116 @@
         color: #4b5563;
     }
 
-    .progress-bar-container {
-        background: #f3f4f6;
-        height: 16px;
-        border-radius: 8px;
+    /* Progress Bar Styles - Clean Redesign */
+    .progress-tracker {
+        margin: 2rem 0;
+    }
+
+    .progress-bar-wrapper {
+        position: relative;
+        margin: 3rem 0 1rem 0;
+    }
+
+    .progress-bar-bg {
+        width: 100%;
+        height: 20px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        position: relative;
         overflow: visible;
-        margin: 2rem 0 3rem 0;
-        position: relative;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
     }
 
-    .progress-bar-segments {
+    .progress-bar-fill {
         height: 100%;
-        position: relative;
-        display: flex;
-        border-radius: 8px;
-        overflow: hidden;
-        min-width: 0;
-    }
-
-    .progress-segment {
-        height: 100%;
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .progress-segment.silver { 
-        background: #606060;
-        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
-    }
-    .progress-segment.gold-20 { 
-        background: #A07A0D;
-        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
-    }
-    .progress-segment.gold-40 { 
-        background: #A07A0D;
-        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
-    }
-    .progress-segment.diamond { 
-        background: #37283F;
-        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
-    }
-    .progress-segment.platinum { 
-        background: #253639;
-        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
-    }
-
-    .tier-markers {
+        border-radius: 10px;
         position: absolute;
-        top: -32px;
+        left: 0;
+        top: 0;
+        transition: width 0.5s ease;
+    }
+
+    .progress-markers {
+        position: absolute;
+        top: -40px;
         left: 0;
         right: 0;
-        height: 32px;
-        display: flex;
-        justify-content: space-between;
-        pointer-events: none;
+        height: 40px;
     }
 
-    .tier-marker {
-        position: relative;
+    .progress-marker {
+        position: absolute;
+        transform: translateX(-50%);
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 60px;
     }
 
-    .tier-marker-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #d1d5db;
-        border: 3px solid #f3f4f6;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .tier-marker.active .tier-marker-dot {
+    .progress-marker-dot {
         width: 16px;
         height: 16px;
-        border-width: 4px;
+        border-radius: 50%;
+        background: #d1d5db;
+        border: 3px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        margin-bottom: 6px;
+        flex-shrink: 0;
     }
 
-    .tier-marker.silver.active .tier-marker-dot { background: #606060; border-color: #606060; }
-    .tier-marker.gold.active .tier-marker-dot { background: #A07A0D; border-color: #A07A0D; }
-    .tier-marker.diamond.active .tier-marker-dot { background: #37283F; border-color: #37283F; }
-    .tier-marker.platinum.active .tier-marker-dot { background: #253639; border-color: #253639; }
+    .progress-marker.active .progress-marker-dot {
+        background: #4b5563;
+        border-color: #4b5563;
+        width: 20px;
+        height: 20px;
+    }
 
-    .tier-marker-label {
-        font-size: 0.7rem;
+    .progress-marker-label {
+        font-size: 0.75rem;
         font-weight: 600;
         color: #6b7280;
-        text-align: center;
         white-space: nowrap;
     }
 
-    .tier-marker.active .tier-marker-label {
+    .progress-marker.active .progress-marker-label {
         color: #111827;
         font-weight: 700;
     }
 
-    .tier-milestones {
+    .tier-labels {
         display: flex;
         justify-content: space-between;
-        margin-top: 1rem;
-        padding: 0 0.5rem;
+        margin-top: 1.5rem;
+        padding: 0;
     }
 
-    .milestone {
+    .tier-label {
         text-align: center;
         flex: 1;
-        position: relative;
     }
 
-    .milestone-name {
+    .tier-label-name {
         font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #9ca3af;
         font-size: 0.85rem;
-        transition: all 0.3s ease;
-    }
-
-    .milestone.achieved .milestone-name {
-        color: #4b5563;
-        font-weight: 700;
-    }
-
-    .milestone.club-member.achieved .milestone-name { color: #0B254E; }
-    .milestone.silver.achieved .milestone-name { color: #606060; }
-    .milestone.gold.achieved .milestone-name { color: #A07A0D; }
-    .milestone.diamond.achieved .milestone-name { color: #37283F; }
-    .milestone.platinum.achieved .milestone-name { color: #253639; }
-
-    .milestone.current .milestone-name {
-        font-weight: 700;
-        font-size: 1rem;
-        transform: scale(1.1);
-    }
-
-    .milestone-points {
+        margin-bottom: 0.25rem;
         color: #9ca3af;
-        font-size: 0.75rem;
+    }
+
+    .tier-label.achieved .tier-label-name {
+        font-weight: 700;
+    }
+
+    .tier-label.club-member.achieved .tier-label-name { color: #0B254E; }
+    .tier-label.silver.achieved .tier-label-name { color: #606060; }
+    .tier-label.gold.achieved .tier-label-name { color: #A07A0D; }
+    .tier-label.diamond.achieved .tier-label-name { color: #37283F; }
+    .tier-label.platinum.achieved .tier-label-name { color: #253639; }
+
+    .tier-label-requirement {
+        font-size: 0.7rem;
+        color: #9ca3af;
         font-weight: 500;
     }
 
-    .milestone.achieved .milestone-points {
+    .tier-label.achieved .tier-label-requirement {
         color: #6b7280;
         font-weight: 600;
     }
@@ -1013,67 +978,51 @@
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
                 </div>
-                <div class="progress-bar-container">
-                            <div class="tier-markers">
-                                <div class="tier-marker silver {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ silver_end_pct }}%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">10</div>
-                </div>
-                                <div class="tier-marker gold {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ gold_20_end_pct }}%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">20</div>
-                                </div>
-                                <div class="tier-marker gold {% if current_user.nights_stayed >= 40 %}active{% endif %}" style="left: {{ gold_40_end_pct }}%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">40</div>
-                                </div>
-                                <div class="tier-marker diamond {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: {{ diamond_end_pct }}%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">70</div>
-                                </div>
-                                <div class="tier-marker platinum {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: 100%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">200</div>
-                                </div>
+                <div class="progress-tracker">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-markers">
+                            <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: 5%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">10</div>
                             </div>
-                            <div class="progress-bar-segments" style="width: {{ nights_total_progress_pct }}%;">
-                                {% if silver_width > 0 %}
-                                <div class="progress-segment silver" style="width: {{ (silver_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if gold_20_width > 0 %}
-                                <div class="progress-segment gold-20" style="width: {{ (gold_20_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if gold_40_width > 0 %}
-                                <div class="progress-segment gold-40" style="width: {{ (gold_40_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if diamond_width > 0 %}
-                                <div class="progress-segment diamond" style="width: {{ (diamond_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if ambassador_width > 0 %}
-                                <div class="progress-segment platinum" style="width: {{ (ambassador_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
+                            <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: 10%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">20</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.nights_stayed >= 40 %}active{% endif %}" style="left: 20%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">40</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: 35%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">70</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: 100%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">200</div>
                             </div>
                         </div>
-                <div class="tier-milestones">
-                            <div class="milestone silver {% if current_user.nights_stayed >= 10 or current_user.membership_level in ['Silver Elite', 'Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 10 and current_user.nights_stayed < 20 and current_user.membership_level == 'Silver Elite' %}current{% endif %}">
-                                <div class="milestone-name">Silver Elite</div>
-                                <div class="milestone-points">10 nights</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: linear-gradient(to right, {% if current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 10 %}5%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 20 %}10%{% elif current_user.nights_stayed >= 10 %}5%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 200 %}#253639{% elif current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 70 %}35%{% elif current_user.nights_stayed >= 20 %}10%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 200 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
+                        </div>
                     </div>
-                            <div class="milestone gold {% if current_user.nights_stayed >= 20 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 20 and current_user.nights_stayed < 40 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
-                                <div class="milestone-name">Gold Elite</div>
-                                <div class="milestone-points">20 nights</div>
-                    </div>
-                            <div class="milestone gold {% if current_user.nights_stayed >= 40 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 40 and current_user.nights_stayed < 70 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
-                                <div class="milestone-name">Gold Elite</div>
-                                <div class="milestone-points">40 nights</div>
-                    </div>
-                            <div class="milestone diamond {% if current_user.nights_stayed >= 70 or current_user.membership_level in ['Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 70 and current_user.nights_stayed < 200 and current_user.membership_level == 'Diamond Elite' %}current{% endif %}">
-                                <div class="milestone-name">Diamond Elite</div>
-                                <div class="milestone-points">70 nights</div>
-                    </div>
-                            <div class="milestone platinum {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
-                                <div class="milestone-name">Platinum Elite</div>
-                                <div class="milestone-points">200 nights</div>
+                    <div class="tier-labels">
+                        <div class="tier-label silver {% if current_user.nights_stayed >= 10 %}achieved{% endif %}">
+                            <div class="tier-label-name">Silver Elite</div>
+                            <div class="tier-label-requirement">10 nights</div>
+                        </div>
+                        <div class="tier-label gold {% if current_user.nights_stayed >= 20 %}achieved{% endif %}">
+                            <div class="tier-label-name">Gold Elite</div>
+                            <div class="tier-label-requirement">20 nights</div>
+                        </div>
+                        <div class="tier-label diamond {% if current_user.nights_stayed >= 70 %}achieved{% endif %}">
+                            <div class="tier-label-name">Diamond Elite</div>
+                            <div class="tier-label-requirement">70 nights</div>
+                        </div>
+                        <div class="tier-label platinum {% if current_user.nights_stayed >= 200 %}achieved{% endif %}">
+                            <div class="tier-label-name">Platinum Elite</div>
+                            <div class="tier-label-requirement">200 nights</div>
+                        </div>
                     </div>
                 </div>
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
@@ -1091,64 +1040,55 @@
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
                 </div>
-                <div class="progress-bar-container">
-                            <div class="tier-markers">
-                                <div class="tier-marker member {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: 0%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">0</div>
-                </div>
-                                <div class="tier-marker silver {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: 5%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">50K</div>
-                                </div>
-                                <div class="tier-marker gold {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: 10%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">100K</div>
-                                </div>
-                                <div class="tier-marker diamond {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: 50%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">500K</div>
-                                </div>
-                                <div class="tier-marker platinum {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: 100%; transform: translateX(-50%);">
-                                    <div class="tier-marker-dot"></div>
-                                    <div class="tier-marker-label">1M</div>
-                                </div>
+                <div class="progress-tracker">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-markers">
+                            <div class="progress-marker {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: 0%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">0</div>
                             </div>
-                            <div class="progress-bar-segments" style="width: {{ points_total_progress_pct }}%;">
-                                {% if points_silver_width > 0 %}
-                                <div class="progress-segment silver" style="width: {{ (points_silver_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if points_gold_width > 0 %}
-                                <div class="progress-segment gold-20" style="width: {{ (points_gold_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if points_diamond_width > 0 %}
-                                <div class="progress-segment diamond" style="width: {{ (points_diamond_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
-                                {% if points_platinum_width > 0 %}
-                                <div class="progress-segment platinum" style="width: {{ (points_platinum_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
-                                {% endif %}
+                            <div class="progress-marker {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: 5%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">50K</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: 10%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">100K</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: 50%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">500K</div>
+                            </div>
+                            <div class="progress-marker {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: 100%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">1M</div>
                             </div>
                         </div>
-                <div class="tier-milestones">
-                            <div class="milestone club-member {% if current_user.membership_level != 'Club Member' %}achieved{% endif %} {% if current_user.membership_level == 'Club Member' %}current{% endif %}">
-                                <div class="milestone-name">Club Member</div>
-                                <div class="milestone-points">0 points</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: linear-gradient(to right, {% if current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.lifetime_points >= 100000 %}#A07A0D{% elif current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 50000 %}5%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 500000 %}#37283F{% elif current_user.lifetime_points >= 100000 %}#A07A0D{% elif current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 100000 %}10%{% elif current_user.lifetime_points >= 50000 %}5%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 1000000 %}#253639{% elif current_user.lifetime_points >= 500000 %}#37283F{% elif current_user.lifetime_points >= 100000 %}#A07A0D{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 500000 %}50%{% elif current_user.lifetime_points >= 100000 %}10%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 1000000 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
+                        </div>
                     </div>
-                            <div class="milestone silver {% if current_user.membership_level in ['Silver Elite', 'Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver Elite' %}current{% endif %}">
-                                <div class="milestone-name">Silver Elite</div>
-                                <div class="milestone-points">50K points</div>
-                    </div>
-                            <div class="milestone gold {% if current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold Elite' %}current{% endif %}">
-                                <div class="milestone-name">Gold Elite</div>
-                                <div class="milestone-points">100K points</div>
-                    </div>
-                            <div class="milestone diamond {% if current_user.membership_level in ['Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond Elite' %}current{% endif %}">
-                                <div class="milestone-name">Diamond Elite</div>
-                                <div class="milestone-points">500K points</div>
-                    </div>
-                            <div class="milestone platinum {% if current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
-                                <div class="milestone-name">Platinum Elite</div>
-                                <div class="milestone-points">1M points</div>
+                    <div class="tier-labels">
+                        <div class="tier-label club-member {% if current_user.lifetime_points >= 0 %}achieved{% endif %}">
+                            <div class="tier-label-name">Club Member</div>
+                            <div class="tier-label-requirement">0 points</div>
+                        </div>
+                        <div class="tier-label silver {% if current_user.lifetime_points >= 50000 %}achieved{% endif %}">
+                            <div class="tier-label-name">Silver Elite</div>
+                            <div class="tier-label-requirement">50K points</div>
+                        </div>
+                        <div class="tier-label gold {% if current_user.lifetime_points >= 100000 %}achieved{% endif %}">
+                            <div class="tier-label-name">Gold Elite</div>
+                            <div class="tier-label-requirement">100K points</div>
+                        </div>
+                        <div class="tier-label diamond {% if current_user.lifetime_points >= 500000 %}achieved{% endif %}">
+                            <div class="tier-label-name">Diamond Elite</div>
+                            <div class="tier-label-requirement">500K points</div>
+                        </div>
+                        <div class="tier-label platinum {% if current_user.lifetime_points >= 1000000 %}achieved{% endif %}">
+                            <div class="tier-label-name">Platinum Elite</div>
+                            <div class="tier-label-requirement">1M points</div>
+                        </div>
                     </div>
                 </div>
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
