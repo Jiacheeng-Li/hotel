@@ -1562,8 +1562,8 @@
 
 <!-- Tier Retention Rules Modal -->
 {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
-<div id="retention-rules-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
-    <div style="background-color: white; margin: auto; padding: 0; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative;">
+<div id="retention-rules-modal" style="display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding-top: 80px; padding-bottom: 20px;">
+    <div style="background-color: white; margin: auto; padding: 0; border-radius: 16px; width: 90%; max-width: 600px; max-height: calc(90vh - 100px); overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative;">
         <!-- Modal Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
             <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1a1a1a;">Tier Retention Rules</h3>
