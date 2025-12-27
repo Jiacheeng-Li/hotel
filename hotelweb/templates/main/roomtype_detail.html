@@ -21,21 +21,30 @@
         <p class="text-muted fs-5">{{ roomtype.hotel.name }} <span class="badge bg-secondary ms-2">{{ roomtype.hotel.brand.name }}</span></p>
 
         <!-- Room Image and Description -->
-        <div class="row mt-4">
-            <div class="col-md-7">
-                <div class="p-4 bg-white rounded shadow-sm border">
-            <h5 class="fw-bold mb-3">Room Description</h5>
-            <p>{{ roomtype.description }}</p>
-        </div>
-            </div>
-            <div class="col-md-5">
-                {% if roomtype.image_url %}
-                <img src="{{ roomtype.image_url }}" class="img-fluid rounded shadow-sm w-100" style="height: 350px; object-fit: cover;" alt="{{ roomtype.name }}">
-                {% else %}
-                <div class="bg-light rounded shadow-sm d-flex align-items-center justify-content-center" style="height: 350px;">
-                    <span class="text-muted">No image available</span>
+        <div class="mt-4">
+            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px;">
+                <div class="row g-0">
+                    <!-- Room Image - Left Side -->
+                    <div class="col-md-6">
+                        {% if roomtype.image_url %}
+                        <img src="{{ roomtype.image_url }}" class="img-fluid w-100" style="height: 100%; min-height: 400px; object-fit: cover;" alt="{{ roomtype.name }}">
+                        {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px; min-height: 400px;">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-image" style="font-size: 3rem;"></i>
+                                <p class="mt-2 mb-0">No image available</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!-- Room Description - Right Side -->
+                    <div class="col-md-6">
+                        <div class="p-4 h-100 d-flex flex-column" style="background: #f8fafc;">
+                            <h5 class="fw-bold mb-3" style="color: #1a1a1a; font-size: 1.25rem;">Room Description</h5>
+                            <p class="text-muted mb-0 flex-grow-1" style="line-height: 1.8; font-size: 0.95rem;">{{ roomtype.description or 'Experience comfort and style in this beautifully designed room.' }}</p>
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
             </div>
         </div>
 
@@ -73,8 +82,12 @@
                 </div>
 
                 {% if current_user.is_authenticated and estimated_points_per_night > 0 %}
-                <div class="alert alert-info text-center small mb-3">
-                    Earn {{ estimated_points_per_night }} points per night
+                <div class="text-center mb-3 p-3" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; border: 1px solid #bae6fd;">
+                    <div class="small text-muted mb-1" style="font-size: 0.85rem; color: #64748b;">Earn</div>
+                    <div class="fw-bold" style="font-size: 1.5rem; color: #0ea5e9; letter-spacing: -0.5px;">
+                        {{ "{:,}".format(estimated_points_per_night) }}
+                    </div>
+                    <div class="small" style="font-size: 0.85rem; color: #64748b;">points per night</div>
                 </div>
                 {% endif %}
 
