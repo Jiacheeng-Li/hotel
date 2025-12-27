@@ -418,29 +418,72 @@ def account():
     next_tier = current_user.next_tier_name()
     tier_benefits = current_user.get_tier_benefits()
     
-    # Calculate nights-based milestone progress (separate from tier qualification)
-    # Milestones at: 20, 40, 60, 100 nights
-    milestone_thresholds = [20, 40, 60, 100]
-    next_milestone = None
-    for threshold in milestone_thresholds:
-        if current_user.nights_stayed < threshold:
-            next_milestone = threshold
-            break
+    # Calculate nights-based tier progress
+    # Tier thresholds: 10 (Silver), 20 (Gold), 40 (Gold), 70 (Diamond), 100 (Ambassador)
+    nights_tier_thresholds = {
+        'Member': 10,
+        'Silver': 20,
+        'Gold': 40,
+        'Diamond': 70,
+        'Ambassador': 100
+    }
     
-    if next_milestone is None:
+    # Determine current tier based on nights
+    nights_current_tier = 'Member'
+    if current_user.nights_stayed >= 100:
+        nights_current_tier = 'Ambassador'
+    elif current_user.nights_stayed >= 70:
+        nights_current_tier = 'Diamond'
+    elif current_user.nights_stayed >= 40:
+        nights_current_tier = 'Gold'
+    elif current_user.nights_stayed >= 20:
+        nights_current_tier = 'Gold'
+    elif current_user.nights_stayed >= 10:
+        nights_current_tier = 'Silver'
+    
+    # Calculate next tier threshold for nights
+    nights_next_tier = None
+    if nights_current_tier == 'Member':
+        nights_next_tier = 'Silver'
+        nights_next_threshold = 10
+    elif nights_current_tier == 'Silver':
+        nights_next_tier = 'Gold'
+        nights_next_threshold = 20
+    elif nights_current_tier == 'Gold' and current_user.nights_stayed < 40:
+        nights_next_tier = 'Gold'
+        nights_next_threshold = 40
+    elif nights_current_tier == 'Gold':
+        nights_next_tier = 'Diamond'
+        nights_next_threshold = 70
+    elif nights_current_tier == 'Diamond':
+        nights_next_tier = 'Ambassador'
+        nights_next_threshold = 100
+    else:
+        nights_next_tier = None
+        nights_next_threshold = 100
+    
+    if nights_next_tier is None:
         nights_to_next_milestone = 0
         nights_progress_percent = 100
     else:
         # Find previous milestone
-        prev_milestone = 0
-        for threshold in milestone_thresholds:
-            if threshold < next_milestone:
-                prev_milestone = threshold
+        if nights_current_tier == 'Member':
+            prev_milestone = 0
+        elif nights_current_tier == 'Silver':
+            prev_milestone = 10
+        elif nights_current_tier == 'Gold' and current_user.nights_stayed < 40:
+            prev_milestone = 20
+        elif nights_current_tier == 'Gold':
+            prev_milestone = 40
+        elif nights_current_tier == 'Diamond':
+            prev_milestone = 70
+        else:
+            prev_milestone = 100
         
-        nights_to_next_milestone = next_milestone - current_user.nights_stayed
-        range_size = next_milestone - prev_milestone
+        nights_to_next_milestone = nights_next_threshold - current_user.nights_stayed
+        range_size = nights_next_threshold - prev_milestone
         progress_in_range = current_user.nights_stayed - prev_milestone
-        nights_progress_percent = min(100, int((progress_in_range / range_size) * 100))
+        nights_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 100
     
     # Calculate progress percentage for tier (points-based)
     tier_thresholds = {
@@ -470,6 +513,7 @@ def account():
                          progress_percent=progress_percent,
                          nights_to_next_milestone=nights_to_next_milestone,
                          nights_progress_percent=nights_progress_percent,
+                         nights_next_tier=nights_next_tier or 'Ambassador',
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,

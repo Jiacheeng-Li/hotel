@@ -63,17 +63,40 @@ class User(UserMixin, db.Model):
         return multipliers.get(self.membership_level, 1.0)
     
     def calculate_tier(self):
-        """Calculate and update membership tier based on lifetime points"""
+        """Calculate and update membership tier based on lifetime points OR nights stayed (whichever is higher)"""
+        # Tier thresholds based on points
+        points_tier = 'Member'
         if self.lifetime_points >= 1000000:
-            new_tier = 'Ambassador'
+            points_tier = 'Ambassador'
         elif self.lifetime_points >= 500000:
-            new_tier = 'Diamond'
+            points_tier = 'Diamond'
         elif self.lifetime_points >= 100000:
-            new_tier = 'Gold'
+            points_tier = 'Gold'
         elif self.lifetime_points >= 50000:
-            new_tier = 'Silver'
+            points_tier = 'Silver'
+        
+        # Tier thresholds based on nights (10, 20, 40, 70, 100)
+        nights_tier = 'Member'
+        if self.nights_stayed >= 100:
+            nights_tier = 'Ambassador'
+        elif self.nights_stayed >= 70:
+            nights_tier = 'Diamond'
+        elif self.nights_stayed >= 40:
+            nights_tier = 'Gold'
+        elif self.nights_stayed >= 20:
+            nights_tier = 'Gold'
+        elif self.nights_stayed >= 10:
+            nights_tier = 'Silver'
+        
+        # Get the higher tier (Ambassador > Diamond > Gold > Silver > Member)
+        tier_order = {'Member': 0, 'Silver': 1, 'Gold': 2, 'Diamond': 3, 'Ambassador': 4}
+        points_level = tier_order.get(points_tier, 0)
+        nights_level = tier_order.get(nights_tier, 0)
+        
+        if points_level >= nights_level:
+            new_tier = points_tier
         else:
-            new_tier = 'Member'
+            new_tier = nights_tier
         
         if new_tier != self.membership_level:
             self.membership_level = new_tier
