@@ -419,18 +419,12 @@ def account():
     tier_benefits = current_user.get_tier_benefits()
     
     # Calculate nights-based tier progress
-    # Tier thresholds: 10 (Silver), 20 (Gold), 40 (Gold), 70 (Diamond), 100 (Ambassador)
-    nights_tier_thresholds = {
-        'Member': 10,
-        'Silver': 20,
-        'Gold': 40,
-        'Diamond': 70,
-        'Ambassador': 100
-    }
+    # Tier thresholds: 10 (Silver), 20 (Gold), 40 (Gold), 70 (Diamond), 200 (Ambassador)
+    nights_tier_thresholds = [10, 20, 40, 70, 200]
     
     # Determine current tier based on nights
     nights_current_tier = 'Member'
-    if current_user.nights_stayed >= 100:
+    if current_user.nights_stayed >= 200:
         nights_current_tier = 'Ambassador'
     elif current_user.nights_stayed >= 70:
         nights_current_tier = 'Diamond'
@@ -443,47 +437,94 @@ def account():
     
     # Calculate next tier threshold for nights
     nights_next_tier = None
-    if nights_current_tier == 'Member':
+    nights_next_threshold = None
+    if current_user.nights_stayed < 10:
         nights_next_tier = 'Silver'
         nights_next_threshold = 10
-    elif nights_current_tier == 'Silver':
+        prev_milestone = 0
+    elif current_user.nights_stayed < 20:
         nights_next_tier = 'Gold'
         nights_next_threshold = 20
-    elif nights_current_tier == 'Gold' and current_user.nights_stayed < 40:
+        prev_milestone = 10
+    elif current_user.nights_stayed < 40:
         nights_next_tier = 'Gold'
         nights_next_threshold = 40
-    elif nights_current_tier == 'Gold':
+        prev_milestone = 20
+    elif current_user.nights_stayed < 70:
         nights_next_tier = 'Diamond'
         nights_next_threshold = 70
-    elif nights_current_tier == 'Diamond':
+        prev_milestone = 40
+    elif current_user.nights_stayed < 200:
         nights_next_tier = 'Ambassador'
-        nights_next_threshold = 100
+        nights_next_threshold = 200
+        prev_milestone = 70
     else:
         nights_next_tier = None
-        nights_next_threshold = 100
+        nights_next_threshold = 200
+        prev_milestone = 200
     
     if nights_next_tier is None:
         nights_to_next_milestone = 0
         nights_progress_percent = 100
     else:
-        # Find previous milestone
-        if nights_current_tier == 'Member':
-            prev_milestone = 0
-        elif nights_current_tier == 'Silver':
-            prev_milestone = 10
-        elif nights_current_tier == 'Gold' and current_user.nights_stayed < 40:
-            prev_milestone = 20
-        elif nights_current_tier == 'Gold':
-            prev_milestone = 40
-        elif nights_current_tier == 'Diamond':
-            prev_milestone = 70
-        else:
-            prev_milestone = 100
-        
         nights_to_next_milestone = nights_next_threshold - current_user.nights_stayed
         range_size = nights_next_threshold - prev_milestone
         progress_in_range = current_user.nights_stayed - prev_milestone
         nights_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 100
+    
+    # Calculate progress segments for multi-color progress bar
+    # Each tier gets a portion: 0-10 (Silver), 10-20 (Gold), 20-40 (Gold), 40-70 (Diamond), 70-200 (Ambassador)
+    # Total range: 0-200, so percentages: 0-5%, 5-10%, 10-20%, 20-35%, 35-100%
+    nights_total_range = 200
+    silver_end_pct = (10 / nights_total_range) * 100  # 5%
+    gold_20_end_pct = (20 / nights_total_range) * 100  # 10%
+    gold_40_end_pct = (40 / nights_total_range) * 100  # 20%
+    diamond_end_pct = (70 / nights_total_range) * 100  # 35%
+    
+    # Calculate progress for each segment
+    nights_stayed = current_user.nights_stayed
+    
+    # Silver segment (0-10): 0-5%
+    silver_progress = min(100, (nights_stayed / 10) * 100) if nights_stayed < 10 else 100
+    silver_width = (silver_end_pct * silver_progress / 100) if nights_stayed < 10 else silver_end_pct
+    
+    # Gold 20 segment (10-20): 5-10%
+    gold_20_progress = 0
+    gold_20_width = 0
+    if nights_stayed >= 20:
+        gold_20_width = gold_20_end_pct - silver_end_pct
+    elif nights_stayed >= 10:
+        gold_20_progress = ((nights_stayed - 10) / 10) * 100
+        gold_20_width = (gold_20_end_pct - silver_end_pct) * gold_20_progress / 100
+    
+    # Gold 40 segment (20-40): 10-20%
+    gold_40_progress = 0
+    gold_40_width = 0
+    if nights_stayed >= 40:
+        gold_40_width = gold_40_end_pct - gold_20_end_pct
+    elif nights_stayed >= 20:
+        gold_40_progress = ((nights_stayed - 20) / 20) * 100
+        gold_40_width = (gold_40_end_pct - gold_20_end_pct) * gold_40_progress / 100
+    
+    # Diamond segment (40-70): 20-35%
+    diamond_progress = 0
+    diamond_width = 0
+    if nights_stayed >= 70:
+        diamond_width = diamond_end_pct - gold_40_end_pct
+    elif nights_stayed >= 40:
+        diamond_progress = ((nights_stayed - 40) / 30) * 100
+        diamond_width = (diamond_end_pct - gold_40_end_pct) * diamond_progress / 100
+    
+    # Ambassador segment (70-200): 35-100%
+    ambassador_progress = 0
+    ambassador_width = 0
+    if nights_stayed >= 200:
+        ambassador_width = 100 - diamond_end_pct
+    elif nights_stayed >= 70:
+        ambassador_progress = ((nights_stayed - 70) / 130) * 100
+        ambassador_width = (100 - diamond_end_pct) * ambassador_progress / 100
+    
+    nights_total_progress_pct = silver_width + gold_20_width + gold_40_width + diamond_width + ambassador_width
     
     # Calculate progress percentage for tier (points-based)
     tier_thresholds = {
@@ -514,6 +555,16 @@ def account():
                          nights_to_next_milestone=nights_to_next_milestone,
                          nights_progress_percent=nights_progress_percent,
                          nights_next_tier=nights_next_tier or 'Ambassador',
+                         nights_total_progress_pct=nights_total_progress_pct,
+                         silver_end_pct=silver_end_pct,
+                         gold_20_end_pct=gold_20_end_pct,
+                         gold_40_end_pct=gold_40_end_pct,
+                         diamond_end_pct=diamond_end_pct,
+                         silver_width=silver_width,
+                         gold_20_width=gold_20_width,
+                         gold_40_width=gold_40_width,
+                         diamond_width=diamond_width,
+                         ambassador_width=ambassador_width,
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,

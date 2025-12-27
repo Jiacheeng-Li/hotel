@@ -75,9 +75,9 @@ class User(UserMixin, db.Model):
         elif self.lifetime_points >= 50000:
             points_tier = 'Silver'
         
-        # Tier thresholds based on nights (10, 20, 40, 70, 100)
+        # Tier thresholds based on nights (10 Silver, 20 Gold, 40 Gold, 70 Diamond, 200 Ambassador)
         nights_tier = 'Member'
-        if self.nights_stayed >= 100:
+        if self.nights_stayed >= 200:
             nights_tier = 'Ambassador'
         elif self.nights_stayed >= 70:
             nights_tier = 'Diamond'
