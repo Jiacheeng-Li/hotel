@@ -199,6 +199,51 @@ a {
     font-family: var(--font-serif);
 }
 
+/* Breadcrumb Navigation */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.5rem 0;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: var(--text-muted);
+    padding: 0 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.breadcrumb-item.active a {
+    color: var(--text-muted);
+    pointer-events: none;
+    cursor: default;
+}
+
 /* Utilities */
 .object-fit-cover {
     object-fit: cover;

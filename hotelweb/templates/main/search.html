@@ -3,12 +3,14 @@
 {% block title %}Search Results - HotelWeb{% endblock %}
 
 {% block breadcrumb %}
-<nav aria-label="breadcrumb" class="py-1">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-        <li class="breadcrumb-item active">Search Results</li>
-    </ol>
-</nav>
+<div class="container">
+    <nav aria-label="breadcrumb" class="py-1">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item active">Search Results</li>
+        </ol>
+    </nav>
+</div>
 {% endblock %}
 
 {% block content %}

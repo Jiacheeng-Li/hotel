@@ -3,13 +3,15 @@
 {% block title %}{{ roomtype.name }} - HotelWeb{% endblock %}
 
 {% block breadcrumb %}
-<nav aria-label="breadcrumb" class="py-1">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
-        <li class="breadcrumb-item active">{{ roomtype.name }}</li>
-    </ol>
-</nav>
+<div class="container">
+    <nav aria-label="breadcrumb" class="py-1">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
+            <li class="breadcrumb-item active">{{ roomtype.name }}</li>
+        </ol>
+    </nav>
+</div>
 {% endblock %}
 
 {% block content %}
