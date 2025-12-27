@@ -104,45 +104,66 @@ class User(UserMixin, db.Model):
         return False
     
     def get_tier_benefits(self):
-        """Return list of benefits for current tier"""
+        """Return list of benefits for current tier - matches comparison table"""
         benefits = {
             'Club Member': [
-                'Earn points on stays',
-                'Member-only rates',
-                'Mobile check-in'
+                'Earn Points on Stays',
+                'Club Member-only Rates',
+                'Mobile Check-in',
+                '1.0x Points Multiplier'
             ],
             'Silver Elite': [
-                'All Club Member benefits',
-                '1.2x points multiplier',
-                'Late checkout (2 PM)',
-                'Welcome amenity',
-                'Priority support'
+                'Earn Points on Stays',
+                'Club Member-only Rates',
+                'Mobile Check-in',
+                '1.2x Points Multiplier',
+                'Late Checkout (2 PM)',
+                'Welcome Amenity',
+                'Priority Support'
             ],
             'Gold Elite': [
-                'All Silver Elite benefits',
-                '1.5x points multiplier',
-                'Room upgrade (subject to availability)',
-                'Complimentary breakfast',
-                'Priority check-in',
-                'Bonus points on stays'
+                'Earn Points on Stays',
+                'Club Member-only Rates',
+                'Mobile Check-in',
+                '1.5x Points Multiplier',
+                'Late Checkout (2 PM)',
+                'Welcome Amenity',
+                'Priority Support',
+                'Room Upgrade (Subject to availability)',
+                'Complimentary Breakfast',
+                'Priority Check-in'
             ],
             'Diamond Elite': [
-                'All Gold Elite benefits',
-                '2x points multiplier',
-                'Suite upgrade (subject to availability)',
-                'Executive lounge access',
-                'Guaranteed late checkout (4 PM)',
-                'Dedicated concierge',
-                'Premium Wi-Fi'
+                'Earn Points on Stays',
+                'Club Member-only Rates',
+                'Mobile Check-in',
+                '2.0x Points Multiplier',
+                'Late Checkout (4 PM)',
+                'Welcome Amenity',
+                'Priority Support',
+                'Suite Upgrade (Subject to availability)',
+                'Complimentary Breakfast',
+                'Priority Check-in',
+                'Executive Lounge Access',
+                'Dedicated Concierge'
             ],
             'Platinum Elite': [
-                'All Diamond Elite benefits',
-                '2.5x points multiplier',
-                'Penthouse upgrade (subject to availability)',
-                'Personal travel advisor',
-                'Exclusive events access',
-                'Complimentary spa services',
-                'Airport transfers'
+                'Earn Points on Stays',
+                'Club Member-only Rates',
+                'Mobile Check-in',
+                '2.5x Points Multiplier',
+                'Late Checkout (4 PM)',
+                'Welcome Amenity',
+                'Priority Support',
+                'Penthouse Upgrade (Subject to availability)',
+                'Complimentary Breakfast',
+                'Priority Check-in',
+                'Executive Lounge Access',
+                'Dedicated Concierge',
+                'Personal Travel Advisor',
+                'Exclusive Events Access',
+                'Complimentary Spa Services',
+                'Airport Transfers'
             ]
         }
         return benefits.get(self.membership_level, benefits['Club Member'])
