@@ -481,48 +481,55 @@ def account():
     gold_40_end_pct = (40 / nights_total_range) * 100  # 20%
     diamond_end_pct = (70 / nights_total_range) * 100  # 35%
     
-    # Calculate progress for each segment
+    # Calculate progress for each segment (widths are percentages of total bar)
     nights_stayed = current_user.nights_stayed
     
-    # Silver segment (0-10): 0-5%
-    silver_progress = min(100, (nights_stayed / 10) * 100) if nights_stayed < 10 else 100
-    silver_width = (silver_end_pct * silver_progress / 100) if nights_stayed < 10 else silver_end_pct
+    # Silver segment (0-10): 0-5% of total bar
+    if nights_stayed >= 10:
+        silver_width = silver_end_pct  # 5%
+    else:
+        silver_width = (nights_stayed / 10) * silver_end_pct
+    silver_width = max(0, min(silver_end_pct, silver_width))
     
-    # Gold 20 segment (10-20): 5-10%
-    gold_20_progress = 0
-    gold_20_width = 0
+    # Gold 20 segment (10-20): 5-10% of total bar
+    gold_20_segment_size = gold_20_end_pct - silver_end_pct  # 5%
     if nights_stayed >= 20:
-        gold_20_width = gold_20_end_pct - silver_end_pct
+        gold_20_width = gold_20_segment_size
     elif nights_stayed >= 10:
-        gold_20_progress = ((nights_stayed - 10) / 10) * 100
-        gold_20_width = (gold_20_end_pct - silver_end_pct) * gold_20_progress / 100
+        gold_20_width = ((nights_stayed - 10) / 10) * gold_20_segment_size
+    else:
+        gold_20_width = 0
+    gold_20_width = max(0, min(gold_20_segment_size, gold_20_width))
     
-    # Gold 40 segment (20-40): 10-20%
-    gold_40_progress = 0
-    gold_40_width = 0
+    # Gold 40 segment (20-40): 10-20% of total bar
+    gold_40_segment_size = gold_40_end_pct - gold_20_end_pct  # 10%
     if nights_stayed >= 40:
-        gold_40_width = gold_40_end_pct - gold_20_end_pct
+        gold_40_width = gold_40_segment_size
     elif nights_stayed >= 20:
-        gold_40_progress = ((nights_stayed - 20) / 20) * 100
-        gold_40_width = (gold_40_end_pct - gold_20_end_pct) * gold_40_progress / 100
+        gold_40_width = ((nights_stayed - 20) / 20) * gold_40_segment_size
+    else:
+        gold_40_width = 0
+    gold_40_width = max(0, min(gold_40_segment_size, gold_40_width))
     
-    # Diamond segment (40-70): 20-35%
-    diamond_progress = 0
-    diamond_width = 0
+    # Diamond segment (40-70): 20-35% of total bar
+    diamond_segment_size = diamond_end_pct - gold_40_end_pct  # 15%
     if nights_stayed >= 70:
-        diamond_width = diamond_end_pct - gold_40_end_pct
+        diamond_width = diamond_segment_size
     elif nights_stayed >= 40:
-        diamond_progress = ((nights_stayed - 40) / 30) * 100
-        diamond_width = (diamond_end_pct - gold_40_end_pct) * diamond_progress / 100
+        diamond_width = ((nights_stayed - 40) / 30) * diamond_segment_size
+    else:
+        diamond_width = 0
+    diamond_width = max(0, min(diamond_segment_size, diamond_width))
     
-    # Ambassador segment (70-200): 35-100%
-    ambassador_progress = 0
-    ambassador_width = 0
+    # Ambassador segment (70-200): 35-100% of total bar
+    ambassador_segment_size = 100 - diamond_end_pct  # 65%
     if nights_stayed >= 200:
-        ambassador_width = 100 - diamond_end_pct
+        ambassador_width = ambassador_segment_size
     elif nights_stayed >= 70:
-        ambassador_progress = ((nights_stayed - 70) / 130) * 100
-        ambassador_width = (100 - diamond_end_pct) * ambassador_progress / 100
+        ambassador_width = ((nights_stayed - 70) / 130) * ambassador_segment_size
+    else:
+        ambassador_width = 0
+    ambassador_width = max(0, min(ambassador_segment_size, ambassador_width))
     
     nights_total_progress_pct = silver_width + gold_20_width + gold_40_width + diamond_width + ambassador_width
     
