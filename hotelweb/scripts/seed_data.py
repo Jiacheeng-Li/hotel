@@ -185,7 +185,7 @@ def seed():
                         "Executive Suite": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80",
                         "Penthouse": "https://images.unsplash.com/photo-1578683010236-d716f9d3f2f7?auto=format&fit=crop&w=800&q=80",
                     }
-                    
+
                     for rt_temp in brand_rts:
                          # Vary price slightly per hotel
                         price = int(rt_temp["price_base"] * price_mult * (0.9 + random.random()*0.2))

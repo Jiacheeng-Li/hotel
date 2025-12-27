@@ -54,7 +54,7 @@ def login():
                     trusted_emails.pop(0)
             session['trusted_emails'] = trusted_emails
             
-            print(f"User {user.username} logged in.")
+            print(f"User {user.username} logged in.") 
             next_page = request.args.get('next')
             flash('You have been logged in successfully.', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.index'))
@@ -68,7 +68,7 @@ def login():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    
+        
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')

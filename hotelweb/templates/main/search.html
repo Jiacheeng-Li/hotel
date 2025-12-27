@@ -65,13 +65,13 @@
                     <div class="row g-2">
                         <div class="col-6">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text">People</span>
-                                <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
-                            </div>
+                        <span class="input-group-text">People</span>
+                        <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
+                    </div>
                         </div>
                         <div class="col-6">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">Rooms</span>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">Rooms</span>
                                 <input type="number" name="rooms_needed" class="form-control" value="{{ rooms_needed }}" min="1">
                             </div>
                         </div>
@@ -82,14 +82,14 @@
                 <div class="mb-1">
                     <label class="form-label small text-uppercase text-muted fw-bold">Brands</label>
                     <div class="row g-2">
-                        {% for brand in all_brands %}
+                    {% for brand in all_brands %}
                         <div class="col-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
-                                    id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
+                            id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
                                 <label class="form-check-label small" for="f_br_{{ brand.id }}">
-                                    {{ brand.name }}
-                                </label>
+                            {{ brand.name }}
+                        </label>
                             </div>
                         </div>
                         {% endfor %}

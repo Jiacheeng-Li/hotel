@@ -348,7 +348,7 @@ def stay_again(booking_id):
                           check_out=suggested_check_out.strftime('%Y-%m-%d'),
                           guests=booking.room_type.capacity,
                           rooms_needed=booking.rooms_count))
-
+    
 @bp.route('/account')
 @login_required
 def account():
