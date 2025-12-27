@@ -467,67 +467,112 @@ def account():
         progress_in_range = current_user.nights_stayed - prev_milestone
         nights_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 100
     
-    # Calculate progress segments for multi-color progress bar
+    # Calculate progress segments for multi-color progress bar (By Nights)
     # Tier thresholds: 10 (Silver), 20 (Gold), 70 (Diamond), 200 (Platinum)
     # Milestone at 40 (Gold) is shown but not a tier upgrade
-    # Total range: 0-200, so percentages: 0-5% (Silver), 5-10% (Gold 20), 10-35% (Gold 40-Diamond), 35-100% (Platinum)
+    # Total range: 0-200 nights
     nights_total_range = 200
+    nights_stayed = current_user.nights_stayed
+    
+    # Calculate marker positions (percentages of total bar)
     silver_end_pct = (10 / nights_total_range) * 100  # 5%
     gold_20_end_pct = (20 / nights_total_range) * 100  # 10%
     gold_40_end_pct = (40 / nights_total_range) * 100  # 20% (milestone marker)
     diamond_end_pct = (70 / nights_total_range) * 100  # 35%
     
-    # Calculate progress for each segment (widths are percentages of total bar)
-    nights_stayed = current_user.nights_stayed
+    # Calculate total progress percentage
+    nights_total_progress_pct = min(100, (nights_stayed / nights_total_range) * 100)
     
-    # Silver segment (0-10): 0-5% of total bar
+    # Calculate segment widths based on current progress
+    # Silver segment (0-10): Club Member to Silver Elite
     if nights_stayed >= 10:
-        silver_width = silver_end_pct  # 5%
+        silver_width = silver_end_pct
     else:
         silver_width = (nights_stayed / 10) * silver_end_pct
-    silver_width = max(0, min(silver_end_pct, silver_width))
     
-    # Gold 20 segment (10-20): 5-10% of total bar
-    gold_20_segment_size = gold_20_end_pct - silver_end_pct  # 5%
+    # Gold 20 segment (10-20): Silver to Gold Elite
     if nights_stayed >= 20:
-        gold_20_width = gold_20_segment_size
+        gold_20_width = gold_20_end_pct - silver_end_pct
     elif nights_stayed >= 10:
-        gold_20_width = ((nights_stayed - 10) / 10) * gold_20_segment_size
+        gold_20_width = ((nights_stayed - 10) / 10) * (gold_20_end_pct - silver_end_pct)
     else:
         gold_20_width = 0
-    gold_20_width = max(0, min(gold_20_segment_size, gold_20_width))
     
-    # Gold 40 segment (20-40): 10-20% of total bar (milestone, still Gold Elite)
-    gold_40_segment_size = gold_40_end_pct - gold_20_end_pct  # 10%
+    # Gold 40 segment (20-40): Gold Elite milestone
     if nights_stayed >= 40:
-        gold_40_width = gold_40_segment_size
+        gold_40_width = gold_40_end_pct - gold_20_end_pct
     elif nights_stayed >= 20:
-        gold_40_width = ((nights_stayed - 20) / 20) * gold_40_segment_size
+        gold_40_width = ((nights_stayed - 20) / 20) * (gold_40_end_pct - gold_20_end_pct)
     else:
         gold_40_width = 0
-    gold_40_width = max(0, min(gold_40_segment_size, gold_40_width))
     
-    # Diamond segment (40-70): 20-35% of total bar
-    diamond_segment_size = diamond_end_pct - gold_40_end_pct  # 15%
+    # Diamond segment (40-70): Gold to Diamond Elite
     if nights_stayed >= 70:
-        diamond_width = diamond_segment_size
+        diamond_width = diamond_end_pct - gold_40_end_pct
     elif nights_stayed >= 40:
-        diamond_width = ((nights_stayed - 40) / 30) * diamond_segment_size
+        diamond_width = ((nights_stayed - 40) / 30) * (diamond_end_pct - gold_40_end_pct)
     else:
         diamond_width = 0
-    diamond_width = max(0, min(diamond_segment_size, diamond_width))
     
-    # Platinum segment (70-200): 35-100% of total bar
-    platinum_segment_size = 100 - diamond_end_pct  # 65%
+    # Platinum segment (70-200): Diamond to Platinum Elite
     if nights_stayed >= 200:
-        ambassador_width = platinum_segment_size
+        ambassador_width = 100 - diamond_end_pct
     elif nights_stayed >= 70:
-        ambassador_width = ((nights_stayed - 70) / 130) * platinum_segment_size
+        ambassador_width = ((nights_stayed - 70) / 130) * (100 - diamond_end_pct)
     else:
         ambassador_width = 0
-    ambassador_width = max(0, min(platinum_segment_size, ambassador_width))
     
-    nights_total_progress_pct = silver_width + gold_20_width + gold_40_width + diamond_width + ambassador_width
+    # Ensure widths don't exceed their segment limits
+    silver_width = max(0, min(silver_end_pct, silver_width))
+    gold_20_width = max(0, min(gold_20_end_pct - silver_end_pct, gold_20_width))
+    gold_40_width = max(0, min(gold_40_end_pct - gold_20_end_pct, gold_40_width))
+    diamond_width = max(0, min(diamond_end_pct - gold_40_end_pct, diamond_width))
+    ambassador_width = max(0, min(100 - diamond_end_pct, ambassador_width))
+    
+    # Calculate points-based progress segments
+    points_total_range = 1000000  # 1M points max
+    lifetime_points = current_user.lifetime_points
+    
+    # Calculate marker positions for points (percentages of total bar)
+    points_silver_pct = (50000 / points_total_range) * 100  # 5%
+    points_gold_pct = (100000 / points_total_range) * 100  # 10%
+    points_diamond_pct = (500000 / points_total_range) * 100  # 50%
+    
+    # Calculate total progress percentage for points
+    points_total_progress_pct = min(100, (lifetime_points / points_total_range) * 100)
+    
+    # Calculate segment widths for points tracker
+    if lifetime_points >= 1000000:
+        points_silver_width = points_silver_pct
+        points_gold_width = points_gold_pct - points_silver_pct
+        points_diamond_width = points_diamond_pct - points_gold_pct
+        points_platinum_width = 100 - points_diamond_pct
+    elif lifetime_points >= 500000:
+        points_silver_width = points_silver_pct
+        points_gold_width = points_gold_pct - points_silver_pct
+        points_diamond_width = points_diamond_pct - points_gold_pct
+        points_platinum_width = ((lifetime_points - 500000) / 500000) * (100 - points_diamond_pct)
+    elif lifetime_points >= 100000:
+        points_silver_width = points_silver_pct
+        points_gold_width = points_gold_pct - points_silver_pct
+        points_diamond_width = ((lifetime_points - 100000) / 400000) * (points_diamond_pct - points_gold_pct)
+        points_platinum_width = 0
+    elif lifetime_points >= 50000:
+        points_silver_width = points_silver_pct
+        points_gold_width = ((lifetime_points - 50000) / 50000) * (points_gold_pct - points_silver_pct)
+        points_diamond_width = 0
+        points_platinum_width = 0
+    else:
+        points_silver_width = (lifetime_points / 50000) * points_silver_pct
+        points_gold_width = 0
+        points_diamond_width = 0
+        points_platinum_width = 0
+    
+    # Ensure widths don't exceed limits
+    points_silver_width = max(0, min(points_silver_pct, points_silver_width))
+    points_gold_width = max(0, min(points_gold_pct - points_silver_pct, points_gold_width))
+    points_diamond_width = max(0, min(points_diamond_pct - points_gold_pct, points_diamond_width))
+    points_platinum_width = max(0, min(100 - points_diamond_pct, points_platinum_width))
     
     # Calculate progress percentage for tier (points-based)
     tier_thresholds = {
@@ -568,6 +613,11 @@ def account():
                          gold_40_width=gold_40_width,
                          diamond_width=diamond_width,
                          ambassador_width=ambassador_width,
+                         points_silver_width=points_silver_width,
+                         points_gold_width=points_gold_width,
+                         points_diamond_width=points_diamond_width,
+                         points_platinum_width=points_platinum_width,
+                         points_total_progress_pct=points_total_progress_pct,
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,
