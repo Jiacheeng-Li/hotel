@@ -955,7 +955,7 @@
                 <div class="progress-info">
                             <span><strong>{{ current_user.nights_stayed }}</strong> nights stayed</span>
                             {% if nights_to_next_milestone > 0 %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">{{ nights_to_next_milestone }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ nights_next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ nights_next_tier }}</a></span>
+                            <span style="color: #6b7280; font-size: 0.9rem;">{{ nights_to_next_milestone }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ nights_next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: white !important; cursor: pointer; font-weight: 600;">{{ nights_next_tier }}</a></span>
                             {% else %}
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
@@ -963,6 +963,10 @@
                 <div class="progress-tracker">
                     <div class="progress-bar-wrapper">
                         <div class="progress-markers">
+                            <div class="progress-marker {% if current_user.nights_stayed >= 0 %}active{% endif %}" style="left: 0%;">
+                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-label">0</div>
+                            </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: 5%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">10</div>
@@ -970,10 +974,6 @@
                             <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: 10%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">20</div>
-                            </div>
-                            <div class="progress-marker {% if current_user.nights_stayed >= 40 %}active{% endif %}" style="left: 20%;">
-                                <div class="progress-marker-dot"></div>
-                                <div class="progress-marker-label">40</div>
                             </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: 35%;">
                                 <div class="progress-marker-dot"></div>
@@ -985,10 +985,14 @@
                             </div>
                         </div>
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: {{ nights_bar_color }};"></div>
+                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: linear-gradient(to right, {% if current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 5%, {% if current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% else %}#d1d5db{% endif %} 10%, {% if current_user.nights_stayed >= 200 %}#253639{% elif current_user.nights_stayed >= 70 %}#37283F{% else %}#d1d5db{% endif %} 35%, {% if current_user.nights_stayed >= 200 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
                         </div>
                     </div>
                     <div class="tier-labels">
+                        <div class="tier-label club-member {% if current_user.nights_stayed >= 0 %}achieved{% endif %}">
+                            <div class="tier-label-name">Club Member</div>
+                            <div class="tier-label-requirement">0 nights</div>
+                        </div>
                         <div class="tier-label silver {% if current_user.nights_stayed >= 10 %}achieved{% endif %}">
                             <div class="tier-label-name">Silver Elite</div>
                             <div class="tier-label-requirement">10 nights</div>
@@ -1017,7 +1021,7 @@
                 <div class="progress-info">
                             <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
                             {% if points_to_next > 0 %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">{{ "{:,}".format(points_to_next) }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ next_tier }}</a></span>
+                            <span style="color: #6b7280; font-size: 0.9rem;">{{ "{:,}".format(points_to_next) }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: white !important; cursor: pointer; font-weight: 600;">{{ next_tier }}</a></span>
                             {% else %}
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
