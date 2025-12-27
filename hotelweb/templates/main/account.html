@@ -3,6 +3,30 @@
 {% block title %}My Account - Lumina Hospitality{% endblock %}
 
 {% block content %}
+{% if current_user.membership_level == 'Gold' %}
+    {% set actual_tier = 'Gold Elite' %}
+{% elif current_user.membership_level == 'Gold Elite' %}
+    {% set actual_tier = 'Gold Elite' %}
+{% elif current_user.membership_level == 'Silver' %}
+    {% set actual_tier = 'Silver Elite' %}
+{% elif current_user.membership_level == 'Silver Elite' %}
+    {% set actual_tier = 'Silver Elite' %}
+{% elif current_user.membership_level == 'Diamond' %}
+    {% set actual_tier = 'Diamond Elite' %}
+{% elif current_user.membership_level == 'Diamond Elite' %}
+    {% set actual_tier = 'Diamond Elite' %}
+{% elif current_user.membership_level == 'Platinum' %}
+    {% set actual_tier = 'Platinum Elite' %}
+{% elif current_user.membership_level == 'Platinum Elite' %}
+    {% set actual_tier = 'Platinum Elite' %}
+{% else %}
+    {% set actual_tier = 'Club Member' %}
+{% endif %}
+{% if actual_tier == 'Club Member' %}
+    {% set tier_display_name = 'Club Member' %}
+{% else %}
+    {% set tier_display_name = actual_tier + ' Member' %}
+{% endif %}
 <style>
     /* Override main container padding for account page */
     main.container {
@@ -23,15 +47,15 @@
         margin-bottom: 2rem;
     }
 
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .account-header { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .account-header { background: linear-gradient(135deg, #606060 0%, #4d4d4d 100%); }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .account-header { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .account-header { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .account-header { background: linear-gradient(135deg, #37283F 0%, #2d1f33 100%); }
     {% else %}
     .account-header { background: linear-gradient(135deg, #37283F 0%, #091d3d 100%); }
@@ -105,15 +129,15 @@
         display: inline-block;
     }
 
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .btn-header:hover { background: #0B254E; border-color: #0B254E; }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .btn-header:hover { background: #606060; border-color: #606060; }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .btn-header:hover { background: #A07A0D; border-color: #A07A0D; }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .btn-header:hover { background: #37283F; border-color: #37283F; }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .btn-header:hover { background: #253639; border-color: #253639; }
     {% else %}
     .btn-header:hover { background: white; color: #4a5568; }
@@ -251,15 +275,15 @@
         height: auto;
     }
 
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .toggle-btn.active { border-color: #0B254E; background: #0B254E; color: white; }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .toggle-btn.active { border-color: #606060; background: #606060; color: white; }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .toggle-btn.active { border-color: #A07A0D; background: #A07A0D; color: white; }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .toggle-btn.active { border-color: #37283F; background: #37283F; color: white; }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .toggle-btn.active { border-color: #253639; background: #253639; color: white; }
     {% else %}
     .toggle-btn.active { border-color: #37283F; background: #37283F; color: white; }
@@ -492,15 +516,15 @@
         justify-content: center;
     }
     
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .milestone-circle { background: conic-gradient(from 0deg, #0B254E 0%, #0B254E {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .milestone-circle { background: conic-gradient(from 0deg, #606060 0%, #606060 {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .milestone-circle { background: conic-gradient(from 0deg, #A07A0D 0%, #A07A0D {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .milestone-circle { background: conic-gradient(from 0deg, #37283F 0%, #37283F {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .milestone-circle { background: conic-gradient(from 0deg, #253639 0%, #253639 {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
     {% else %}
     .milestone-circle { background: conic-gradient(from 0deg, #0B254E 0%, #0B254E {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
@@ -550,19 +574,19 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .btn-premium { background: #0B254E; }
     .btn-premium:hover { background: #091d3d; }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .btn-premium { background: #606060; }
     .btn-premium:hover { background: #9a9ca8; }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .btn-premium { background: #A07A0D; }
     .btn-premium:hover { background: #8a680b; }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .btn-premium { background: #37283F; }
     .btn-premium:hover { background: #091d3d; }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .btn-premium { background: #253639; }
     .btn-premium:hover { background: #1e2b2e; }
     {% endif %}
@@ -652,15 +676,15 @@
         margin-bottom: 0;
     }
     
-    {% if current_user.membership_level == 'Club Member' %}
+    {% if actual_tier == 'Club Member' %}
     .benefits-header { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% elif actual_tier == 'Silver Elite' %}
     .benefits-header { background: linear-gradient(135deg, #606060 0%, #9a9ca8 100%); }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .benefits-header { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .benefits-header { background: linear-gradient(135deg, #37283F 0%, #091d3d 100%); }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .benefits-header { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
     {% else %}
     .benefits-header { background: linear-gradient(135deg, #37283F 0%, #4a4a4a 100%); }
@@ -703,15 +727,15 @@
         margin-bottom: 1rem;
     }
     
-    {% if current_user.membership_level == 'Club Member' %}
-    .benefit-icon { color: #37283F; }
-    {% elif current_user.membership_level == 'Silver Elite' %}
+    {% if actual_tier == 'Club Member' %}
+    .benefit-icon { color: #0B254E; }
+    {% elif actual_tier == 'Silver Elite' %}
     .benefit-icon { color: #606060; }
-    {% elif current_user.membership_level == 'Gold Elite' %}
+    {% elif actual_tier == 'Gold Elite' %}
     .benefit-icon { color: #A07A0D; }
-    {% elif current_user.membership_level == 'Diamond Elite' %}
+    {% elif actual_tier == 'Diamond Elite' %}
     .benefit-icon { color: #37283F; }
-    {% elif current_user.membership_level == 'Platinum Elite' %}
+    {% elif actual_tier == 'Platinum Elite' %}
     .benefit-icon { color: #253639; }
     {% else %}
     .benefit-icon { color: #37283F; }
@@ -932,7 +956,6 @@
     }
 </style>
 
-{% set tier_display_name = current_user.membership_level + ' Member' if current_user.membership_level != 'Club Member' else 'Club Member' %}
 <div class="account-header">
     <div class="header-content">
         <div class="header-left">
