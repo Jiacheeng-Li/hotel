@@ -33,11 +33,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #e0e8f7;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 3rem 2rem;
         margin: 0;
         position: relative;
         width: 100%;
+    }
+    
+    .auth-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80') center/cover;
+        opacity: 0.1;
     }
     
     .auth-container {
@@ -50,9 +61,8 @@
     
     .auth-card {
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        border: 2px solid #3f72e0;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         overflow: hidden;
         display: flex;
         flex-direction: row;
@@ -60,7 +70,7 @@
     }
     
     .auth-left {
-        background: #3f72e0;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
         padding: 3rem;
         color: white;
         display: flex;
@@ -68,6 +78,23 @@
         justify-content: center;
         width: 35%;
         flex-shrink: 0;
+        position: relative;
+    }
+    
+    .auth-left::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80') center/cover;
+        opacity: 0.15;
+    }
+    
+    .auth-left > * {
+        position: relative;
+        z-index: 1;
     }
     
     @media (max-width: 768px) {
@@ -101,7 +128,7 @@
     }
     
     .auth-right {
-        padding: 3rem;
+        padding: 3.5rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -126,6 +153,18 @@
         margin: 1rem 0;
         display: flex;
         justify-content: center;
+    }
+    
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(15, 23, 42, 0.15);
     }
     
     .feature-item {
@@ -189,6 +228,7 @@
                                placeholder="Choose a username"
                                required
                                autocomplete="username"
+                               value="{{ username or '' }}"
                                style="border-radius: 10px;">
                     </div>
                     
@@ -202,6 +242,7 @@
                                placeholder="Enter your email"
                                required
                                autocomplete="email"
+                               value="{{ email or '' }}"
                                style="border-radius: 10px;">
                     </div>
                     
@@ -222,8 +263,14 @@
                         </div>
                     </div>
                     
-                    <!-- reCAPTCHA - Always show for registration (low intensity) -->
+                    <!-- reCAPTCHA - Only show after failed attempts -->
+                    {% if show_recaptcha %}
+                    <div class="alert alert-warning mb-2 py-2" role="alert">
+                        <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>
+                        <small>Please complete the verification below to continue.</small>
+                    </div>
                     <div class="g-recaptcha mb-2" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                    {% endif %}
                     
                     <div class="d-grid gap-2 mb-3">
                         <button type="submit" class="btn btn-primary btn-lg fw-bold py-2" style="border-radius: 10px; background-color: var(--primary-color); border: none;">

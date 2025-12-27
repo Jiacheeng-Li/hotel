@@ -29,24 +29,20 @@ def login():
         return redirect(url_for('main.index'))
     
     show_recaptcha = False
-    if request.method == 'GET':
-        # Show reCAPTCHA for first-time login or if email is not in trusted list
-        if not session.get('trusted_email_login', False):
-            show_recaptcha = True
-        elif session.get('login_failed_attempts', 0) > 0:
-            show_recaptcha = True
     
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # Determine if reCAPTCHA should be enforced for this POST request
-        # Enforce if it was shown on GET, or if it's a subsequent failed attempt
-        if not session.get('trusted_email_login', False) or session.get('login_failed_attempts', 0) > 0:
+        # Check if there were previous failed attempts
+        failed_attempts = session.get('login_failed_attempts', 0)
+        
+        # If there were failed attempts, require reCAPTCHA
+        if failed_attempts > 0:
             recaptcha_response = request.form.get('g-recaptcha-response')
             if not recaptcha_response or not verify_recaptcha(recaptcha_response):
                 flash('Please complete the reCAPTCHA verification', 'danger')
-                session['login_failed_attempts'] = session.get('login_failed_attempts', 0) + 1
+                session['login_failed_attempts'] = failed_attempts + 1
                 return render_template('auth/login.html', show_recaptcha=True)
         
         user = User.query.filter_by(email=email).first()
@@ -68,8 +64,8 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('main.index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-            session['login_failed_attempts'] = session.get('login_failed_attempts', 0) + 1
-            show_recaptcha = True
+            session['login_failed_attempts'] = failed_attempts + 1
+            show_recaptcha = True  # Show reCAPTCHA after failure
             
     return render_template('auth/login.html', show_recaptcha=show_recaptcha)
 
@@ -78,42 +74,57 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     
-    show_recaptcha = True  # Always show reCAPTCHA for registration (low intensity)
+    show_recaptcha = False
     
     if request.method == 'POST':
-        recaptcha_response = request.form.get('g-recaptcha-response')
-        # For registration, reCAPTCHA is advisory (low intensity).
-        # If verification fails, we still allow registration but log it or add extra checks.
-        if not recaptcha_response or not verify_recaptcha(recaptcha_response):
-            flash('Please complete the reCAPTCHA verification (recommended)', 'warning')
-            # Do NOT return here, allow registration to proceed but flag it if needed
-        
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
         
+        # Check if there were previous failed attempts
+        failed_attempts = session.get('register_failed_attempts', 0)
+        
+        # If there were failed attempts, require reCAPTCHA
+        if failed_attempts > 0:
+            recaptcha_response = request.form.get('g-recaptcha-response')
+            if not recaptcha_response or not verify_recaptcha(recaptcha_response):
+                flash('Please complete the reCAPTCHA verification', 'danger')
+                session['register_failed_attempts'] = failed_attempts + 1
+                return render_template('auth/register.html', show_recaptcha=True, 
+                                     username=username, email=email)
+        
         # Basic validation
         if not username or not email or not password:
             flash('All fields are required.', 'danger')
-            return render_template('auth/register.html', show_recaptcha=show_recaptcha)
+            session['register_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/register.html', show_recaptcha=(failed_attempts + 1 > 0),
+                                 username=username or '', email=email or '')
             
         try:
             validate_email(email)
         except EmailNotValidError:
             flash('Invalid email address.', 'danger')
-            return render_template('auth/register.html', show_recaptcha=show_recaptcha)
+            session['register_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/register.html', show_recaptcha=(failed_attempts + 1 > 0),
+                                 username=username, email=email)
             
         if len(password) < 6:
             flash('Password must be at least 6 characters.', 'danger')
-            return render_template('auth/register.html', show_recaptcha=show_recaptcha)
+            session['register_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/register.html', show_recaptcha=(failed_attempts + 1 > 0),
+                                 username=username, email=email)
             
         if User.query.filter_by(email=email).first():
             flash('Email already registered.', 'warning')
-            return render_template('auth/register.html', show_recaptcha=show_recaptcha)
+            session['register_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/register.html', show_recaptcha=(failed_attempts + 1 > 0),
+                                 username=username, email=email)
             
         if User.query.filter_by(username=username).first():
             flash('Username already taken.', 'warning')
-            return render_template('auth/register.html', show_recaptcha=show_recaptcha)
+            session['register_failed_attempts'] = failed_attempts + 1
+            return render_template('auth/register.html', show_recaptcha=(failed_attempts + 1 > 0),
+                                 username=username, email=email)
             
         # Create user
         user = User(username=username, email=email)
@@ -121,6 +132,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         
+        session['register_failed_attempts'] = 0  # Reset on success
         flash('Account created! You can now login.', 'success')
         return redirect(url_for('auth.login'))
         
