@@ -1035,7 +1035,7 @@
                         <div class="milestone-name">Diamond Elite</div>
                                 <div class="milestone-points">70 nights</div>
                     </div>
-                            <div class="milestone ambassador {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
+                            <div class="milestone platinum {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
                         <div class="milestone-name">Platinum Elite</div>
                                 <div class="milestone-points">200 nights</div>
                     </div>
@@ -1117,7 +1117,7 @@
                                 <div class="milestone-name">Diamond Elite</div>
                                 <div class="milestone-points">500K points</div>
                     </div>
-                            <div class="milestone ambassador {% if current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
+                            <div class="milestone platinum {% if current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
                                 <div class="milestone-name">Platinum Elite</div>
                                 <div class="milestone-points">1M points</div>
                     </div>
