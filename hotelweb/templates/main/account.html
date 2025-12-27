@@ -3,25 +3,7 @@
 {% block title %}My Account - Lumina Hospitality{% endblock %}
 
 {% block content %}
-{% if current_user.membership_level == 'Gold' %}
-    {% set actual_tier = 'Gold Elite' %}
-{% elif current_user.membership_level == 'Gold Elite' %}
-    {% set actual_tier = 'Gold Elite' %}
-{% elif current_user.membership_level == 'Silver' %}
-    {% set actual_tier = 'Silver Elite' %}
-{% elif current_user.membership_level == 'Silver Elite' %}
-    {% set actual_tier = 'Silver Elite' %}
-{% elif current_user.membership_level == 'Diamond' %}
-    {% set actual_tier = 'Diamond Elite' %}
-{% elif current_user.membership_level == 'Diamond Elite' %}
-    {% set actual_tier = 'Diamond Elite' %}
-{% elif current_user.membership_level == 'Platinum' %}
-    {% set actual_tier = 'Platinum Elite' %}
-{% elif current_user.membership_level == 'Platinum Elite' %}
-    {% set actual_tier = 'Platinum Elite' %}
-{% else %}
-    {% set actual_tier = 'Club Member' %}
-{% endif %}
+{% set actual_tier = current_user.membership_level %}
 {% if actual_tier == 'Club Member' %}
     {% set tier_display_name = 'Club Member' %}
 {% else %}

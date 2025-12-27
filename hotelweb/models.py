@@ -74,7 +74,9 @@ class User(UserMixin, db.Model):
         return multipliers.get(tier, 1.0)
     
     def calculate_tier(self):
-        """Calculate and update membership tier based on lifetime points OR nights stayed (whichever is higher)"""
+        """Calculate and update membership tier based on lifetime points OR nights stayed (whichever is higher)
+        Always returns standardized tier names: Club Member, Silver Elite, Gold Elite, Diamond Elite, Platinum Elite
+        """
         # Tier thresholds based on points
         points_tier = 'Club Member'
         if self.lifetime_points >= 1000000:
@@ -109,7 +111,20 @@ class User(UserMixin, db.Model):
         else:
             new_tier = nights_tier
         
-        if new_tier != self.membership_level:
+        # Normalize current membership_level before comparison (handle old naming)
+        current_tier = self.membership_level
+        if current_tier == 'Gold':
+            current_tier = 'Gold Elite'
+        elif current_tier == 'Silver':
+            current_tier = 'Silver Elite'
+        elif current_tier == 'Diamond':
+            current_tier = 'Diamond Elite'
+        elif current_tier == 'Platinum':
+            current_tier = 'Platinum Elite'
+        elif current_tier == 'Member' or current_tier == 'Ambassador':
+            current_tier = 'Club Member' if current_tier == 'Member' else 'Platinum Elite'
+        
+        if new_tier != current_tier:
             self.membership_level = new_tier
             return True  # Tier upgraded
         return False

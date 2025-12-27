@@ -93,17 +93,30 @@ def sort_results(results, sort_by='best_match'):
 
 def calculate_points_earned(amount, membership_level):
     """
-    Logic:
-    Member: 10 points per $1
-    Silver: 12 points per $1
-    Gold: 15 points per $1
-    Platinum: 20 points per $1
+    Calculate points earned based on membership level.
+    Uses standardized tier names: Club Member, Silver Elite, Gold Elite, Diamond Elite, Platinum Elite
     """
+    # Normalize membership level to handle any variations
+    tier = membership_level
+    if tier == 'Gold':
+        tier = 'Gold Elite'
+    elif tier == 'Silver':
+        tier = 'Silver Elite'
+    elif tier == 'Diamond':
+        tier = 'Diamond Elite'
+    elif tier == 'Platinum':
+        tier = 'Platinum Elite'
+    elif tier == 'Member' or tier == 'Ambassador':
+        tier = 'Club Member' if tier == 'Member' else 'Platinum Elite'
+    
+    # Points per $1 based on tier multiplier
+    # Base: 10 points per $1, then multiplied by tier multiplier
     multipliers = {
-        'Member': 10,
-        'Silver': 12,
-        'Gold': 15,
-        'Platinum': 20
+        'Club Member': 10,      # 1.0x = 10 points per $1
+        'Silver Elite': 12,     # 1.2x = 12 points per $1
+        'Gold Elite': 15,       # 1.5x = 15 points per $1
+        'Diamond Elite': 20,    # 2.0x = 20 points per $1
+        'Platinum Elite': 25    # 2.5x = 25 points per $1
     }
-    multiplier = multipliers.get(membership_level, 10)
+    multiplier = multipliers.get(tier, 10)
     return int(amount * multiplier)

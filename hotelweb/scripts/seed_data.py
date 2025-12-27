@@ -215,8 +215,8 @@ def seed():
         print(f"Created {len(created_hotels)} hotels across {len(cities)} cities.")
 
         print("Seeding Users & Reviews...")
-        u1 = User(username='traveler_john', email='john@example.com', password_hash=generate_password_hash('password'), membership_level='Silver', points=5000)
-        u2 = User(username='vip_sarah', email='sarah@example.com', password_hash=generate_password_hash('password'), membership_level='Platinum', points=125000)
+        u1 = User(username='traveler_john', email='john@example.com', password_hash=generate_password_hash('password'), membership_level='Silver Elite', points=5000)
+        u2 = User(username='vip_sarah', email='sarah@example.com', password_hash=generate_password_hash('password'), membership_level='Platinum Elite', points=125000)
         db.session.add_all([u1, u2])
         db.session.commit()
         
