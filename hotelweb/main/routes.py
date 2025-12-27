@@ -191,7 +191,52 @@ def search():
 @bp.route('/hotel/<int:hotel_id>')
 def hotel_detail(hotel_id):
     hotel = Hotel.query.get_or_404(hotel_id)
-    return render_template('main/hotel_detail.html', hotel=hotel)
+    
+    # Get recommended hotels (same city, same brand, or same stars, excluding current hotel)
+    recommended_hotels = []
+    
+    # Priority 1: Same brand and same city
+    same_brand_city = Hotel.query.filter(
+        Hotel.id != hotel_id,
+        Hotel.brand_id == hotel.brand_id,
+        Hotel.city == hotel.city
+    ).limit(3).all()
+    recommended_hotels.extend(same_brand_city)
+    
+    # Priority 2: Same city and same stars (if we don't have enough)
+    if len(recommended_hotels) < 3:
+        same_city_stars = Hotel.query.filter(
+            Hotel.id != hotel_id,
+            Hotel.city == hotel.city,
+            Hotel.stars == hotel.stars,
+            ~Hotel.id.in_([h.id for h in recommended_hotels])
+        ).limit(3 - len(recommended_hotels)).all()
+        recommended_hotels.extend(same_city_stars)
+    
+    # Priority 3: Same city (if we still don't have enough)
+    if len(recommended_hotels) < 3:
+        same_city = Hotel.query.filter(
+            Hotel.id != hotel_id,
+            Hotel.city == hotel.city,
+            ~Hotel.id.in_([h.id for h in recommended_hotels])
+        ).limit(3 - len(recommended_hotels)).all()
+        recommended_hotels.extend(same_city)
+    
+    # Priority 4: Same brand (if we still don't have enough)
+    if len(recommended_hotels) < 3:
+        same_brand = Hotel.query.filter(
+            Hotel.id != hotel_id,
+            Hotel.brand_id == hotel.brand_id,
+            ~Hotel.id.in_([h.id for h in recommended_hotels])
+        ).limit(3 - len(recommended_hotels)).all()
+        recommended_hotels.extend(same_brand)
+    
+    # Limit to 3 hotels
+    recommended_hotels = recommended_hotels[:3]
+    
+    return render_template('main/hotel_detail.html', 
+                          hotel=hotel, 
+                          recommended_hotels=recommended_hotels)
 
 @bp.route('/roomtype/<int:roomtype_id>')
 def roomtype_detail(roomtype_id):
