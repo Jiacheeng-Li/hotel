@@ -419,23 +419,22 @@ def account():
     tier_benefits = current_user.get_tier_benefits()
     
     # Calculate nights-based tier progress
-    # Tier thresholds: 10 (Silver Elite), 20 (Gold Elite), 40 (Gold Elite), 70 (Diamond Elite), 200 (Platinum Elite)
-    nights_tier_thresholds = [10, 20, 40, 70, 200]
+    # Tier thresholds (consistent with models.py): 
+    # 10 nights = Silver Elite, 20 nights = Gold Elite, 70 nights = Diamond Elite, 200 nights = Platinum Elite
+    # Note: 40 nights is also Gold Elite but is a milestone, not a tier upgrade
     
-    # Determine current tier based on nights
+    # Determine current tier based on nights (matching models.py logic)
     nights_current_tier = 'Club Member'
     if current_user.nights_stayed >= 200:
         nights_current_tier = 'Platinum Elite'
     elif current_user.nights_stayed >= 70:
         nights_current_tier = 'Diamond Elite'
-    elif current_user.nights_stayed >= 40:
-        nights_current_tier = 'Gold Elite'
-    elif current_user.nights_stayed >= 20:
+    elif current_user.nights_stayed >= 20:  # 20 or 40 both = Gold Elite
         nights_current_tier = 'Gold Elite'
     elif current_user.nights_stayed >= 10:
         nights_current_tier = 'Silver Elite'
     
-    # Calculate next tier threshold for nights
+    # Calculate next tier threshold for nights (actual tier upgrades, not milestones)
     nights_next_tier = None
     nights_next_threshold = None
     if current_user.nights_stayed < 10:
@@ -446,14 +445,10 @@ def account():
         nights_next_tier = 'Gold Elite'
         nights_next_threshold = 20
         prev_milestone = 10
-    elif current_user.nights_stayed < 40:
-        nights_next_tier = 'Gold Elite'
-        nights_next_threshold = 40
-        prev_milestone = 20
-    elif current_user.nights_stayed < 70:
+    elif current_user.nights_stayed < 70:  # Skip 40 as it's not a tier upgrade, just a milestone
         nights_next_tier = 'Diamond Elite'
         nights_next_threshold = 70
-        prev_milestone = 40
+        prev_milestone = 20  # Use 20 as previous milestone for progress calculation
     elif current_user.nights_stayed < 200:
         nights_next_tier = 'Platinum Elite'
         nights_next_threshold = 200
@@ -473,12 +468,13 @@ def account():
         nights_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 100
     
     # Calculate progress segments for multi-color progress bar
-    # Each tier gets a portion: 0-10 (Silver), 10-20 (Gold), 20-40 (Gold), 40-70 (Diamond), 70-200 (Ambassador)
-    # Total range: 0-200, so percentages: 0-5%, 5-10%, 10-20%, 20-35%, 35-100%
+    # Tier thresholds: 10 (Silver), 20 (Gold), 70 (Diamond), 200 (Platinum)
+    # Milestone at 40 (Gold) is shown but not a tier upgrade
+    # Total range: 0-200, so percentages: 0-5% (Silver), 5-10% (Gold 20), 10-35% (Gold 40-Diamond), 35-100% (Platinum)
     nights_total_range = 200
     silver_end_pct = (10 / nights_total_range) * 100  # 5%
     gold_20_end_pct = (20 / nights_total_range) * 100  # 10%
-    gold_40_end_pct = (40 / nights_total_range) * 100  # 20%
+    gold_40_end_pct = (40 / nights_total_range) * 100  # 20% (milestone marker)
     diamond_end_pct = (70 / nights_total_range) * 100  # 35%
     
     # Calculate progress for each segment (widths are percentages of total bar)
@@ -501,7 +497,7 @@ def account():
         gold_20_width = 0
     gold_20_width = max(0, min(gold_20_segment_size, gold_20_width))
     
-    # Gold 40 segment (20-40): 10-20% of total bar
+    # Gold 40 segment (20-40): 10-20% of total bar (milestone, still Gold Elite)
     gold_40_segment_size = gold_40_end_pct - gold_20_end_pct  # 10%
     if nights_stayed >= 40:
         gold_40_width = gold_40_segment_size
@@ -521,15 +517,15 @@ def account():
         diamond_width = 0
     diamond_width = max(0, min(diamond_segment_size, diamond_width))
     
-    # Ambassador segment (70-200): 35-100% of total bar
-    ambassador_segment_size = 100 - diamond_end_pct  # 65%
+    # Platinum segment (70-200): 35-100% of total bar
+    platinum_segment_size = 100 - diamond_end_pct  # 65%
     if nights_stayed >= 200:
-        ambassador_width = ambassador_segment_size
+        ambassador_width = platinum_segment_size
     elif nights_stayed >= 70:
-        ambassador_width = ((nights_stayed - 70) / 130) * ambassador_segment_size
+        ambassador_width = ((nights_stayed - 70) / 130) * platinum_segment_size
     else:
         ambassador_width = 0
-    ambassador_width = max(0, min(ambassador_segment_size, ambassador_width))
+    ambassador_width = max(0, min(platinum_segment_size, ambassador_width))
     
     nights_total_progress_pct = silver_width + gold_20_width + gold_40_width + diamond_width + ambassador_width
     
@@ -561,7 +557,7 @@ def account():
                          progress_percent=progress_percent,
                          nights_to_next_milestone=nights_to_next_milestone,
                          nights_progress_percent=nights_progress_percent,
-                         nights_next_tier=nights_next_tier or 'Ambassador',
+                         nights_next_tier=nights_next_tier or 'Platinum Elite',
                          nights_total_progress_pct=nights_total_progress_pct,
                          silver_end_pct=silver_end_pct,
                          gold_20_end_pct=gold_20_end_pct,

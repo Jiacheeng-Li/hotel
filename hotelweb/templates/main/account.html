@@ -1115,21 +1115,29 @@
                             </div>
                             <div class="progress-bar-segments">
                                 {% if current_user.lifetime_points >= 1000000 %}
+                                    {# Platinum Elite: 50% (500K-1M) + 50% (1M+) #}
                                     <div class="progress-segment diamond" style="width: 50%;"></div>
                                     <div class="progress-segment platinum" style="width: 50%;"></div>
                                 {% elif current_user.lifetime_points >= 500000 %}
-                                    <div class="progress-segment diamond" style="width: 50%;"></div>
-                                    {% set ambassador_progress = ((current_user.lifetime_points - 500000) / 500000) * 50 %}
-                                    <div class="progress-segment platinum" style="width: {{ ambassador_progress }}%;"></div>
+                                    {# Diamond Elite: 5% (0-50K) + 5% (50K-100K) + 40% (100K-500K) + progress to 1M #}
+                                    <div class="progress-segment silver" style="width: 5%;"></div>
+                                    <div class="progress-segment gold-20" style="width: 5%;"></div>
+                                    <div class="progress-segment diamond" style="width: 40%;"></div>
+                                    {% set platinum_progress = ((current_user.lifetime_points - 500000) / 500000) * 50 %}
+                                    <div class="progress-segment platinum" style="width: {{ platinum_progress }}%;"></div>
                                 {% elif current_user.lifetime_points >= 100000 %}
-                                    <div class="progress-segment gold-20" style="width: 10%;"></div>
+                                    {# Gold Elite: 5% (0-50K) + 5% (50K-100K) + progress to 500K #}
+                                    <div class="progress-segment silver" style="width: 5%;"></div>
+                                    <div class="progress-segment gold-20" style="width: 5%;"></div>
                                     {% set diamond_progress = ((current_user.lifetime_points - 100000) / 400000) * 40 %}
                                     <div class="progress-segment diamond" style="width: {{ diamond_progress }}%;"></div>
                                 {% elif current_user.lifetime_points >= 50000 %}
+                                    {# Silver Elite: 5% (0-50K) + progress to 100K #}
                                     <div class="progress-segment silver" style="width: 5%;"></div>
                                     {% set gold_progress = ((current_user.lifetime_points - 50000) / 50000) * 5 %}
                                     <div class="progress-segment gold-20" style="width: {{ gold_progress }}%;"></div>
                                 {% else %}
+                                    {# Club Member: progress to 50K #}
                                     {% set silver_progress = (current_user.lifetime_points / 50000) * 5 %}
                                     <div class="progress-segment silver" style="width: {{ silver_progress }}%;"></div>
                                 {% endif %}
