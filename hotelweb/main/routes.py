@@ -419,43 +419,43 @@ def account():
     tier_benefits = current_user.get_tier_benefits()
     
     # Calculate nights-based tier progress
-    # Tier thresholds: 10 (Silver), 20 (Gold), 40 (Gold), 70 (Diamond), 200 (Ambassador)
+    # Tier thresholds: 10 (Silver Elite), 20 (Gold Elite), 40 (Gold Elite), 70 (Diamond Elite), 200 (Platinum Elite)
     nights_tier_thresholds = [10, 20, 40, 70, 200]
     
     # Determine current tier based on nights
-    nights_current_tier = 'Member'
+    nights_current_tier = 'Club Member'
     if current_user.nights_stayed >= 200:
-        nights_current_tier = 'Ambassador'
+        nights_current_tier = 'Platinum Elite'
     elif current_user.nights_stayed >= 70:
-        nights_current_tier = 'Diamond'
+        nights_current_tier = 'Diamond Elite'
     elif current_user.nights_stayed >= 40:
-        nights_current_tier = 'Gold'
+        nights_current_tier = 'Gold Elite'
     elif current_user.nights_stayed >= 20:
-        nights_current_tier = 'Gold'
+        nights_current_tier = 'Gold Elite'
     elif current_user.nights_stayed >= 10:
-        nights_current_tier = 'Silver'
+        nights_current_tier = 'Silver Elite'
     
     # Calculate next tier threshold for nights
     nights_next_tier = None
     nights_next_threshold = None
     if current_user.nights_stayed < 10:
-        nights_next_tier = 'Silver'
+        nights_next_tier = 'Silver Elite'
         nights_next_threshold = 10
         prev_milestone = 0
     elif current_user.nights_stayed < 20:
-        nights_next_tier = 'Gold'
+        nights_next_tier = 'Gold Elite'
         nights_next_threshold = 20
         prev_milestone = 10
     elif current_user.nights_stayed < 40:
-        nights_next_tier = 'Gold'
+        nights_next_tier = 'Gold Elite'
         nights_next_threshold = 40
         prev_milestone = 20
     elif current_user.nights_stayed < 70:
-        nights_next_tier = 'Diamond'
+        nights_next_tier = 'Diamond Elite'
         nights_next_threshold = 70
         prev_milestone = 40
     elif current_user.nights_stayed < 200:
-        nights_next_tier = 'Ambassador'
+        nights_next_tier = 'Platinum Elite'
         nights_next_threshold = 200
         prev_milestone = 70
     else:
@@ -535,14 +535,14 @@ def account():
     
     # Calculate progress percentage for tier (points-based)
     tier_thresholds = {
-        'Member': (0, 50000),
-        'Silver': (50000, 100000),
-        'Gold': (100000, 500000),
-        'Diamond': (500000, 1000000),
-        'Ambassador': (1000000, 1000000)
+        'Club Member': (0, 50000),
+        'Silver Elite': (50000, 100000),
+        'Gold Elite': (100000, 500000),
+        'Diamond Elite': (500000, 1000000),
+        'Platinum Elite': (1000000, 1000000)
     }
     current_threshold = tier_thresholds.get(current_user.membership_level, (0, 50000))
-    if current_user.membership_level == 'Ambassador':
+    if current_user.membership_level == 'Platinum Elite':
         progress_percent = 100
     else:
         range_size = current_threshold[1] - current_threshold[0]

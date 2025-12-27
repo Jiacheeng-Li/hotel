@@ -32,7 +32,7 @@ class User(UserMixin, db.Model):
     points = db.Column(db.Integer, default=0)  # Current redeemable points
     lifetime_points = db.Column(db.Integer, default=0)  # Total points earned (for tier calculation)
     nights_stayed = db.Column(db.Integer, default=0)  # Total nights stayed
-    membership_level = db.Column(db.String(20), default='Member')  # Member, Silver, Gold, Diamond, Ambassador
+    membership_level = db.Column(db.String(20), default='Club Member')  # Club Member, Silver Elite, Gold Elite, Platinum Elite, Diamond Elite
     member_number = db.Column(db.String(20), unique=True)  # Unique member ID
     
     # Profile Information
@@ -54,42 +54,42 @@ class User(UserMixin, db.Model):
     def get_points_multiplier(self):
         """Return points multiplier based on membership tier"""
         multipliers = {
-            'Member': 1.0,
-            'Silver': 1.2,
-            'Gold': 1.5,
-            'Diamond': 2.0,
-            'Ambassador': 2.5
+            'Club Member': 1.0,
+            'Silver Elite': 1.2,
+            'Gold Elite': 1.5,
+            'Platinum Elite': 2.0,
+            'Diamond Elite': 2.5
         }
         return multipliers.get(self.membership_level, 1.0)
     
     def calculate_tier(self):
         """Calculate and update membership tier based on lifetime points OR nights stayed (whichever is higher)"""
         # Tier thresholds based on points
-        points_tier = 'Member'
+        points_tier = 'Club Member'
         if self.lifetime_points >= 1000000:
-            points_tier = 'Ambassador'
+            points_tier = 'Platinum Elite'
         elif self.lifetime_points >= 500000:
-            points_tier = 'Diamond'
+            points_tier = 'Diamond Elite'
         elif self.lifetime_points >= 100000:
-            points_tier = 'Gold'
+            points_tier = 'Gold Elite'
         elif self.lifetime_points >= 50000:
-            points_tier = 'Silver'
+            points_tier = 'Silver Elite'
         
-        # Tier thresholds based on nights (10 Silver, 20 Gold, 40 Gold, 70 Diamond, 200 Ambassador)
-        nights_tier = 'Member'
+        # Tier thresholds based on nights (10 Silver Elite, 20 Gold Elite, 40 Gold Elite, 70 Diamond Elite, 200 Platinum Elite)
+        nights_tier = 'Club Member'
         if self.nights_stayed >= 200:
-            nights_tier = 'Ambassador'
+            nights_tier = 'Platinum Elite'
         elif self.nights_stayed >= 70:
-            nights_tier = 'Diamond'
+            nights_tier = 'Diamond Elite'
         elif self.nights_stayed >= 40:
-            nights_tier = 'Gold'
+            nights_tier = 'Gold Elite'
         elif self.nights_stayed >= 20:
-            nights_tier = 'Gold'
+            nights_tier = 'Gold Elite'
         elif self.nights_stayed >= 10:
-            nights_tier = 'Silver'
+            nights_tier = 'Silver Elite'
         
-        # Get the higher tier (Ambassador > Diamond > Gold > Silver > Member)
-        tier_order = {'Member': 0, 'Silver': 1, 'Gold': 2, 'Diamond': 3, 'Ambassador': 4}
+        # Get the higher tier (Platinum Elite > Diamond Elite > Gold Elite > Silver Elite > Club Member)
+        tier_order = {'Club Member': 0, 'Silver Elite': 1, 'Gold Elite': 2, 'Diamond Elite': 3, 'Platinum Elite': 4}
         points_level = tier_order.get(points_tier, 0)
         nights_level = tier_order.get(nights_tier, 0)
         
@@ -106,28 +106,28 @@ class User(UserMixin, db.Model):
     def get_tier_benefits(self):
         """Return list of benefits for current tier"""
         benefits = {
-            'Member': [
+            'Club Member': [
                 'Earn points on stays',
                 'Member-only rates',
                 'Mobile check-in'
             ],
-            'Silver': [
-                'All Member benefits',
+            'Silver Elite': [
+                'All Club Member benefits',
                 '1.2x points multiplier',
                 'Late checkout (2 PM)',
                 'Welcome amenity',
                 'Priority support'
             ],
-            'Gold': [
-                'All Silver benefits',
+            'Gold Elite': [
+                'All Silver Elite benefits',
                 '1.5x points multiplier',
                 'Room upgrade (subject to availability)',
                 'Complimentary breakfast',
                 'Priority check-in',
                 'Bonus points on stays'
             ],
-            'Diamond': [
-                'All Gold benefits',
+            'Diamond Elite': [
+                'All Gold Elite benefits',
                 '2x points multiplier',
                 'Suite upgrade (subject to availability)',
                 'Executive lounge access',
@@ -135,8 +135,8 @@ class User(UserMixin, db.Model):
                 'Dedicated concierge',
                 'Premium Wi-Fi'
             ],
-            'Ambassador': [
-                'All Diamond benefits',
+            'Platinum Elite': [
+                'All Diamond Elite benefits',
                 '2.5x points multiplier',
                 'Penthouse upgrade (subject to availability)',
                 'Personal travel advisor',
@@ -145,16 +145,16 @@ class User(UserMixin, db.Model):
                 'Airport transfers'
             ]
         }
-        return benefits.get(self.membership_level, benefits['Member'])
+        return benefits.get(self.membership_level, benefits['Club Member'])
     
     def points_to_next_tier(self):
         """Calculate points needed to reach next tier"""
         thresholds = {
-            'Member': 50000,
-            'Silver': 100000,
-            'Gold': 500000,
-            'Diamond': 1000000,
-            'Ambassador': None  # Already at top tier
+            'Club Member': 50000,
+            'Silver Elite': 100000,
+            'Gold Elite': 500000,
+            'Diamond Elite': 1000000,
+            'Platinum Elite': None  # Already at top tier
         }
         next_threshold = thresholds.get(self.membership_level)
         if next_threshold is None:
@@ -164,13 +164,13 @@ class User(UserMixin, db.Model):
     def next_tier_name(self):
         """Return name of next tier"""
         tiers = {
-            'Member': 'Silver',
-            'Silver': 'Gold',
-            'Gold': 'Diamond',
-            'Diamond': 'Ambassador',
-            'Ambassador': 'Ambassador'
+            'Club Member': 'Silver Elite',
+            'Silver Elite': 'Gold Elite',
+            'Gold Elite': 'Diamond Elite',
+            'Diamond Elite': 'Platinum Elite',
+            'Platinum Elite': 'Platinum Elite'
         }
-        return tiers.get(self.membership_level, 'Silver')
+        return tiers.get(self.membership_level, 'Silver Elite')
 
 class Hotel(db.Model):
     id = db.Column(db.Integer, primary_key=True)

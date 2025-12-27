@@ -11,11 +11,11 @@
     }
     
     /* Tier Colors - New Premium Colors */
-    .tier-member-bg { background: linear-gradient(135deg, #5B5B5B 0%, #4a4a4a 100%); }
-    .tier-silver-bg { background: linear-gradient(135deg, #AEB0C1 0%, #9a9ca8 100%); }
-    .tier-gold-bg { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
-    .tier-diamond-bg { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
-    .tier-ambassador-bg { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
+    .tier-club-member-bg { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
+    .tier-silver-elite-bg { background: linear-gradient(135deg, #606060 0%, #4d4d4d 100%); }
+    .tier-gold-elite-bg { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
+    .tier-platinum-elite-bg { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
+    .tier-diamond-elite-bg { background: linear-gradient(135deg, #37283F 0%, #2d1f33 100%); }
 
     .account-header {
         color: white;
@@ -23,18 +23,18 @@
         margin-bottom: 2rem;
     }
 
-    {% if current_user.membership_level == 'Member' %}
-    .account-header { background: linear-gradient(135deg, #5B5B5B 0%, #4a4a4a 100%); }
-    {% elif current_user.membership_level == 'Silver' %}
-    .account-header { background: linear-gradient(135deg, #AEB0C1 0%, #9a9ca8 100%); }
-    {% elif current_user.membership_level == 'Gold' %}
+    {% if current_user.membership_level == 'Club Member' %}
+    .account-header { background: linear-gradient(135deg, #37283F 0%, #091d3d 100%); }
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .account-header { background: linear-gradient(135deg, #606060 0%, #4d4d4d 100%); }
+    {% elif current_user.membership_level == 'Gold Elite' %}
     .account-header { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
-    {% elif current_user.membership_level == 'Diamond' %}
-    .account-header { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .account-header { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .account-header { background: linear-gradient(135deg, #37283F 0%, #2d1f33 100%); }
     {% else %}
-    .account-header { background: linear-gradient(135deg, #5B5B5B 0%, #4a4a4a 100%); }
+    .account-header { background: linear-gradient(135deg, #37283F 0%, #091d3d 100%); }
     {% endif %}
 
     .header-content {
@@ -134,12 +134,12 @@
 
 
     .nav-tab.active {
-        color: #5B5B5B;
-        border-bottom-color: #5B5B5B;
+        color: #37283F;
+        border-bottom-color: #37283F;
     }
     
     .nav-tab:hover {
-        color: #5B5B5B;
+        color: #37283F;
     }
 
     .account-container {
@@ -197,11 +197,11 @@
         margin-bottom: 1rem;
     }
 
-    .tier-member { background: #5B5B5B; color: white; }
-    .tier-silver { background: #AEB0C1; color: white; }
-    .tier-gold { background: #A07A0D; color: white; }
-    .tier-diamond { background: #0B254E; color: white; }
-    .tier-ambassador { background: #253639; color: white; }
+    .tier-club-member { background: #0B254E; color: white; }
+    .tier-silver-elite { background: #606060; color: white; }
+    .tier-gold-elite { background: #A07A0D; color: white; }
+    .tier-diamond-elite { background: #37283F; color: white; }
+    .tier-platinum-elite { background: #253639; color: white; }
 
     .status-tracker-toggle {
         display: flex;
@@ -243,18 +243,18 @@
     }
 
     .toggle-btn.active {
-        border-color: #5B5B5B;
-        background: #5B5B5B;
+        border-color: #37283F;
+        background: #37283F;
         color: white;
     }
     
-    {% if current_user.membership_level == 'Silver' %}
-    .toggle-btn.active { border-color: #AEB0C1; background: #AEB0C1; }
-    {% elif current_user.membership_level == 'Gold' %}
+    {% if current_user.membership_level == 'Silver Elite' %}
+    .toggle-btn.active { border-color: #606060; background: #606060; }
+    {% elif current_user.membership_level == 'Gold Elite' %}
     .toggle-btn.active { border-color: #A07A0D; background: #A07A0D; }
-    {% elif current_user.membership_level == 'Diamond' %}
-    .toggle-btn.active { border-color: #0B254E; background: #0B254E; }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .toggle-btn.active { border-color: #37283F; background: #37283F; }
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .toggle-btn.active { border-color: #253639; background: #253639; }
     {% endif %}
 
@@ -295,7 +295,7 @@
     }
 
     .progress-segment.silver { 
-        background: linear-gradient(90deg, #AEB0C1 0%, #b8bac8 100%);
+        background: linear-gradient(90deg, #606060 0%, #b8bac8 100%);
         box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
     }
     .progress-segment.gold-20 { 
@@ -307,10 +307,10 @@
         box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
     }
     .progress-segment.diamond { 
-        background: linear-gradient(90deg, #0B254E 0%, #0d2f5f 100%);
+        background: linear-gradient(90deg, #37283F 0%, #0d2f5f 100%);
         box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
     }
-    .progress-segment.ambassador { 
+    .progress-segment.platinum { 
         background: linear-gradient(90deg, #253639 0%, #2d4247 100%);
         box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
     }
@@ -351,10 +351,10 @@
         border-width: 4px;
     }
 
-    .tier-marker.silver.active .tier-marker-dot { background: #AEB0C1; border-color: #AEB0C1; }
+    .tier-marker.silver.active .tier-marker-dot { background: #606060; border-color: #606060; }
     .tier-marker.gold.active .tier-marker-dot { background: #A07A0D; border-color: #A07A0D; }
-    .tier-marker.diamond.active .tier-marker-dot { background: #0B254E; border-color: #0B254E; }
-    .tier-marker.ambassador.active .tier-marker-dot { background: #253639; border-color: #253639; }
+    .tier-marker.diamond.active .tier-marker-dot { background: #37283F; border-color: #37283F; }
+    .tier-marker.platinum.active .tier-marker-dot { background: #253639; border-color: #253639; }
 
     .tier-marker-label {
         font-size: 0.7rem;
@@ -395,11 +395,11 @@
         font-weight: 700;
     }
 
-    .milestone.member.achieved .milestone-name { color: #5B5B5B; }
-    .milestone.silver.achieved .milestone-name { color: #AEB0C1; }
+    .milestone.club-member.achieved .milestone-name { color: #0B254E; }
+    .milestone.silver.achieved .milestone-name { color: #606060; }
     .milestone.gold.achieved .milestone-name { color: #A07A0D; }
-    .milestone.diamond.achieved .milestone-name { color: #0B254E; }
-    .milestone.ambassador.achieved .milestone-name { color: #253639; }
+    .milestone.diamond.achieved .milestone-name { color: #37283F; }
+    .milestone.platinum.achieved .milestone-name { color: #253639; }
 
     .milestone.current .milestone-name {
         font-weight: 700;
@@ -484,18 +484,18 @@
         justify-content: center;
     }
     
-    {% if current_user.membership_level == 'Member' %}
-    .milestone-circle { background: conic-gradient(from 0deg, #5B5B5B 0%, #5B5B5B {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Silver' %}
-    .milestone-circle { background: conic-gradient(from 0deg, #AEB0C1 0%, #AEB0C1 {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Gold' %}
-    .milestone-circle { background: conic-gradient(from 0deg, #A07A0D 0%, #A07A0D {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Diamond' %}
+    {% if current_user.membership_level == 'Club Member' %}
     .milestone-circle { background: conic-gradient(from 0deg, #0B254E 0%, #0B254E {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .milestone-circle { background: conic-gradient(from 0deg, #606060 0%, #606060 {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
+    {% elif current_user.membership_level == 'Gold Elite' %}
+    .milestone-circle { background: conic-gradient(from 0deg, #A07A0D 0%, #A07A0D {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .milestone-circle { background: conic-gradient(from 0deg, #37283F 0%, #37283F {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .milestone-circle { background: conic-gradient(from 0deg, #253639 0%, #253639 {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
     {% else %}
-    .milestone-circle { background: conic-gradient(from 0deg, #5B5B5B 0%, #5B5B5B {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
+    .milestone-circle { background: conic-gradient(from 0deg, #0B254E 0%, #0B254E {{ milestone_progress_percent }}%, #e5e7eb {{ milestone_progress_percent }}%, #e5e7eb 100%); }
     {% endif %}
 
     .milestone-circle-inner {
@@ -523,7 +523,7 @@
     }
 
     .btn-premium {
-        background: #5B5B5B;
+        background: #37283F;
         color: white;
         padding: 0.75rem 2rem;
         border: none;
@@ -542,16 +542,16 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
-    {% if current_user.membership_level == 'Silver' %}
-    .btn-premium { background: #AEB0C1; }
+    {% if current_user.membership_level == 'Silver Elite' %}
+    .btn-premium { background: #606060; }
     .btn-premium:hover { background: #9a9ca8; }
-    {% elif current_user.membership_level == 'Gold' %}
+    {% elif current_user.membership_level == 'Gold Elite' %}
     .btn-premium { background: #A07A0D; }
     .btn-premium:hover { background: #8a680b; }
-    {% elif current_user.membership_level == 'Diamond' %}
-    .btn-premium { background: #0B254E; }
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .btn-premium { background: #37283F; }
     .btn-premium:hover { background: #091d3d; }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .btn-premium { background: #253639; }
     .btn-premium:hover { background: #1e2b2e; }
     {% endif %}
@@ -620,7 +620,7 @@
         border-bottom: none;
     }
 
-    /* Member Benefits Styles */
+    /* Club Member Benefits Styles */
     .benefits-header {
         color: white;
         padding: 1.5rem 2rem;
@@ -641,18 +641,18 @@
         margin-bottom: 0;
     }
     
-    {% if current_user.membership_level == 'Member' %}
-    .benefits-header { background: linear-gradient(135deg, #5B5B5B 0%, #4a4a4a 100%); }
-    {% elif current_user.membership_level == 'Silver' %}
-    .benefits-header { background: linear-gradient(135deg, #AEB0C1 0%, #9a9ca8 100%); }
-    {% elif current_user.membership_level == 'Gold' %}
+    {% if current_user.membership_level == 'Club Member' %}
+    .benefits-header { background: linear-gradient(135deg, #37283F 0%, #4a4a4a 100%); }
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .benefits-header { background: linear-gradient(135deg, #606060 0%, #9a9ca8 100%); }
+    {% elif current_user.membership_level == 'Gold Elite' %}
     .benefits-header { background: linear-gradient(135deg, #A07A0D 0%, #8a680b 100%); }
-    {% elif current_user.membership_level == 'Diamond' %}
-    .benefits-header { background: linear-gradient(135deg, #0B254E 0%, #091d3d 100%); }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .benefits-header { background: linear-gradient(135deg, #37283F 0%, #091d3d 100%); }
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .benefits-header { background: linear-gradient(135deg, #253639 0%, #1e2b2e 100%); }
     {% else %}
-    .benefits-header { background: linear-gradient(135deg, #5B5B5B 0%, #4a4a4a 100%); }
+    .benefits-header { background: linear-gradient(135deg, #37283F 0%, #4a4a4a 100%); }
     {% endif %}
 
     .benefits-header h2 {
@@ -682,7 +682,7 @@
     }
 
     .benefit-card:hover {
-        border-color: #5B5B5B;
+        border-color: #37283F;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         transform: translateY(-2px);
     }
@@ -692,18 +692,18 @@
         margin-bottom: 1rem;
     }
     
-    {% if current_user.membership_level == 'Member' %}
-    .benefit-icon { color: #5B5B5B; }
-    {% elif current_user.membership_level == 'Silver' %}
-    .benefit-icon { color: #AEB0C1; }
-    {% elif current_user.membership_level == 'Gold' %}
+    {% if current_user.membership_level == 'Club Member' %}
+    .benefit-icon { color: #37283F; }
+    {% elif current_user.membership_level == 'Silver Elite' %}
+    .benefit-icon { color: #606060; }
+    {% elif current_user.membership_level == 'Gold Elite' %}
     .benefit-icon { color: #A07A0D; }
-    {% elif current_user.membership_level == 'Diamond' %}
-    .benefit-icon { color: #0B254E; }
-    {% elif current_user.membership_level == 'Ambassador' %}
+    {% elif current_user.membership_level == 'Diamond Elite' %}
+    .benefit-icon { color: #37283F; }
+    {% elif current_user.membership_level == 'Platinum Elite' %}
     .benefit-icon { color: #253639; }
     {% else %}
-    .benefit-icon { color: #5B5B5B; }
+    .benefit-icon { color: #37283F; }
     {% endif %}
 
     .benefit-title {
@@ -755,11 +755,11 @@
         border-right: none;
     }
     
-    .benefits-table th.tier-member { background: #5B5B5B; }
-    .benefits-table th.tier-silver { background: #AEB0C1; }
-    .benefits-table th.tier-gold { background: #A07A0D; }
-    .benefits-table th.tier-diamond { background: #0B254E; }
-    .benefits-table th.tier-ambassador { background: #253639; }
+    .benefits-table th.tier-club-member { background: #0B254E; }
+    .benefits-table th.tier-silver-elite { background: #606060; }
+    .benefits-table th.tier-gold-elite { background: #A07A0D; }
+    .benefits-table th.tier-diamond-elite { background: #37283F; }
+    .benefits-table th.tier-platinum-elite { background: #253639; }
 
     .benefits-table td {
         padding: 1.25rem;
@@ -796,7 +796,7 @@
     }
 
     .benefits-toggle {
-        color: #5B5B5B;
+        color: #37283F;
         cursor: pointer;
         text-decoration: none;
         font-size: 1rem;
@@ -846,12 +846,12 @@
 
     .profile-input:focus {
         outline: none;
-        border-color: #5B5B5B;
+        border-color: #37283F;
     }
 
     .btn-edit {
         padding: 0.75rem 1.5rem;
-        background: #5B5B5B;
+        background: #37283F;
         color: white;
         border: none;
         border-radius: 8px;
@@ -925,8 +925,8 @@
     <div class="header-content">
         <div class="header-left">
             <h1>Hello {{ current_user.username }},</h1>
-            <h2>{{ current_user.membership_level }} Member</h2>
-            <p class="member-number">Member #{{ current_user.member_number or 'N/A' }}</p>
+            <h2>{{ current_user.membership_level }} Club Member</h2>
+            <p class="member-number">Club Member #{{ current_user.member_number or 'N/A' }}</p>
         </div>
         <div class="header-right">
             <div class="points-label">YOUR POINTS</div>
@@ -943,7 +943,7 @@
     <a href="#" class="nav-tab" onclick="switchTab('rewards'); return false;">Rewards Wallet</a>
     <a href="#" class="nav-tab" onclick="switchTab('activity'); return false;">Account Activity</a>
     <a href="#" class="nav-tab" onclick="switchTab('settings'); return false;">Settings</a>
-    <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Member Benefits</a>
+    <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Club Member Benefits</a>
 </div>
 
 <div class="account-container">
@@ -954,7 +954,7 @@
         <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Current Status</h3>
-                </div>
+            </div>
                 <div>
                     <div class="current-tier-badge tier-{{ current_user.membership_level.lower() }}">
                         {{ current_user.membership_level }} Elite
@@ -969,24 +969,24 @@
 
                     <!-- Nights Tracker (Default) -->
                     <div id="nights-tracker" class="tracker-content">
-                        <div class="progress-info">
+                <div class="progress-info">
                             <span><strong>{{ current_user.nights_stayed }}</strong> nights stayed</span>
                             {% if nights_to_next_milestone > 0 %}
                             <span style="color: #6b7280; font-size: 0.9rem;">{{ nights_to_next_milestone }} more to <a href="#" onclick="switchTab('benefits'); return false;" class="next-tier-badge tier-{{ nights_next_tier.lower() }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ nights_next_tier }} Elite</a></span>
                             {% else %}
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
-                        </div>
-                        <div class="progress-bar-container">
+                </div>
+                <div class="progress-bar-container">
                             <div class="tier-markers">
                                 <div class="tier-marker silver {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ silver_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">10</div>
-                                </div>
+                </div>
                                 <div class="tier-marker gold {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ gold_20_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">20</div>
-                                </div>
+                    </div>
                                 <div class="tier-marker gold {% if current_user.nights_stayed >= 40 %}active{% endif %}" style="left: {{ gold_40_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">40</div>
@@ -1018,28 +1018,28 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="tier-milestones">
-                            <div class="milestone silver {% if current_user.nights_stayed >= 10 or current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.nights_stayed >= 10 and current_user.nights_stayed < 20 and current_user.membership_level == 'Silver' %}current{% endif %}">
-                                <div class="milestone-name">Silver</div>
+                <div class="tier-milestones">
+                            <div class="milestone silver {% if current_user.nights_stayed >= 10 or current_user.membership_level in ['Silver Elite', 'Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 10 and current_user.nights_stayed < 20 and current_user.membership_level == 'Silver Elite' %}current{% endif %}">
+                        <div class="milestone-name">Silver Elite</div>
                                 <div class="milestone-points">10 nights</div>
-                            </div>
-                            <div class="milestone gold {% if current_user.nights_stayed >= 20 or current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.nights_stayed >= 20 and current_user.nights_stayed < 40 and current_user.membership_level == 'Gold' %}current{% endif %}">
-                                <div class="milestone-name">Gold</div>
+                    </div>
+                            <div class="milestone gold {% if current_user.nights_stayed >= 20 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 20 and current_user.nights_stayed < 40 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
+                        <div class="milestone-name">Gold Elite</div>
                                 <div class="milestone-points">20 nights</div>
-                            </div>
-                            <div class="milestone gold {% if current_user.nights_stayed >= 40 or current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.nights_stayed >= 40 and current_user.nights_stayed < 70 and current_user.membership_level == 'Gold' %}current{% endif %}">
-                                <div class="milestone-name">Gold</div>
+                    </div>
+                            <div class="milestone gold {% if current_user.nights_stayed >= 40 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 40 and current_user.nights_stayed < 70 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
+                                <div class="milestone-name">Gold Elite</div>
                                 <div class="milestone-points">40 nights</div>
-                            </div>
-                            <div class="milestone diamond {% if current_user.nights_stayed >= 70 or current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.nights_stayed >= 70 and current_user.nights_stayed < 200 and current_user.membership_level == 'Diamond' %}current{% endif %}">
-                                <div class="milestone-name">Diamond</div>
+                    </div>
+                            <div class="milestone diamond {% if current_user.nights_stayed >= 70 or current_user.membership_level in ['Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 70 and current_user.nights_stayed < 200 and current_user.membership_level == 'Diamond Elite' %}current{% endif %}">
+                        <div class="milestone-name">Diamond Elite</div>
                                 <div class="milestone-points">70 nights</div>
-                            </div>
-                            <div class="milestone ambassador {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
-                                <div class="milestone-name">Ambassador</div>
+                    </div>
+                            <div class="milestone ambassador {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
+                        <div class="milestone-name">Platinum Elite</div>
                                 <div class="milestone-points">200 nights</div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
                             Earn qualifying nights or points to unlock more member benefits.
                         </p>
@@ -1047,20 +1047,20 @@
 
                     <!-- Points Tracker (Hidden by default) -->
                     <div id="points-tracker" class="tracker-content" style="display: none;">
-                        <div class="progress-info">
+                <div class="progress-info">
                             <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
                             {% if points_to_next > 0 %}
                             <span style="color: #6b7280; font-size: 0.9rem;">{{ "{:,}".format(points_to_next) }} more to <a href="#" onclick="switchTab('benefits'); return false;" class="next-tier-badge tier-{{ next_tier.lower() }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ next_tier }} Elite</a></span>
                             {% else %}
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
-                        </div>
-                        <div class="progress-bar-container">
+                </div>
+                <div class="progress-bar-container">
                             <div class="tier-markers">
                                 <div class="tier-marker member {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: 0%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">0</div>
-                                </div>
+                </div>
                                 <div class="tier-marker silver {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: 5%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">50K</div>
@@ -1100,36 +1100,36 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="tier-milestones">
-                            <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
-                                <div class="milestone-name">Member</div>
+                <div class="tier-milestones">
+                            <div class="milestone club-member {% if current_user.membership_level != 'Club Member' %}achieved{% endif %} {% if current_user.membership_level == 'Club Member' %}current{% endif %}">
+                                <div class="milestone-name">Club Member</div>
                                 <div class="milestone-points">0 points</div>
-                            </div>
-                            <div class="milestone silver {% if current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver' %}current{% endif %}">
-                                <div class="milestone-name">Silver</div>
+                    </div>
+                            <div class="milestone silver {% if current_user.membership_level in ['Silver Elite', 'Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver Elite' %}current{% endif %}">
+                                <div class="milestone-name">Silver Elite</div>
                                 <div class="milestone-points">50K points</div>
-                            </div>
-                            <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
-                                <div class="milestone-name">Gold</div>
+                    </div>
+                            <div class="milestone gold {% if current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold Elite' %}current{% endif %}">
+                                <div class="milestone-name">Gold Elite</div>
                                 <div class="milestone-points">100K points</div>
-                            </div>
-                            <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
-                                <div class="milestone-name">Diamond</div>
+                    </div>
+                            <div class="milestone diamond {% if current_user.membership_level in ['Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond Elite' %}current{% endif %}">
+                                <div class="milestone-name">Diamond Elite</div>
                                 <div class="milestone-points">500K points</div>
-                            </div>
-                            <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
-                                <div class="milestone-name">Ambassador</div>
+                    </div>
+                            <div class="milestone ambassador {% if current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
+                                <div class="milestone-name">Platinum Elite</div>
                                 <div class="milestone-points">1M points</div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
                             Earn qualifying nights or points to unlock more member benefits.
                         </p>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-            <!-- Milestone Rewards Card -->
-            <div class="card">
+        <!-- Milestone Rewards Card -->
+        <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">{{ current_year }} Milestone Rewards</h3>
                     </div>
@@ -1138,7 +1138,7 @@
                     <div class="milestone-description">
                         Choose your first reward at 20 nights, and again every 10 nights you stay this year, up to 100 nights.
                     </div>
-                    <div class="milestone-circle">
+            <div class="milestone-circle">
                         <div class="milestone-circle-inner">
                             <div class="milestone-number">{{ nights_to_milestone_year }}</div>
                             <div class="milestone-label">nights to next milestone</div>
@@ -1146,14 +1146,14 @@
                     </div>
                     <a href="#" class="btn-premium">See reward options</a>
                     <div class="mt-3">
-                        <a href="#" onclick="switchTab('activity'); return false;" style="font-size: 0.9rem; color: #5B5B5B; text-decoration: none; font-weight: 500;">
+                        <a href="#" onclick="switchTab('activity'); return false;" style="font-size: 0.9rem; color: #37283F; text-decoration: none; font-weight: 500;">
                             Milestone Rewards progress >
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
+                </div>
+            </div>
 
     <!-- Rewards Wallet Tab -->
     <div id="rewards" class="tab-content">
@@ -1187,8 +1187,8 @@
                 <a href="{{ url_for('main.search') }}" class="btn-premium mt-2">Start Redeeming Points</a>
             </div>
             {% endif %}
-                </div>
-            </div>
+        </div>
+    </div>
 
     <!-- Account Activity Tab -->
     <div id="activity" class="tab-content">
@@ -1201,14 +1201,14 @@
                     <span class="current-tier-badge tier-{{ current_user.membership_level.lower() }}">
                         {{ current_user.get_points_multiplier() }}x Multiplier
                     </span>
-                </div>
-            </div>
+        </div>
+        </div>
             <div class="summary-card">
                 <div class="summary-label">Total Stays</div>
                 <div class="summary-value">{{ total_bookings }}</div>
                 <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
                     {{ current_user.nights_stayed }} nights stayed
-                </div>
+        </div>
             </div>
             <div class="summary-card">
                 <div class="summary-label">Total Spent</div>
@@ -1315,10 +1315,10 @@
         </div>
     </div>
 
-    <!-- Member Benefits Tab -->
+    <!-- Club Member Benefits Tab -->
     <div id="benefits" class="tab-content">
         <div class="benefits-header">
-            <h2>Your Membership Benefits</h2>
+            <h2>Your Club Membership Benefits</h2>
             <p>{{ current_user.membership_level }} Elite • {{ current_user.get_points_multiplier() }}x Points Multiplier</p>
         </div>
 
@@ -1338,7 +1338,7 @@
             <div class="text-center">
                 <a href="#" class="benefits-toggle" onclick="return toggleBenefitsComparison(event);">
                     <i class="bi bi-chevron-down" id="benefits-icon"></i>
-                    Compare All Membership Tiers
+                    Compare All Club Membership Tiers
                 </a>
             </div>
             <div class="benefits-comparison" id="benefits-comparison">
@@ -1346,16 +1346,16 @@
                     <thead>
                         <tr>
                             <th style="color: white;">Benefit</th>
-                            <th class="tier-header tier-member" style="background: #5B5B5B; color: white;">Member</th>
-                            <th class="tier-header tier-silver" style="background: #AEB0C1; color: white;">Silver</th>
-                            <th class="tier-header tier-gold" style="background: #A07A0D; color: white;">Gold</th>
-                            <th class="tier-header tier-diamond" style="background: #0B254E; color: white;">Diamond</th>
-                            <th class="tier-header tier-ambassador" style="background: #253639; color: white;">Ambassador</th>
+                            <th class="tier-header tier-member" style="background: #37283F; color: white;">Club Member</th>
+                            <th class="tier-header tier-silver" style="background: #606060; color: white;">Silver Elite</th>
+                            <th class="tier-header tier-gold" style="background: #A07A0D; color: white;">Gold Elite</th>
+                            <th class="tier-header tier-diamond" style="background: #37283F; color: white;">Diamond Elite</th>
+                            <th class="tier-header tier-ambassador" style="background: #253639; color: white;">Platinum Elite</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Points Multiplier</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Points Multiplier</td>
                             <td>1.0x</td>
                             <td>1.2x</td>
                             <td>1.5x</td>
@@ -1363,7 +1363,7 @@
                             <td>2.5x</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Earn Points on Stays</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Earn Points on Stays</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -1371,7 +1371,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Member-only Rates</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Club Member-only Rates</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -1379,7 +1379,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Mobile Check-in</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Mobile Check-in</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -1387,7 +1387,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Late Checkout</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Late Checkout</td>
                             <td>-</td>
                             <td>2 PM</td>
                             <td>2 PM</td>
@@ -1395,7 +1395,7 @@
                             <td>4 PM</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Welcome Amenity</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Welcome Amenity</td>
                             <td>-</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -1403,7 +1403,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Support</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Support</td>
                             <td>-</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -1411,7 +1411,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Room Upgrade</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Room Upgrade</td>
                             <td>-</td>
                             <td>-</td>
                             <td>Subject to availability</td>
@@ -1419,7 +1419,7 @@
                             <td>Penthouse upgrade</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Breakfast</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Breakfast</td>
                             <td>-</td>
                             <td>-</td>
                             <td>✓</td>
@@ -1427,7 +1427,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Executive Lounge</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Executive Lounge</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1435,7 +1435,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Dedicated Concierge</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Dedicated Concierge</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1443,7 +1443,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Personal Travel Advisor</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Personal Travel Advisor</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1451,7 +1451,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Exclusive Events</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Exclusive Events</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1459,7 +1459,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Spa</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Spa</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1467,7 +1467,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #5B5B5B; font-weight: 700; text-align: left; padding-left: 1.5rem;">Airport Transfers</td>
+                            <td style="color: white; background: #37283F; font-weight: 700; text-align: left; padding-left: 1.5rem;">Airport Transfers</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
