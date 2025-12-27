@@ -482,6 +482,13 @@ def account():
     nights_stayed = current_user.nights_stayed
     nights_progress_pct = min(100, (nights_stayed / nights_total_range) * 100)
     
+    # Calculate marker positions for nights tracker (equal proportion based on values)
+    nights_marker_0_pct = (0 / nights_total_range) * 100
+    nights_marker_10_pct = (10 / nights_total_range) * 100
+    nights_marker_20_pct = (20 / nights_total_range) * 100
+    nights_marker_70_pct = (70 / nights_total_range) * 100
+    nights_marker_200_pct = (200 / nights_total_range) * 100
+    
     # Determine current tier color for nights progress bar
     if nights_stayed >= 200:
         nights_bar_color = '#253639'  # Platinum
@@ -498,6 +505,13 @@ def account():
     points_total_range = 1000000
     lifetime_points = current_user.lifetime_points
     points_total_progress_pct = min(100, (lifetime_points / points_total_range) * 100)
+    
+    # Calculate marker positions for points tracker (equal proportion based on values)
+    points_marker_0_pct = (0 / points_total_range) * 100
+    points_marker_50k_pct = (50000 / points_total_range) * 100
+    points_marker_100k_pct = (100000 / points_total_range) * 100
+    points_marker_500k_pct = (500000 / points_total_range) * 100
+    points_marker_1m_pct = (1000000 / points_total_range) * 100
     
     # Determine current tier color for points progress bar
     if lifetime_points >= 1000000:
@@ -542,8 +556,18 @@ def account():
                          nights_next_tier=nights_next_tier or 'Platinum Elite',
                          nights_progress_pct=nights_progress_pct,
                          nights_bar_color=nights_bar_color,
+                         nights_marker_0_pct=nights_marker_0_pct,
+                         nights_marker_10_pct=nights_marker_10_pct,
+                         nights_marker_20_pct=nights_marker_20_pct,
+                         nights_marker_70_pct=nights_marker_70_pct,
+                         nights_marker_200_pct=nights_marker_200_pct,
                          points_total_progress_pct=points_total_progress_pct,
                          points_bar_color=points_bar_color,
+                         points_marker_0_pct=points_marker_0_pct,
+                         points_marker_50k_pct=points_marker_50k_pct,
+                         points_marker_100k_pct=points_marker_100k_pct,
+                         points_marker_500k_pct=points_marker_500k_pct,
+                         points_marker_1m_pct=points_marker_1m_pct,
                          multipliers=multipliers,
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
