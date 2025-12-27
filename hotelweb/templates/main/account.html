@@ -340,8 +340,6 @@
     }
 
     .progress-marker.active .progress-marker-dot {
-        background: #4b5563;
-        border-color: #4b5563;
         width: 20px;
         height: 20px;
     }
@@ -964,29 +962,29 @@
                     <div class="progress-bar-wrapper">
                         <div class="progress-markers">
                             <div class="progress-marker {% if current_user.nights_stayed >= 0 %}active{% endif %}" style="left: 0%;">
-                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: 5%;">
-                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
                                 <div class="progress-marker-label">10</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: 10%;">
-                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-dot" style="background: #A07A0D; border-color: #A07A0D;"></div>
                                 <div class="progress-marker-label">20</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: 35%;">
-                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
                                 <div class="progress-marker-label">70</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: 100%;">
-                                <div class="progress-marker-dot"></div>
+                                <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
                                 <div class="progress-marker-label">200</div>
-                            </div>
-                        </div>
+                    </div>
+                    </div>
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: linear-gradient(to right, {% if current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 5%, {% if current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% else %}#d1d5db{% endif %} 10%, {% if current_user.nights_stayed >= 200 %}#253639{% elif current_user.nights_stayed >= 70 %}#37283F{% else %}#d1d5db{% endif %} 35%, {% if current_user.nights_stayed >= 200 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
-                        </div>
+                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: {{ nights_bar_color }};"></div>
+                </div>
                     </div>
                     <div class="tier-labels">
                         <div class="tier-label club-member {% if current_user.nights_stayed >= 0 %}achieved{% endif %}">
@@ -1032,28 +1030,28 @@
                             <div class="progress-marker {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: 0%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: 5%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">50K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: 10%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">100K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: 50%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">500K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: 100%;">
                                 <div class="progress-marker-dot"></div>
                                 <div class="progress-marker-label">1M</div>
-                            </div>
-                        </div>
+                    </div>
+                    </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: {{ points_bar_color }};"></div>
-                        </div>
-                    </div>
+                </div>
+            </div>
                     <div class="tier-labels">
                         <div class="tier-label club-member {% if current_user.lifetime_points >= 0 %}achieved{% endif %}">
                             <div class="tier-label-name">Club Member</div>
