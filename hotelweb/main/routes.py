@@ -379,6 +379,40 @@ def account():
     # All bookings for Account Activity tab
     all_bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.check_in.desc()).all()
     
+    # Bookings with points redeemed for Rewards Wallet tab
+    redeemed_transactions = PointsTransaction.query.filter_by(
+        user_id=current_user.id, 
+        transaction_type='REDEEMED'
+    ).order_by(PointsTransaction.created_at.desc()).all()
+    
+    # Calculate milestone progress for current year
+    from datetime import datetime
+    current_year = datetime.now().year
+    year_start = datetime(current_year, 1, 1).date()
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
+    
+    # Milestone thresholds: 20, 30, 40, 50, 60, 70, 80, 90, 100
+    milestone_thresholds = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+    next_milestone_year = None
+    for threshold in milestone_thresholds:
+        if year_nights < threshold:
+            next_milestone_year = threshold
+            break
+    
+    if next_milestone_year is None:
+        nights_to_milestone_year = 0
+        milestone_progress_percent = 100
+    else:
+        prev_milestone = 0
+        for threshold in milestone_thresholds:
+            if threshold < next_milestone_year:
+                prev_milestone = threshold
+        nights_to_milestone_year = next_milestone_year - year_nights
+        range_size = next_milestone_year - prev_milestone
+        progress_in_range = year_nights - prev_milestone
+        milestone_progress_percent = min(100, int((progress_in_range / range_size) * 100))
+    
     # Tier progress (points-based)
     points_to_next = current_user.points_to_next_tier()
     next_tier = current_user.next_tier_name()
@@ -429,12 +463,18 @@ def account():
                          total_spent=total_spent,
                          all_transactions=all_transactions,
                          all_bookings=all_bookings,
+                         redeemed_transactions=redeemed_transactions,
                          points_to_next=points_to_next,
                          next_tier=next_tier,
                          tier_benefits=tier_benefits,
                          progress_percent=progress_percent,
                          nights_to_next_milestone=nights_to_next_milestone,
-                         nights_progress_percent=nights_progress_percent)
+                         nights_progress_percent=nights_progress_percent,
+                         year_nights=year_nights,
+                         next_milestone_year=next_milestone_year or 100,
+                         nights_to_milestone_year=nights_to_milestone_year,
+                         milestone_progress_percent=milestone_progress_percent,
+                         current_year=current_year)
 
 @bp.route('/account/update', methods=['POST'])
 @login_required

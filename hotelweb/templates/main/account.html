@@ -91,6 +91,7 @@
         border-bottom: 2px solid #e5e7eb;
         display: flex;
         gap: 2rem;
+        padding: 0 1rem;
     }
 
     .nav-tab {
@@ -103,6 +104,7 @@
         text-decoration: none;
         background: none;
         border: none;
+        font-size: 0.95rem;
     }
 
     .nav-tab:hover {
@@ -130,38 +132,73 @@
 
     .card {
         background: white;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 2rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         margin-bottom: 2rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .card-header {
+        background: #f8fafc;
+        padding: 1rem 1.5rem;
+        margin: -2rem -2rem 1.5rem -2rem;
+        border-radius: 12px 12px 0 0;
+        border-bottom: 1px solid #e5e7eb;
     }
 
     .card-title {
         font-size: 1.25rem;
         font-weight: 600;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0;
         color: #1a1a1a;
     }
 
-    .points-calculation {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-top: 1rem;
-        display: none;
+    /* Overview Page Styles */
+    .overview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
     }
 
-    .points-calculation.show {
-        display: block;
-    }
-
-    .points-calculation-toggle {
-        color: var(--primary-color);
-        cursor: pointer;
-        text-decoration: underline;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
+    .current-tier-badge {
         display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .tier-member { background: #e5e7eb; color: #374151; }
+    .tier-silver { background: #cbd5e1; color: #1e293b; }
+    .tier-gold { background: #fbbf24; color: #78350f; }
+    .tier-diamond { background: #60a5fa; color: #1e3a8a; }
+    .tier-ambassador { background: #a78bfa; color: #4c1d95; }
+
+    .status-tracker-toggle {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toggle-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+        color: white;
     }
 
     .progress-section {
@@ -171,117 +208,227 @@
     .progress-info {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        color: #4b5563;
     }
 
     .progress-bar-container {
         background: #e5e7eb;
-        height: 8px;
-        border-radius: 4px;
+        height: 10px;
+        border-radius: 5px;
         overflow: hidden;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        position: relative;
     }
 
     .progress-bar-fill {
         height: 100%;
-        background: var(--primary-color);
-        border-radius: 4px;
+        background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%);
+        border-radius: 5px;
         transition: width 0.5s ease;
+    }
+
+    .tier-markers {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+
+    .tier-marker {
+        width: 2px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
     }
 
     .tier-milestones {
         display: flex;
         justify-content: space-between;
         margin-bottom: 1rem;
+        font-size: 0.85rem;
     }
 
     .milestone {
         text-align: center;
-        font-size: 0.8rem;
+        flex: 1;
     }
 
     .milestone-name {
         font-weight: 600;
         margin-bottom: 0.25rem;
+        color: #6b7280;
+    }
+
+    .milestone.member.achieved .milestone-name { color: #6b7280; }
+    .milestone.silver.achieved .milestone-name { color: #64748b; }
+    .milestone.gold.achieved .milestone-name { color: #d97706; }
+    .milestone.diamond.achieved .milestone-name { color: #0ea5e9; }
+    .milestone.ambassador.achieved .milestone-name { color: #8b5cf6; }
+
+    .milestone.current .milestone-name {
+        font-weight: 700;
+        font-size: 0.95rem;
     }
 
     .milestone-points {
-        color: #6b7280;
+        color: #9ca3af;
         font-size: 0.75rem;
     }
 
-    .milestone.member.achieved {
+    .next-tier-info {
+        background: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .next-tier-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin: 0.5rem 0;
+    }
+
+    /* Milestone Rewards Styles */
+    .milestone-rewards {
+        text-align: center;
+    }
+
+    .milestone-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1a1a1a;
+    }
+
+    .milestone-description {
+        font-size: 0.9rem;
         color: #6b7280;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
     }
 
-    .milestone.member.current {
+    .milestone-circle {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        border-radius: 50%;
+        background: conic-gradient(
+            from 0deg,
+            #0ea5e9 0%,
+            #0ea5e9 {{ milestone_progress_percent }}%,
+            #e5e7eb {{ milestone_progress_percent }}%,
+            #e5e7eb 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .milestone-circle-inner {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .milestone-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1;
+    }
+
+    .milestone-label {
+        font-size: 0.85rem;
         color: #6b7280;
+        margin-top: 0.5rem;
     }
 
-    .milestone.silver.achieved {
-        color: #94a3b8;
+    .btn-premium {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
     }
 
-    .milestone.silver.current {
-        color: #94a3b8;
+    .btn-premium:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .milestone.gold.achieved {
-        color: #d97706;
+    /* Rewards Wallet Styles */
+    .rewards-list {
+        margin-top: 1.5rem;
     }
 
-    .milestone.gold.current {
-        color: #d97706;
+    .reward-item {
+        padding: 1.25rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        cursor: pointer;
     }
 
-    .milestone.diamond.achieved {
-        color: #0ea5e9;
+    .reward-item:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .milestone.diamond.current {
-        color: #0ea5e9;
-    }
-
-    .milestone.ambassador.achieved {
-        color: #8b5cf6;
-    }
-
-    .milestone.ambassador.current {
-        color: #8b5cf6;
-    }
-
-    .stats-grid {
+    /* Account Activity Summary Styles */
+    .activity-summary {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
-    .stat-card {
-        background: white;
+    .summary-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
     }
 
-    .stat-label {
-        font-size: 0.75rem;
+    .summary-label {
+        font-size: 0.8rem;
         text-transform: uppercase;
-        color: #9ca3af;
+        color: #6b7280;
         font-weight: 600;
         letter-spacing: 0.5px;
         margin-bottom: 0.5rem;
     }
 
-    .stat-value {
+    .summary-value {
         font-size: 1.75rem;
         font-weight: 700;
         color: #1a1a1a;
     }
 
     .activity-item {
-        padding: 1rem;
+        padding: 1.25rem;
         border-bottom: 1px solid #e5e7eb;
         cursor: pointer;
         transition: background 0.2s;
@@ -295,8 +442,69 @@
         border-bottom: none;
     }
 
+    /* Member Benefits Styles */
+    .benefits-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .benefits-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .benefits-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .benefit-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.2s;
+    }
+
+    .benefit-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .benefit-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .benefit-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1a1a1a;
+    }
+
+    .benefit-description {
+        font-size: 0.9rem;
+        color: #6b7280;
+        line-height: 1.5;
+    }
+
     .benefits-comparison {
-        margin-top: 1rem;
+        margin-top: 2rem;
         display: none;
     }
 
@@ -308,54 +516,58 @@
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .benefits-table th {
         background: var(--primary-color);
         color: white;
-        padding: 1rem;
+        padding: 1.25rem;
         text-align: left;
         font-weight: 600;
+        font-size: 0.95rem;
     }
 
     .benefits-table td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.9rem;
+    }
+
+    .benefits-table tr:last-child td {
+        border-bottom: none;
     }
 
     .benefits-table tr:hover {
         background: #f8fafc;
     }
 
-    .tier-member {
-        background: #f8fafc;
-    }
-
-    .tier-silver {
-        background: #f1f5f9;
-    }
-
-    .tier-gold {
-        background: #fef3c7;
-    }
-
-    .tier-diamond {
-        background: #dbeafe;
-    }
-
-    .tier-ambassador {
-        background: #ede9fe;
+    .tier-header {
+        font-weight: 700;
+        font-size: 1rem;
     }
 
     .benefits-toggle {
         color: var(--primary-color);
         cursor: pointer;
-        text-decoration: underline;
-        font-size: 0.9rem;
-        margin-top: 1rem;
-        display: inline-block;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.2s;
     }
 
+    .benefits-toggle:hover {
+        color: var(--primary-light);
+    }
+
+    /* Profile Styles */
     .profile-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -380,44 +592,65 @@
     }
 
     .profile-input {
-        padding: 0.5rem;
+        padding: 0.75rem;
         border: 1px solid #d1d5db;
-        border-radius: 4px;
+        border-radius: 6px;
         font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+
+    .profile-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
     }
 
     .btn-edit {
-        padding: 0.5rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         background: var(--primary-color);
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
-        font-weight: 500;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s;
     }
 
     .btn-edit:hover {
         background: var(--primary-light);
+        transform: translateY(-1px);
     }
 
     .btn-secondary {
-        padding: 0.5rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         background: white;
         color: #6b7280;
         border: 1px solid #d1d5db;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
         font-weight: 500;
+        transition: all 0.2s;
     }
 
     .btn-secondary:hover {
         background: #f3f4f6;
+        border-color: #9ca3af;
     }
 
     .form-actions {
         display: flex;
         gap: 1rem;
         margin-top: 1.5rem;
+    }
+
+    @media (max-width: 968px) {
+        .overview-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .activity-summary {
+            grid-template-columns: 1fr;
+        }
     }
 
     @media (max-width: 768px) {
@@ -431,10 +664,6 @@
             margin-top: 1.5rem;
         }
 
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
         .profile-grid {
             grid-template-columns: 1fr;
         }
@@ -442,6 +671,7 @@
         .account-nav {
             flex-wrap: wrap;
             gap: 1rem;
+            overflow-x: auto;
         }
     }
 </style>
@@ -464,91 +694,216 @@
 </div>
 
 <div class="account-nav">
-    <a href="#" class="nav-tab active" onclick="switchTab('overview'); return false;">Rewards Wallet</a>
+    <a href="#" class="nav-tab active" onclick="switchTab('overview'); return false;">Overview</a>
+    <a href="#" class="nav-tab" onclick="switchTab('rewards'); return false;">Rewards Wallet</a>
     <a href="#" class="nav-tab" onclick="switchTab('activity'); return false;">Account Activity</a>
     <a href="#" class="nav-tab" onclick="switchTab('settings'); return false;">Settings</a>
     <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Member Benefits</a>
 </div>
 
 <div class="account-container">
-    <!-- Rewards Wallet Tab -->
+    <!-- Overview Tab -->
     <div id="overview" class="tab-content active">
-        <div class="card">
-            <h3 class="card-title">Current Status</h3>
-            <div class="progress-info">
-                <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
-                <span><strong>{{ "{:,}".format(points_to_next) }}</strong> more to <strong>{{ next_tier }}</strong></span>
+        <div class="overview-grid">
+            <!-- Current Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Current Status</h3>
+                </div>
+                <div>
+                    <div class="current-tier-badge tier-{{ current_user.membership_level.lower() }}">
+                        {{ current_user.membership_level }} Elite
+                    </div>
+                    <p class="mb-3" style="color: #6b7280; font-size: 0.9rem;">
+                        Here's your status tracker
+                    </p>
+                    <div class="status-tracker-toggle">
+                        <button class="toggle-btn active" onclick="switchTracker('nights')">✓ By nights</button>
+                        <button class="toggle-btn" onclick="switchTracker('points')">By points</button>
+                    </div>
+                    
+                    <!-- Nights Tracker (Default) -->
+                    <div id="nights-tracker" class="tracker-content">
+                        <div class="progress-info">
+                            <span><strong>{{ current_user.nights_stayed }}</strong> nights</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: {{ nights_progress_percent }}%"></div>
+                            <div class="tier-markers">
+                                <div class="tier-marker" style="left: 0%;"></div>
+                                <div class="tier-marker" style="left: 25%;"></div>
+                                <div class="tier-marker" style="left: 50%;"></div>
+                                <div class="tier-marker" style="left: 75%;"></div>
+                                <div class="tier-marker" style="left: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tier-milestones">
+                            <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
+                                <div class="milestone-name">Silver</div>
+                                <div class="milestone-points">10</div>
+                            </div>
+                            <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
+                                <div class="milestone-name">Gold</div>
+                                <div class="milestone-points">20</div>
+                            </div>
+                            <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
+                                <div class="milestone-name">Platinum</div>
+                                <div class="milestone-points">40</div>
+                            </div>
+                            <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
+                                <div class="milestone-name">Diamond</div>
+                                <div class="milestone-points">70</div>
+                            </div>
+                        </div>
+                        {% if nights_to_next_milestone > 0 %}
+                        <div class="next-tier-info">
+                            <div>{{ nights_to_next_milestone }} more to <span class="next-tier-badge tier-gold">Gold Elite</span> ></div>
+                        </div>
+                        {% endif %}
+                        <p class="mt-3 mb-0" style="font-size: 0.85rem; color: #6b7280;">
+                            Earn qualifying nights or points to unlock more member benefits.
+                        </p>
+                        <a href="#" onclick="switchTab('activity'); return false;" style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none;">
+                            Earning Summary >
+                        </a>
+                    </div>
+                    
+                    <!-- Points Tracker (Hidden by default) -->
+                    <div id="points-tracker" class="tracker-content" style="display: none;">
+                        <div class="progress-info">
+                            <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
+                            <span><strong>{{ "{:,}".format(points_to_next) }}</strong> more to <strong>{{ next_tier }}</strong></span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: {{ progress_percent }}%"></div>
+                        </div>
+                        <div class="tier-milestones">
+                            <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
+                                <div class="milestone-name">Member</div>
+                                <div class="milestone-points">0</div>
+                            </div>
+                            <div class="milestone silver {% if current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver' %}current{% endif %}">
+                                <div class="milestone-name">Silver</div>
+                                <div class="milestone-points">50K</div>
+                            </div>
+                            <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
+                                <div class="milestone-name">Gold</div>
+                                <div class="milestone-points">100K</div>
+                            </div>
+                            <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
+                                <div class="milestone-name">Diamond</div>
+                                <div class="milestone-points">500K</div>
+                            </div>
+                            <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
+                                <div class="milestone-name">Ambassador</div>
+                                <div class="milestone-points">1M</div>
+                            </div>
+                        </div>
+                        {% if points_to_next > 0 %}
+                        <div class="next-tier-info">
+                            <div>{{ "{:,}".format(points_to_next) }} more to <span class="next-tier-badge tier-{{ next_tier.lower() }}">{{ next_tier }} Elite</span> ></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill" style="width: {{ progress_percent }}%"></div>
-            </div>
-            <div class="tier-milestones">
-                <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
-                    <div class="milestone-name">Member</div>
-                    <div class="milestone-points">0</div>
+
+            <!-- Milestone Rewards Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ current_year }} Milestone Rewards</h3>
                 </div>
-                <div class="milestone silver {% if current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver' %}current{% endif %}">
-                    <div class="milestone-name">Silver</div>
-                    <div class="milestone-points">50K</div>
+                <div class="milestone-rewards">
+                    <div class="milestone-title">Earn Milestone Rewards!</div>
+                    <div class="milestone-description">
+                        Choose your first reward at 20 nights, and again every 10 nights you stay this year, up to 100 nights.
+                    </div>
+                    <div class="milestone-circle">
+                        <div class="milestone-circle-inner">
+                            <div class="milestone-number">{{ nights_to_milestone_year }}</div>
+                            <div class="milestone-label">nights to next milestone</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-premium">See reward options</a>
+                    <div class="mt-3">
+                        <a href="#" onclick="switchTab('activity'); return false;" style="font-size: 0.9rem; color: var(--primary-color); text-decoration: none;">
+                            Milestone Rewards progress >
+                        </a>
+                    </div>
                 </div>
-                <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
-                    <div class="milestone-name">Gold</div>
-                    <div class="milestone-points">100K</div>
-                </div>
-                <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
-                    <div class="milestone-name">Diamond</div>
-                    <div class="milestone-points">500K</div>
-                </div>
-                <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
-                    <div class="milestone-name">Ambassador</div>
-                    <div class="milestone-points">1M</div>
-                </div>
-            </div>
-            <div class="points-calculation-toggle" onclick="togglePointsCalculation()">
-                <i class="bi bi-chevron-down" id="calc-icon"></i> How points are calculated
-            </div>
-            <div class="points-calculation" id="points-calculation">
-                <p><strong>Points Calculation Formula:</strong></p>
-                <p>Base Points = (Room Rate × 1.15) × 10</p>
-                <p>Final Points = Base Points × Membership Multiplier</p>
-                <p><strong>Your Multiplier:</strong> {{ current_user.get_points_multiplier() }}x</p>
-                <p><strong>Example:</strong> For a $100/night room:</p>
-                <p>Base = ($100 × 1.15) × 10 = 1,150 points</p>
-                {% set example_points = (1150 * current_user.get_points_multiplier())|round|int %}
-                <p>Final = 1,150 × {{ current_user.get_points_multiplier() }} = {{ "{:,}".format(example_points) }} points per night</p>
             </div>
         </div>
+    </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">TOTAL STAYS</div>
-                <div class="stat-value">{{ total_bookings }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">NIGHTS STAYED</div>
-                <div class="stat-value">{{ current_user.nights_stayed }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">TOTAL SPENT</div>
-                <div class="stat-value">${{ "{:,.0f}".format(total_spent) }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">POINTS MULTIPLIER</div>
-                <div class="stat-value">{{ current_user.get_points_multiplier() }}x</div>
-            </div>
-        </div>
-
+    <!-- Rewards Wallet Tab -->
+    <div id="rewards" class="tab-content">
         <div class="card">
-            <h3 class="card-title">Redeem Points</h3>
-            <p>Use your points to book rooms at discounted rates. Points can be redeemed during the booking process.</p>
-            <a href="{{ url_for('main.search') }}" class="btn-edit">Search Hotels</a>
+            <div class="card-header">
+                <h3 class="card-title">Points Redemption History</h3>
+            </div>
+            {% if redeemed_transactions %}
+            <div class="rewards-list">
+                {% for transaction in redeemed_transactions %}
+                <div class="reward-item" onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) if transaction.booking_id else '#' }}'">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ transaction.description or 'Points Redeemed' }}</strong>
+                            <div class="text-muted small mt-1">{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                            {% if transaction.booking_id %}
+                            <div class="text-muted small">Booking #{{ transaction.booking_id }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="text-danger fw-bold">
+                            -{{ "{:,}".format(transaction.points) }} points
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-wallet2" style="font-size: 3rem; color: #d1d5db;"></i>
+                <p class="text-muted mt-3">No points redeemed yet.</p>
+                <a href="{{ url_for('main.search') }}" class="btn-premium mt-2">Start Redeeming Points</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- Account Activity Tab -->
     <div id="activity" class="tab-content">
+        <!-- Summary Section -->
+        <div class="activity-summary">
+            <div class="summary-card">
+                <div class="summary-label">Current Tier</div>
+                <div class="summary-value">{{ current_user.membership_level }}</div>
+                <div class="mt-2">
+                    <span class="current-tier-badge tier-{{ current_user.membership_level.lower() }}">
+                        {{ current_user.get_points_multiplier() }}x Multiplier
+                    </span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Total Stays</div>
+                <div class="summary-value">{{ total_bookings }}</div>
+                <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
+                    {{ current_user.nights_stayed }} nights stayed
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Total Spent</div>
+                <div class="summary-value">${{ "{:,.0f}".format(total_spent) }}</div>
+                <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
+                    {{ "{:,}".format(current_user.lifetime_points) }} lifetime points
+                </div>
+            </div>
+        </div>
+
+        <!-- Points History -->
         <div class="card">
-            <h3 class="card-title">Points History</h3>
+            <div class="card-header">
+                <h3 class="card-title">Points History</h3>
+            </div>
             {% if all_transactions %}
             <div>
                 {% for transaction in all_transactions %}
@@ -566,12 +921,15 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-muted">No points transactions yet.</p>
+            <p class="text-muted text-center py-4">No points transactions yet.</p>
             {% endif %}
         </div>
 
+        <!-- Booking History -->
         <div class="card">
-            <h3 class="card-title">Booking History</h3>
+            <div class="card-header">
+                <h3 class="card-title">Booking History</h3>
+            </div>
             {% if all_bookings %}
             <div>
                 {% for booking in all_bookings %}
@@ -595,7 +953,7 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-muted">No bookings yet.</p>
+            <p class="text-muted text-center py-4">No bookings yet.</p>
             {% endif %}
         </div>
     </div>
@@ -670,34 +1028,45 @@
 
     <!-- Member Benefits Tab -->
     <div id="benefits" class="tab-content">
+        <div class="benefits-header">
+            <h2>Your Membership Benefits</h2>
+            <p>{{ current_user.membership_level }} Elite • {{ current_user.get_points_multiplier() }}x Points Multiplier</p>
+        </div>
+
+        <div class="benefits-grid">
+            {% for benefit in tier_benefits %}
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="benefit-title">{{ benefit }}</div>
+                <div class="benefit-description">Available with your {{ current_user.membership_level }} Elite status</div>
+            </div>
+            {% endfor %}
+        </div>
+
         <div class="card">
-            <h3 class="card-title">Your Membership Benefits</h3>
-            <p><strong>Current Tier:</strong> {{ current_user.membership_level }}</p>
-            <p><strong>Points Multiplier:</strong> {{ current_user.get_points_multiplier() }}x</p>
-            <h4 class="mt-3 mb-2">Your Benefits:</h4>
-            <ul>
-                {% for benefit in tier_benefits %}
-                <li>{{ benefit }}</li>
-                {% endfor %}
-            </ul>
-            <div class="benefits-toggle" onclick="toggleBenefitsComparison()">
-                <i class="bi bi-chevron-down" id="benefits-icon"></i> Compare All Membership Tiers
+            <div class="text-center">
+                <a href="#" class="benefits-toggle" onclick="toggleBenefitsComparison()">
+                    <i class="bi bi-chevron-down" id="benefits-icon"></i>
+                    Compare All Membership Tiers
+                </a>
             </div>
             <div class="benefits-comparison" id="benefits-comparison">
                 <table class="benefits-table">
                     <thead>
                         <tr>
                             <th style="color: white;">Benefit</th>
-                            <th class="tier-member" style="background: #6b7280; color: white;">Member</th>
-                            <th class="tier-silver" style="background: #94a3b8; color: white;">Silver</th>
-                            <th class="tier-gold" style="background: #d97706; color: white;">Gold</th>
-                            <th class="tier-diamond" style="background: #0ea5e9; color: white;">Diamond</th>
-                            <th class="tier-ambassador" style="background: #8b5cf6; color: white;">Ambassador</th>
+                            <th class="tier-header" style="background: #6b7280; color: white;">Member</th>
+                            <th class="tier-header" style="background: #94a3b8; color: white;">Silver</th>
+                            <th class="tier-header" style="background: #d97706; color: white;">Gold</th>
+                            <th class="tier-header" style="background: #0ea5e9; color: white;">Diamond</th>
+                            <th class="tier-header" style="background: #8b5cf6; color: white;">Ambassador</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Points Multiplier</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Points Multiplier</td>
                             <td>1.0x</td>
                             <td>1.2x</td>
                             <td>1.5x</td>
@@ -705,7 +1074,7 @@
                             <td>2.5x</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Earn Points on Stays</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Earn Points on Stays</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -713,7 +1082,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Member-only Rates</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Member-only Rates</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -721,7 +1090,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Mobile Check-in</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Mobile Check-in</td>
                             <td>✓</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -729,7 +1098,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Late Checkout</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Late Checkout</td>
                             <td>-</td>
                             <td>2 PM</td>
                             <td>2 PM</td>
@@ -737,7 +1106,7 @@
                             <td>4 PM</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Welcome Amenity</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Welcome Amenity</td>
                             <td>-</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -745,7 +1114,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Priority Support</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Priority Support</td>
                             <td>-</td>
                             <td>✓</td>
                             <td>✓</td>
@@ -753,7 +1122,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Room Upgrade</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Room Upgrade</td>
                             <td>-</td>
                             <td>-</td>
                             <td>Subject to availability</td>
@@ -761,7 +1130,7 @@
                             <td>Penthouse upgrade</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Complimentary Breakfast</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Complimentary Breakfast</td>
                             <td>-</td>
                             <td>-</td>
                             <td>✓</td>
@@ -769,7 +1138,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Executive Lounge</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Executive Lounge</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -777,7 +1146,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Dedicated Concierge</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Dedicated Concierge</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -785,7 +1154,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Personal Travel Advisor</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Personal Travel Advisor</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -793,7 +1162,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Exclusive Events</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Exclusive Events</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -801,7 +1170,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Complimentary Spa</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Complimentary Spa</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -809,7 +1178,7 @@
                             <td>✓</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: var(--primary-color);"><strong>Airport Transfers</strong></td>
+                            <td style="color: white; background: var(--primary-color); font-weight: 600;">Airport Transfers</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -842,14 +1211,21 @@
         event.target.classList.add('active');
     }
 
-    function togglePointsCalculation() {
-        const calc = document.getElementById('points-calculation');
-        const icon = document.getElementById('calc-icon');
-        calc.classList.toggle('show');
-        if (calc.classList.contains('show')) {
-            icon.className = 'bi bi-chevron-up';
+    function switchTracker(type) {
+        const nightsTracker = document.getElementById('nights-tracker');
+        const pointsTracker = document.getElementById('points-tracker');
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        
+        toggleBtns.forEach(btn => btn.classList.remove('active'));
+        
+        if (type === 'nights') {
+            nightsTracker.style.display = 'block';
+            pointsTracker.style.display = 'none';
+            toggleBtns[0].classList.add('active');
         } else {
-            icon.className = 'bi bi-chevron-down';
+            nightsTracker.style.display = 'none';
+            pointsTracker.style.display = 'block';
+            toggleBtns[1].classList.add('active');
         }
     }
 
