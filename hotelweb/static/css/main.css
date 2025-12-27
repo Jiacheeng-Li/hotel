@@ -1,0 +1,209 @@
+/* Global Vars */
+:root {
+    --primary-color: #0f172a;
+    /* Slate 900 */
+    --primary-light: #334155;
+    /* Slate 700 */
+    --accent-color: #d97706;
+    /* Amber 600 - Rich Gold */
+    --text-color: #1e293b;
+    /* Slate 800 */
+    --bg-color: #f8fafc;
+    /* Slate 50 */
+    --card-bg: #ffffff;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand {
+    font-family: var(--font-serif);
+    color: var(--primary-color);
+}
+
+a {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color) !important;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.nav-link.active {
+    color: var(--accent-color) !important;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+}
+
+/* User dropdown button styling */
+.dropdown-toggle.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.dropdown-toggle.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--accent-color) !important;
+    color: white !important;
+}
+
+.dropdown-toggle.btn-outline-light:focus {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--accent-color) !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.25) !important;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: var(--accent-color);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 10px 24px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+}
+
+.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.card-img-top,
+.card-img-left {
+    transition: transform 0.5s ease;
+}
+
+.hover-effect:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Typography Helpers */
+.text-warning {
+    color: var(--accent-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.letter-spacing-2 {
+    letter-spacing: 2px;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+/* Map specific */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    font-family: var(--font-sans);
+}
+
+.leaflet-popup-content b {
+    color: var(--primary-color);
+    font-family: var(--font-serif);
+}
+
+/* Utilities */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}

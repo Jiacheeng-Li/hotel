@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+
+{% block title %}My Stays - HotelWeb{% endblock %}
+
+{% block content %}
+<style>
+    .stays-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .stays-header {
+        margin-bottom: 2rem;
+    }
+
+    .stays-header h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .stays-tabs {
+        display: flex;
+        gap: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        flex-wrap: wrap;
+    }
+
+    .tab-button {
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-size: 0.95rem;
+    }
+
+    .tab-button:hover {
+        color: #1a1a1a;
+        background-color: #f9fafb;
+    }
+
+    .tab-button.active {
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+    }
+
+    .booking-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .booking-card.cancelled {
+        opacity: 0.7;
+        background-color: #f9fafb;
+    }
+
+    .card-content {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .hotel-image {
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .booking-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .hotel-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .room-type {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .date-info {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .date-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .date-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #9ca3af;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .date-value {
+        font-size: 0.95rem;
+        color: #1a1a1a;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+
+    .booking-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: auto;
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-upcoming {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-current {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-past {
+        background-color: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .status-cancelled {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .btn-cancel {
+        padding: 0.5rem 1.25rem;
+        background-color: white;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background-color: #dc2626;
+        color: white;
+    }
+
+    .btn-secondary {
+        padding: 0.5rem 1.25rem;
+        background-color: white;
+        color: #2563eb;
+        border: 1px solid #2563eb;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background-color: #2563eb;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline {
+        padding: 0.5rem 1.25rem;
+        background-color: white;
+        color: #6b7280;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-outline:hover {
+        background-color: #f3f4f6;
+        border-color: #9ca3af;
+        color: #1a1a1a;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6b7280;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+        color: white;
+        text-decoration: none;
+    }
+
+    .countdown {
+        font-size: 0.85rem;
+        color: #059669;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+
+    .points-earned {
+        font-size: 0.85rem;
+        color: #7c3aed;
+        font-weight: 600;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .card-content {
+            flex-direction: column;
+        }
+
+        .hotel-image {
+            width: 100%;
+            height: 200px;
+        }
+
+        .date-info {
+            gap: 1rem;
+        }
+
+        .booking-actions {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<div class="stays-container">
+    <div class="stays-header">
+        <h2>My Stays</h2>
+        <p class="text-muted">Manage your hotel reservations and view your stay history</p>
+    </div>
+
+    <div class="stays-tabs">
+        <button class="tab-button active" data-tab="upcoming">
+            Upcoming <span class="badge bg-primary ms-1">{{ upcoming|length }}</span>
+        </button>
+        <button class="tab-button" data-tab="current">
+            Current <span class="badge bg-success ms-1">{{ current|length }}</span>
+        </button>
+        <button class="tab-button" data-tab="past">
+            Past <span class="badge bg-secondary ms-1">{{ past|length }}</span>
+        </button>
+        <button class="tab-button" data-tab="cancelled">
+            Cancelled <span class="badge bg-danger ms-1">{{ cancelled|length }}</span>
+        </button>
+        <button class="tab-button" data-tab="events">
+            Events <span class="badge bg-info ms-1">0</span>
+        </button>
+    </div>
+
+    <!-- Upcoming Stays Tab -->
+    <div class="tab-content active" id="upcoming">
+        {% if upcoming %}
+        {% for booking in upcoming %}
+        <div class="booking-card">
+            <div class="card-content">
+                <img src="{{ booking.room_type.hotel.image_url }}" alt="{{ booking.room_type.hotel.name }}"
+                    class="hotel-image">
+                <div class="booking-details">
+                    <div>
+                        <h3 class="hotel-name">{{ booking.room_type.hotel.name }}</h3>
+                        <p class="room-type">{{ booking.room_type.name }}</p>
+                    </div>
+
+                    <div class="date-info">
+                        <div class="date-item">
+                            <span class="date-label">Check-in</span>
+                            <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Check-out</span>
+                            <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Rooms</span>
+                            <span class="date-value">{{ booking.rooms_count }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Nights</span>
+                            <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
+                        </div>
+                    </div>
+
+                    {% set days_until = (booking.check_in - today).days %}
+                    <div class="countdown">
+                        ✓ Check-in in {{ days_until }} day{{ 's' if days_until != 1 else '' }}
+                    </div>
+
+                    <div class="booking-actions">
+                        <span class="status-badge status-upcoming">Confirmed</span>
+                        <form action="{{ url_for('main.cancel_booking', booking_id=booking.id) }}" method="post"
+                            onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+                            style="margin: 0;">
+                            <button type="submit" class="btn-cancel">Cancel Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🏨</div>
+            <h3>No Upcoming Stays</h3>
+            <p>You don't have any upcoming reservations</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">Book Your Next Stay</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Current Stays Tab -->
+    <div class="tab-content" id="current">
+        {% if current %}
+        {% for booking in current %}
+        <div class="booking-card">
+            <div class="card-content">
+                <img src="{{ booking.room_type.hotel.image_url }}" alt="{{ booking.room_type.hotel.name }}"
+                    class="hotel-image">
+                <div class="booking-details">
+                    <div>
+                        <h3 class="hotel-name">{{ booking.room_type.hotel.name }}</h3>
+                        <p class="room-type">{{ booking.room_type.name }}</p>
+                    </div>
+
+                    <div class="date-info">
+                        <div class="date-item">
+                            <span class="date-label">Check-in</span>
+                            <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Check-out</span>
+                            <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Rooms</span>
+                            <span class="date-value">{{ booking.rooms_count }}</span>
+                        </div>
+                    </div>
+
+                    <div class="countdown" style="color: #059669;">
+                        ✓ Currently staying
+                    </div>
+
+                    <div class="booking-actions">
+                        <span class="status-badge status-current">Active Stay</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🛏️</div>
+            <h3>No Current Stays</h3>
+            <p>You're not currently checked in to any hotels</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Past Stays Tab -->
+    <div class="tab-content" id="past">
+        {% if past %}
+        {% for booking in past %}
+        <div class="booking-card">
+            <div class="card-content">
+                <img src="{{ booking.room_type.hotel.image_url }}" alt="{{ booking.room_type.hotel.name }}"
+                    class="hotel-image">
+                <div class="booking-details">
+                    <div>
+                        <h3 class="hotel-name">{{ booking.room_type.hotel.name }}</h3>
+                        <p class="room-type">{{ booking.room_type.name }}</p>
+                    </div>
+
+                    <div class="date-info">
+                        <div class="date-item">
+                            <span class="date-label">Check-in</span>
+                            <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Check-out</span>
+                            <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Rooms</span>
+                            <span class="date-value">{{ booking.rooms_count }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Nights</span>
+                            <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
+                        </div>
+                    </div>
+
+                    {% if booking.points_earned > 0 %}
+                    <div class="points-earned">
+                        ⭐ Earned {{ "{:,}".format(booking.points_earned) }} points
+                    </div>
+                    {% endif %}
+
+                    <div class="booking-actions">
+                        <span class="status-badge status-past">Completed</span>
+                        <a href="{{ url_for('main.view_bill', booking_id=booking.id) }}" class="btn-secondary">View
+                            Bill</a>
+                        <a href="{{ url_for('main.stay_again', booking_id=booking.id) }}" class="btn-outline">Stay
+                            Again</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h3>No Past Stays</h3>
+            <p>Your completed stays will appear here</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Cancelled Tab -->
+    <div class="tab-content" id="cancelled">
+        {% if cancelled %}
+        {% for booking in cancelled %}
+        <div class="booking-card cancelled">
+            <div class="card-content">
+                <img src="{{ booking.room_type.hotel.image_url }}" alt="{{ booking.room_type.hotel.name }}"
+                    class="hotel-image">
+                <div class="booking-details">
+                    <div>
+                        <h3 class="hotel-name">{{ booking.room_type.hotel.name }}</h3>
+                        <p class="room-type">{{ booking.room_type.name }}</p>
+                    </div>
+
+                    <div class="date-info">
+                        <div class="date-item">
+                            <span class="date-label">Check-in</span>
+                            <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Check-out</span>
+                            <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Rooms</span>
+                            <span class="date-value">{{ booking.rooms_count }}</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-actions">
+                        <span class="status-badge status-cancelled">Cancelled</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">✓</div>
+            <h3>No Cancelled Bookings</h3>
+            <p>You haven't cancelled any reservations</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Events Tab -->
+    <div class="tab-content" id="events">
+        <div class="empty-state">
+            <div class="empty-state-icon">🎉</div>
+            <h3>Events Coming Soon</h3>
+            <p>Special hotel events, promotions, and exclusive offers will appear here</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.dataset.tab;
+
+            // Update active button
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Update active content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

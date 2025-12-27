@@ -1,0 +1,879 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<style>
+    .account-header {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        color: white;
+        padding: 2.5rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-left h1 {
+        font-size: 1.5rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-left h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .member-number {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .header-right {
+        text-align: right;
+    }
+
+    .points-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+    }
+
+    .points-value {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 1rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-header {
+        padding: 0.5rem 1.25rem;
+        border: 1px solid white;
+        background: transparent;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-header:hover {
+        background: white;
+        color: #4a5568;
+    }
+
+    .account-nav {
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        border-bottom: 2px solid #e5e7eb;
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-tab {
+        padding: 1rem 0;
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        background: none;
+        border: none;
+    }
+
+    .nav-tab:hover {
+        color: var(--primary-color);
+    }
+
+    .nav-tab.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+    }
+
+    .account-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #1a1a1a;
+    }
+
+    .points-calculation {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .points-calculation.show {
+        display: block;
+    }
+
+    .points-calculation-toggle {
+        color: var(--primary-color);
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: inline-block;
+    }
+
+    .progress-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .progress-bar-container {
+        background: #e5e7eb;
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: var(--primary-color);
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+
+    .tier-milestones {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .milestone {
+        text-align: center;
+        font-size: 0.8rem;
+    }
+
+    .milestone-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .milestone-points {
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+
+    .milestone.member.achieved {
+        color: #6b7280;
+    }
+
+    .milestone.member.current {
+        color: #6b7280;
+    }
+
+    .milestone.silver.achieved {
+        color: #94a3b8;
+    }
+
+    .milestone.silver.current {
+        color: #94a3b8;
+    }
+
+    .milestone.gold.achieved {
+        color: #d97706;
+    }
+
+    .milestone.gold.current {
+        color: #d97706;
+    }
+
+    .milestone.diamond.achieved {
+        color: #0ea5e9;
+    }
+
+    .milestone.diamond.current {
+        color: #0ea5e9;
+    }
+
+    .milestone.ambassador.achieved {
+        color: #8b5cf6;
+    }
+
+    .milestone.ambassador.current {
+        color: #8b5cf6;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #9ca3af;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .activity-item {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .activity-item:hover {
+        background: #f8fafc;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .benefits-comparison {
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .benefits-comparison.show {
+        display: block;
+    }
+
+    .benefits-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .benefits-table th {
+        background: var(--primary-color);
+        color: white;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .benefits-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .benefits-table tr:hover {
+        background: #f8fafc;
+    }
+
+    .tier-member {
+        background: #f8fafc;
+    }
+
+    .tier-silver {
+        background: #f1f5f9;
+    }
+
+    .tier-gold {
+        background: #fef3c7;
+    }
+
+    .tier-diamond {
+        background: #dbeafe;
+    }
+
+    .tier-ambassador {
+        background: #ede9fe;
+    }
+
+    .benefits-toggle {
+        color: var(--primary-color);
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        display: inline-block;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .profile-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .profile-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-value {
+        font-size: 1rem;
+        color: #1a1a1a;
+    }
+
+    .profile-input {
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .btn-edit {
+        padding: 0.5rem 1.25rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-edit:hover {
+        background: var(--primary-light);
+    }
+
+    .btn-secondary {
+        padding: 0.5rem 1.25rem;
+        background: white;
+        color: #6b7280;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+        background: #f3f4f6;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .header-right {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .account-nav {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+    }
+</style>
+
+<div class="account-header">
+    <div class="header-content">
+        <div class="header-left">
+            <h1>Hello {{ current_user.username }},</h1>
+            <h2>{{ current_user.membership_level }} Member</h2>
+            <p class="member-number">Member #{{ current_user.member_number or 'N/A' }}</p>
+        </div>
+        <div class="header-right">
+            <div class="points-label">YOUR POINTS</div>
+            <div class="points-value">{{ "{:,}".format(current_user.points) }}</div>
+            <div class="header-actions">
+                <a href="{{ url_for('main.search') }}" class="btn-header">Redeem Points</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="account-nav">
+    <a href="#" class="nav-tab active" onclick="switchTab('overview'); return false;">Rewards Wallet</a>
+    <a href="#" class="nav-tab" onclick="switchTab('activity'); return false;">Account Activity</a>
+    <a href="#" class="nav-tab" onclick="switchTab('settings'); return false;">Settings</a>
+    <a href="#" class="nav-tab" onclick="switchTab('benefits'); return false;">Member Benefits</a>
+</div>
+
+<div class="account-container">
+    <!-- Rewards Wallet Tab -->
+    <div id="overview" class="tab-content active">
+        <div class="card">
+            <h3 class="card-title">Current Status</h3>
+            <div class="progress-info">
+                <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
+                <span><strong>{{ "{:,}".format(points_to_next) }}</strong> more to <strong>{{ next_tier }}</strong></span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: {{ progress_percent }}%"></div>
+            </div>
+            <div class="tier-milestones">
+                <div class="milestone member {% if current_user.membership_level != 'Member' %}achieved{% endif %} {% if current_user.membership_level == 'Member' %}current{% endif %}">
+                    <div class="milestone-name">Member</div>
+                    <div class="milestone-points">0</div>
+                </div>
+                <div class="milestone silver {% if current_user.membership_level in ['Silver', 'Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Silver' %}current{% endif %}">
+                    <div class="milestone-name">Silver</div>
+                    <div class="milestone-points">50K</div>
+                </div>
+                <div class="milestone gold {% if current_user.membership_level in ['Gold', 'Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Gold' %}current{% endif %}">
+                    <div class="milestone-name">Gold</div>
+                    <div class="milestone-points">100K</div>
+                </div>
+                <div class="milestone diamond {% if current_user.membership_level in ['Diamond', 'Ambassador'] %}achieved{% endif %} {% if current_user.membership_level == 'Diamond' %}current{% endif %}">
+                    <div class="milestone-name">Diamond</div>
+                    <div class="milestone-points">500K</div>
+                </div>
+                <div class="milestone ambassador {% if current_user.membership_level == 'Ambassador' %}achieved current{% endif %}">
+                    <div class="milestone-name">Ambassador</div>
+                    <div class="milestone-points">1M</div>
+                </div>
+            </div>
+            <div class="points-calculation-toggle" onclick="togglePointsCalculation()">
+                <i class="bi bi-chevron-down" id="calc-icon"></i> How points are calculated
+            </div>
+            <div class="points-calculation" id="points-calculation">
+                <p><strong>Points Calculation Formula:</strong></p>
+                <p>Base Points = (Room Rate × 1.15) × 10</p>
+                <p>Final Points = Base Points × Membership Multiplier</p>
+                <p><strong>Your Multiplier:</strong> {{ current_user.get_points_multiplier() }}x</p>
+                <p><strong>Example:</strong> For a $100/night room:</p>
+                <p>Base = ($100 × 1.15) × 10 = 1,150 points</p>
+                <p>Final = 1,150 × {{ current_user.get_points_multiplier() }} = {{ int(1150 * current_user.get_points_multiplier()) }} points per night</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">TOTAL STAYS</div>
+                <div class="stat-value">{{ total_bookings }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">NIGHTS STAYED</div>
+                <div class="stat-value">{{ current_user.nights_stayed }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">TOTAL SPENT</div>
+                <div class="stat-value">${{ "{:,.0f}".format(total_spent) }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">POINTS MULTIPLIER</div>
+                <div class="stat-value">{{ current_user.get_points_multiplier() }}x</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Redeem Points</h3>
+            <p>Use your points to book rooms at discounted rates. Points can be redeemed during the booking process.</p>
+            <a href="{{ url_for('main.search') }}" class="btn-edit">Search Hotels</a>
+        </div>
+    </div>
+
+    <!-- Account Activity Tab -->
+    <div id="activity" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Points History</h3>
+            {% if all_transactions %}
+            <div>
+                {% for transaction in all_transactions %}
+                <div class="activity-item" onclick="window.location.href='{{ url_for('main.my_stays') }}'">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ transaction.description }}</strong>
+                            <div class="text-muted small">{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                        </div>
+                        <div class="text-{% if transaction.transaction_type == 'EARNED' %}success{% else %}danger{% endif %} fw-bold">
+                            {% if transaction.transaction_type == 'EARNED' %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points) }} points
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No points transactions yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Booking History</h3>
+            {% if all_bookings %}
+            <div>
+                {% for booking in all_bookings %}
+                <div class="activity-item" onclick="window.location.href='{{ url_for('main.view_bill', booking_id=booking.id) }}'">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ booking.room_type.hotel.name }} - {{ booking.room_type.name }}</strong>
+                            <div class="text-muted small">{{ booking.check_in.strftime('%Y-%m-%d') }} - {{ booking.check_out.strftime('%Y-%m-%d') }}</div>
+                            <div class="text-muted small">{{ (booking.check_out - booking.check_in).days }} night(s) • {{ booking.rooms_count }} room(s)</div>
+                        </div>
+                        <div>
+                            <span class="badge bg-{% if booking.status == 'CONFIRMED' %}success{% elif booking.status == 'CANCELLED' %}secondary{% else %}warning{% endif %}">
+                                {{ booking.status }}
+                            </span>
+                            {% if booking.points_earned > 0 %}
+                            <div class="text-success small mt-1">+{{ "{:,}".format(booking.points_earned) }} points</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No bookings yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settings" class="tab-content">
+        <div class="card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="card-title mb-0">Profile Information</h3>
+                <button class="btn-edit" onclick="toggleEdit()">Edit Profile</button>
+            </div>
+
+            <form id="profileForm" action="{{ url_for('main.update_profile') }}" method="POST">
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label class="profile-label">Username</label>
+                        <span class="profile-value" id="view-username">{{ current_user.username }}</span>
+                        <input type="text" class="profile-input" id="edit-username" name="username"
+                            value="{{ current_user.username }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Email</label>
+                        <span class="profile-value" id="view-email">{{ current_user.email }}</span>
+                        <input type="email" class="profile-input" id="edit-email" name="email"
+                            value="{{ current_user.email }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Phone</label>
+                        <span class="profile-value" id="view-phone">{{ current_user.phone or 'Not provided' }}</span>
+                        <input type="tel" class="profile-input" id="edit-phone" name="phone"
+                            value="{{ current_user.phone or '' }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Birthday</label>
+                        <span class="profile-value" id="view-birthday">{{ current_user.birthday.strftime('%B %d, %Y') if current_user.birthday else 'Not provided' }}</span>
+                        <input type="date" class="profile-input" id="edit-birthday" name="birthday"
+                            value="{{ current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '' }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Address</label>
+                        <span class="profile-value" id="view-address">{{ current_user.address or 'Not provided' }}</span>
+                        <input type="text" class="profile-input" id="edit-address" name="address"
+                            value="{{ current_user.address or '' }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">City</label>
+                        <span class="profile-value" id="view-city">{{ current_user.city or 'Not provided' }}</span>
+                        <input type="text" class="profile-input" id="edit-city" name="city"
+                            value="{{ current_user.city or '' }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Country</label>
+                        <span class="profile-value" id="view-country">{{ current_user.country or 'Not provided' }}</span>
+                        <input type="text" class="profile-input" id="edit-country" name="country"
+                            value="{{ current_user.country or '' }}" style="display: none;">
+                    </div>
+                    <div class="profile-field">
+                        <label class="profile-label">Postal Code</label>
+                        <span class="profile-value" id="view-postal">{{ current_user.postal_code or 'Not provided' }}</span>
+                        <input type="text" class="profile-input" id="edit-postal" name="postal_code"
+                            value="{{ current_user.postal_code or '' }}" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="form-actions" id="formActions" style="display: none;">
+                    <button type="submit" class="btn-edit">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="cancelEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Member Benefits Tab -->
+    <div id="benefits" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Your Membership Benefits</h3>
+            <p><strong>Current Tier:</strong> {{ current_user.membership_level }}</p>
+            <p><strong>Points Multiplier:</strong> {{ current_user.get_points_multiplier() }}x</p>
+            <h4 class="mt-3 mb-2">Your Benefits:</h4>
+            <ul>
+                {% for benefit in tier_benefits %}
+                <li>{{ benefit }}</li>
+                {% endfor %}
+            </ul>
+            <div class="benefits-toggle" onclick="toggleBenefitsComparison()">
+                <i class="bi bi-chevron-down" id="benefits-icon"></i> Compare All Membership Tiers
+            </div>
+            <div class="benefits-comparison" id="benefits-comparison">
+                <table class="benefits-table">
+                    <thead>
+                        <tr>
+                            <th style="color: white;">Benefit</th>
+                            <th class="tier-member" style="background: #6b7280; color: white;">Member</th>
+                            <th class="tier-silver" style="background: #94a3b8; color: white;">Silver</th>
+                            <th class="tier-gold" style="background: #d97706; color: white;">Gold</th>
+                            <th class="tier-diamond" style="background: #0ea5e9; color: white;">Diamond</th>
+                            <th class="tier-ambassador" style="background: #8b5cf6; color: white;">Ambassador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Points Multiplier</strong></td>
+                            <td>1.0x</td>
+                            <td>1.2x</td>
+                            <td>1.5x</td>
+                            <td>2.0x</td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Earn Points on Stays</strong></td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Member-only Rates</strong></td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Mobile Check-in</strong></td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Late Checkout</strong></td>
+                            <td>-</td>
+                            <td>2 PM</td>
+                            <td>2 PM</td>
+                            <td>4 PM</td>
+                            <td>4 PM</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Welcome Amenity</strong></td>
+                            <td>-</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Priority Support</strong></td>
+                            <td>-</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Room Upgrade</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>Subject to availability</td>
+                            <td>Suite upgrade</td>
+                            <td>Penthouse upgrade</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Complimentary Breakfast</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Executive Lounge</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Dedicated Concierge</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Personal Travel Advisor</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Exclusive Events</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Complimentary Spa</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td style="color: white; background: var(--primary-color);"><strong>Airport Transfers</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remove active class from all nav tabs
+        document.querySelectorAll('.nav-tab').forEach(nav => {
+            nav.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName).classList.add('active');
+        
+        // Add active class to clicked nav tab
+        event.target.classList.add('active');
+    }
+
+    function togglePointsCalculation() {
+        const calc = document.getElementById('points-calculation');
+        const icon = document.getElementById('calc-icon');
+        calc.classList.toggle('show');
+        if (calc.classList.contains('show')) {
+            icon.className = 'bi bi-chevron-up';
+        } else {
+            icon.className = 'bi bi-chevron-down';
+        }
+    }
+
+    function toggleBenefitsComparison() {
+        const comparison = document.getElementById('benefits-comparison');
+        const icon = document.getElementById('benefits-icon');
+        comparison.classList.toggle('show');
+        if (comparison.classList.contains('show')) {
+            icon.className = 'bi bi-chevron-up';
+        } else {
+            icon.className = 'bi bi-chevron-down';
+        }
+    }
+
+    function toggleEdit() {
+        const viewElements = document.querySelectorAll('[id^="view-"]');
+        const editElements = document.querySelectorAll('[id^="edit-"]');
+        const formActions = document.getElementById('formActions');
+
+        viewElements.forEach(el => el.style.display = 'none');
+        editElements.forEach(el => el.style.display = 'block');
+        formActions.style.display = 'flex';
+    }
+
+    function cancelEdit() {
+        const viewElements = document.querySelectorAll('[id^="view-"]');
+        const editElements = document.querySelectorAll('[id^="edit-"]');
+        const formActions = document.getElementById('formActions');
+
+        viewElements.forEach(el => el.style.display = 'block');
+        editElements.forEach(el => el.style.display = 'none');
+        formActions.style.display = 'none';
+    }
+</script>
+{% endblock %}

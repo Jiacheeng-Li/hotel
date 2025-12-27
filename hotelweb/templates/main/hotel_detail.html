@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}{{ hotel.name }} - HotelWeb{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="py-1">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">{{ hotel.name }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 position-relative">
+        <img src="{{ hotel.image_url }}" class="img-fluid rounded shadow w-100 object-fit-cover" style="height: 400px;"
+            alt="{{ hotel.name }}">
+    </div>
+
+    <div class="col-md-6">
+        <h1 class="display-5 fw-bold mb-2">{{ hotel.name }}</h1>
+        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
+        <div class="mb-3">
+            <span class="badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</span>
+            <span class="ms-2">
+                {% for _ in range(hotel.stars) %} <i class="text-warning">★</i> {% endfor %}
+            </span>
+        </div>
+        
+        {% if hotel.reviews %}
+        {% set avg_rating = (hotel.reviews|sum(attribute='rating') / hotel.reviews|length) %}
+        <div class="mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center">
+                    {% for i in range(5) %}
+                        {% if i < avg_rating|int %}
+                            <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
+                        {% elif i < avg_rating|round(1)|int %}
+                            <i class="bi bi-heart-half text-danger" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="bi bi-heart text-danger" aria-hidden="true"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="fw-bold">{{ "%.1f"|format(avg_rating) }}</span>
+                <span class="text-muted">({{ hotel.reviews|length }} review{{ 's' if hotel.reviews|length != 1 else '' }})</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <!-- Guest Reviews -->
+        <section class="mb-3" aria-labelledby="reviews-heading">
+            <h2 id="reviews-heading" class="h5 fw-bold mb-3">Guest Reviews</h2>
+            {% if not hotel.reviews %}
+            <p class="text-muted">No reviews yet.</p>
+            {% else %}
+            <div class="row">
+                {% for review in hotel.reviews[:4] %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 shadow-sm border-0 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="fw-bold">{{ review.author.username }}</h6>
+                                <div class="text-danger">
+                                    {% for _ in range(review.rating) %}<i class="bi bi-heart-fill" aria-hidden="true"></i>{% endfor %}
+                                    {% for _ in range(5 - review.rating) %}<i class="bi bi-heart" aria-hidden="true"></i>{% endfor %}
+                                </div>
+                            </div>
+                            <p class="card-text small">"{{ review.comment }}"</p>
+                            <small class="text-muted">{{ review.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+    </div>
+    
+    <div class="col-md-6">
+        <!-- Room Types -->
+        <section class="mb-3" aria-labelledby="rooms-heading">
+            <h2 id="rooms-heading" class="h5 fw-bold mb-3">Room Types</h2>
+            <div class="list-group">
+                {% for rt in hotel.room_types %}
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1 me-3">
+                                <h3 class="h5 fw-bold mb-1">
+                                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}" class="text-decoration-none text-dark">
+                                        {{ rt.name }}
+                                    </a>
+                                </h3>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-light text-dark">
+                                        <i class="bi bi-people me-1" aria-hidden="true"></i>{{ rt.capacity }} guest{{ 's' if rt.capacity > 1 else '' }}
+                                    </span>
+                                    <span class="badge bg-light text-dark">
+                                        <i class="bi bi-star me-1" aria-hidden="true"></i>{{ rt.amenities|length }} amenit{{ 'ies' if rt.amenities|length != 1 else 'y' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-end ms-3">
+                                <div class="text-success fw-bold fs-4 mb-0">${{ "{:,.0f}".format(rt.price_per_night) }}</div>
+                                <small class="text-muted">per night</small>
+                            </div>
+                        </div>
+                        {% if rt.image_url %}
+                        <div class="mt-3">
+                            <img src="{{ rt.image_url }}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;" alt="{{ rt.name }}">
+                        </div>
+                        {% endif %}
+                        <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}" class="btn btn-primary w-100 mt-3">
+                            View Details
+                            <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

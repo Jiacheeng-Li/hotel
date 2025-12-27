@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block title %}Hotel Bill - {{ booking.room_type.hotel.name }}{% endblock %}
+
+{% block content %}
+<style>
+    @media print {
+        .no-print {
+            display: none;
+        }
+
+        body {
+            background: white;
+        }
+    }
+
+    .bill-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        padding: 3rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .bill-header {
+        text-align: center;
+        border-bottom: 3px solid #2563eb;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .bill-header h1 {
+        font-size: 2rem;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .hotel-info {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .bill-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .detail-section h3 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #9ca3af;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+    }
+
+    .detail-item {
+        margin-bottom: 0.5rem;
+        color: #1a1a1a;
+    }
+
+    .detail-label {
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+    .charges-table {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .charges-table th {
+        text-align: left;
+        padding: 0.75rem 0;
+        border-bottom: 2px solid #e5e7eb;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+    }
+
+    .charges-table td {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .charges-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .amount {
+        text-align: right;
+        font-weight: 500;
+    }
+
+    .subtotal-row {
+        font-weight: 600;
+        border-top: 2px solid #e5e7eb !important;
+    }
+
+    .total-row {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2563eb;
+        border-top: 3px solid #2563eb !important;
+    }
+
+    .points-section {
+        background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .points-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .points-amount {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .bill-footer {
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.85rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+        color: white;
+    }
+
+    .btn-outline {
+        background-color: white;
+        color: #6b7280;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-outline:hover {
+        background-color: #f3f4f6;
+        color: #1a1a1a;
+    }
+</style>
+
+<div class="bill-container">
+    <div class="bill-header">
+        <h1>{{ booking.room_type.hotel.name }}</h1>
+        <div class="hotel-info">
+            {{ booking.room_type.hotel.address }}<br>
+            {{ booking.room_type.hotel.city }}
+        </div>
+    </div>
+
+    <div class="bill-details">
+        <div class="detail-section">
+            <h3>Guest Information</h3>
+            <div class="detail-item">
+                <span class="detail-label">Name:</span> {{ current_user.username }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Email:</span> {{ current_user.email }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Confirmation #:</span> {{ booking.id | string | upper }}
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Stay Details</h3>
+            <div class="detail-item">
+                <span class="detail-label">Check-in:</span> {{ booking.check_in.strftime('%B %d, %Y') }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Check-out:</span> {{ booking.check_out.strftime('%B %d, %Y') }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Nights:</span> {{ nights }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Room Type:</span> {{ booking.room_type.name }}
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Rooms:</span> {{ booking.rooms_count }}
+            </div>
+        </div>
+    </div>
+
+    <table class="charges-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="amount">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Room Rate ({{ booking.rooms_count }} room{{ 's' if booking.rooms_count > 1 else '' }} × {{ nights }}
+                    night{{ 's' if nights > 1 else '' }} × ${{ "%.2f"|format(booking.base_rate) }})</td>
+                <td class="amount">${{ "%.2f"|format(booking.subtotal) }}</td>
+            </tr>
+            <tr>
+                <td>Taxes (10%)</td>
+                <td class="amount">${{ "%.2f"|format(booking.taxes) }}</td>
+            </tr>
+            <tr>
+                <td>Service Fees (5%)</td>
+                <td class="amount">${{ "%.2f"|format(booking.fees) }}</td>
+            </tr>
+            <tr class="subtotal-row">
+                <td><strong>Subtotal</strong></td>
+                <td class="amount"><strong>${{ "%.2f"|format(booking.subtotal + booking.taxes + booking.fees)
+                        }}</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>Total Amount</strong></td>
+                <td class="amount"><strong>${{ "%.2f"|format(booking.total_cost) }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if booking.points_earned > 0 %}
+    <div class="points-section">
+        <h3>Loyalty Points Earned</h3>
+        <div class="points-amount">{{ "{:,}".format(booking.points_earned) }} Points</div>
+        <p style="margin-top: 0.5rem; opacity: 0.9;">Thank you for being a {{ current_user.membership_level }} member!
+        </p>
+    </div>
+    {% endif %}
+
+    <div class="bill-footer">
+        <p><strong>Payment Status:</strong> Paid</p>
+        <p>Thank you for choosing {{ booking.room_type.hotel.name }}!</p>
+        <p style="margin-top: 1rem;">For questions about this bill, please contact us at support@hotelweb.com</p>
+    </div>
+
+    <div class="action-buttons no-print">
+        <button onclick="window.print()" class="btn btn-primary">Print Bill</button>
+        <a href="{{ url_for('main.my_stays') }}" class="btn btn-outline">Back to My Stays</a>
+    </div>
+</div>
+{% endblock %}

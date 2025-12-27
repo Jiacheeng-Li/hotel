@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - HotelWeb{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="py-1">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">Search Results</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Search Summary -->
+<div class="mb-1">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <span class="text-muted">{{ city }}</span>
+            <span class="text-muted mx-2">•</span>
+            <span class="text-muted">{{ check_in }} - {{ check_out }}</span>
+        </div>
+        <span class="badge bg-primary">{{ results|length }} properties found</span>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Filters Sidebar -->
+    <aside class="col-md-3 mb-4">
+        <div class="card p-2 sticky-top shadow-sm" style="top: 90px; z-index: 1010;">
+            <h5 class="fw-bold text-primary mb-2 mt-2">Filter Results</h5>
+
+            <form action="{{ url_for('main.search') }}" method="get">
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Destination</label>
+                    <input class="form-control form-control-sm" list="sidebarCityOptions" name="city" value="{{ city }}"
+                        placeholder="Where to?">
+                    <datalist id="sidebarCityOptions">
+                        {% for c in cities %}
+                        <option value="{{ c }}">
+                            {% endfor %}
+                    </datalist>
+                </div>
+                <input type="hidden" name="check_in" value="{{ check_in }}">
+                <input type="hidden" name="check_out" value="{{ check_out }}">
+
+                <!-- Sort -->
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Sort By</label>
+                    <select name="sort_by" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="best_match" {% if sort_by=='best_match' %}selected{% endif %}>Best Match</option>
+                        <option value="lowest_price" {% if sort_by=='lowest_price' %}selected{% endif %}>Lowest Price</option>
+                        <option value="highest_rating" {% if sort_by=='highest_rating' %}selected{% endif %}>Highest Rating</option>
+                    </select>
+                </div>
+
+                <!-- People and Rooms on one line -->
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Details</label>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">People</span>
+                                <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Rooms</span>
+                                <input type="number" name="rooms_needed" class="form-control" value="{{ rooms_needed }}" min="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brands - Two per line -->
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Brands</label>
+                    <div class="row g-2">
+                        {% for brand in all_brands %}
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
+                                    id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
+                                <label class="form-check-label small" for="f_br_{{ brand.id }}">
+                                    {{ brand.name }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Amenities -->
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Amenities</label>
+                    <div style="max-height: 100px; overflow-y: auto;">
+                        {% for amenity in all_amenities %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities" value="{{ amenity.id }}"
+                                id="f_am_{{ amenity.id }}" {% if amenity.id|string in required_amenities %}checked{% endif %}>
+                            <label class="form-check-label small" for="f_am_{{ amenity.id }}">
+                                {{ amenity.name }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-sm">APPLY FILTERS</button>
+                    <a href="{{ url_for('main.search', city=city, check_in=check_in, check_out=check_out) }}"
+                        class="btn btn-link btn-sm text-muted mt-2">Reset Filters</a>
+                </div>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Results Area -->
+    <div class="col-md-9">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#list-view">List View</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link text-muted" id="map-tab" data-bs-toggle="tab" data-bs-target="#map-view">Map View</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- LIST VIEW -->
+            <div class="tab-pane fade show active" id="list-view">
+                {% for item in results %}
+                {% set hotel = item.hotel %}
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="row g-0">
+                        <div class="col-md-4 position-relative">
+                            <img src="{{ hotel.image_url }}" class="img-fluid h-100 object-fit-cover rounded-start"
+                                style="min-height: 200px;" alt="{{ hotel.name }}">
+                            <span class="badge bg-dark position-absolute top-0 start-0 m-2 opacity-75">
+                                {{ item.brand.name }}
+                            </span>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="fw-bold mb-1">
+                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ hotel.name }}
+                                        </a>
+                                    </h5>
+                                    <div>
+                                        {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
+                                    </div>
+                                </div>
+
+                                <p class="small text-muted">{{ hotel.city }}</p>
+
+                                <div class="mb-2">
+                                    <span class="badge bg-light text-dark border">{{ item.avg_rating }} / 5</span>
+                                    <span class="badge bg-info text-white">{{ item.room_types|length }} Room Types</span>
+                                </div>
+
+                                <p class="text-truncate">{{ hotel.description }}</p>
+
+                                <div class="d-flex justify-content-between align-items-end">
+                                    <small class="text-muted">
+                                        {% if item.total_required > 0 %}
+                                        Matched {{ item.match_count }}/{{ item.total_required }} amenities
+                                        {% else %}
+                                        Amenities matched: {{ item.match_count }}
+                                        {% endif %}
+                                    </small>
+
+                                    <div class="text-end">
+                                        <small class="text-muted">From</small>
+                                        <h4 class="text-success fw-bold">${{ item.min_price }}</h4>
+                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                            class="btn btn-primary btn-sm">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- MAP VIEW -->
+            <div class="tab-pane fade" id="map-view">
+                <div id="map" style="height: 600px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let mapInitialized = false;
+    let map;
+
+    document.getElementById('map-tab').addEventListener('shown.bs.tab', () => {
+
+        if (mapInitialized) {
+            map.invalidateSize();
+            return;
+        }
+
+        let defaultLat = 40.7128;
+        let defaultLon = -74.0060;
+
+        {% if results and results[0].hotel.latitude and results[0].hotel.longitude %}
+        defaultLat = {{ results[0].hotel.latitude }};
+        defaultLon = {{ results[0].hotel.longitude }};
+        {% endif %}
+
+        map = L.map('map').setView([defaultLat, defaultLon], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const hotels = [
+            {% for item in results %}
+            {
+                name: {{ item.hotel.name | tojson }},
+                lat: {{ item.hotel.latitude }},
+                lon: {{ item.hotel.longitude }},
+                price: {{ item.min_price | tojson }},
+                url: {{ url_for('main.hotel_detail', hotel_id=item.hotel.id) | tojson }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        hotels.forEach(h => {
+            if (h.lat && h.lon) {
+                L.marker([h.lat, h.lon]).addTo(map)
+                    .bindPopup(
+                        `<b>${h.name}</b><br>
+                         From $${h.price}<br>
+                         <a href="${h.url}">View</a>`
+                    );
+            }
+        });
+
+        mapInitialized = true;
+        setTimeout(() => map.invalidateSize(), 200);
+    });
+</script>
+
+{% endblock %}

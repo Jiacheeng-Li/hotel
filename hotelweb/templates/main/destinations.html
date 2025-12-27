@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Destinations - HotelWeb{% endblock %}
+
+{% block content %}
+<div class="py-5 text-center bg-light mb-5">
+    <h1 class="display-4 fw-bold text-primary">Explore Our Destinations</h1>
+    <p class="lead text-muted">From iconic cities to breathtaking resorts.</p>
+</div>
+
+<div class="container">
+    {% for dest in destinations %}
+    <div class="mb-5">
+        <h3 class="fw-bold mb-4 ps-3 border-start border-4 border-warning">{{ dest.city }}</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for hotel in dest.hotels %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 hover-effect">
+                    <img src="{{ hotel.image_url }}" class="card-img-top object-fit-cover" alt="{{ hotel.name }}"
+                        style="height: 200px;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-truncate">{{ hotel.name }}</h5>
+                        <p class="card-text small text-muted text-truncate">{{ hotel.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="badge" style="background-color: {{ hotel.brand.logo_color }}">{{
+                                hotel.brand.name }}</span>
+                            <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-end mt-3">
+            <a href="{{ url_for('main.search', city=dest.city) }}" class="text-decoration-none fw-bold">See all in {{
+                dest.city }} <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+    <hr class="my-5 opacity-25">
+    {% endfor %}
+</div>
+{% endblock %}

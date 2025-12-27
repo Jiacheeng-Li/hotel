@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand.name }} - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<!-- Brand Hero -->
+{% set bg_map = {
+'Grand Apex': 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80',
+'Urban Pulse': 'https://images.unsplash.com/photo-1486304873000-235643847519?auto=format&fit=crop&w=1920&q=80',
+'Family Haven': 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80',
+'Metro Express': 'https://images.unsplash.com/photo-1496417263034-38ec4f0d6b21?auto=format&fit=crop&w=1920&q=80'
+} %}
+
+<div class="position-relative vh-50 d-flex align-items-center justify-content-center text-center text-white"
+    style="background: url('{{ bg_map.get(brand.name) }}') no-repeat center center; background-size: cover; min-height: 500px;">
+    <!-- Dark overlay is CRITICAL for text contrast -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+
+    <div class="container position-relative z-1">
+        {% set logo_map = {
+        'Grand Apex': 'logo_grand_apex.png',
+        'Urban Pulse': 'logo_urban_pulse.png',
+        'Family Haven': 'logo_family_haven.png',
+        'Metro Express': 'logo_metro_express.png'
+        } %}
+
+        <!-- Logo Container: Circular Crop + Semi-Transparent Background -->
+        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4 shadow-lg overflow-hidden"
+            style="width: 180px; height: 180px; background-color: rgba(255, 255, 255, 0.9);">
+            <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}"
+                alt="{{ brand.name }}" class="img-fluid"
+                style="height: 100%; width: 100%; object-fit: contain; padding: 20px;">
+        </div>
+
+        <!-- FORCE WHITE TEXT with Shadow -->
+        <h1 class="display-3 fw-bold font-serif mb-3 text-white" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.8);">{{
+            brand.name }}</h1>
+        <p class="lead fw-light letter-spacing-2 text-uppercase text-white mb-0"
+            style="text-shadow: 1px 1px 5px rgba(0,0,0,0.8);">{{ brand.description }}</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Brand Philosophy Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <h6 class="text-uppercase fw-bold letter-spacing-2 mb-3" style="color: {{ brand.logo_color }}">Our
+                Philosophy</h6>
+            <h2 class="font-serif display-6 mb-4 text-dark">
+                {% if brand.name == 'Grand Apex' %}
+                Excellence in Every Detail
+                {% elif brand.name == 'Urban Pulse' %}
+                The Heartbeat of the City
+                {% elif brand.name == 'Family Haven' %}
+                Memories Made Together
+                {% else %}
+                Smart Travel, Simplified
+                {% endif %}
+            </h2>
+            <p class="lead text-muted">
+                {% if brand.name == 'Grand Apex' %}
+                At Grand Apex, we believe luxury is not just a service, but a feeling. Our dedicated concierge teams and
+                opulent environments ensure your stay is nothing short of majestic.
+                {% elif brand.name == 'Urban Pulse' %}
+                We bring the energy of the metropolis to your doorstep. Designed for the modern traveler who craves
+                connection, culture, and style in the center of it all.
+                {% elif brand.name == 'Family Haven' %}
+                Vacations are precious. We handle the details so you can focus on what matters most: your loved ones.
+                From kids' clubs to relaxing spas, there's joy for everyone.
+                {% else %}
+                Metro Express respects your journey and your budget. We provide clean, comfortable, and efficient
+                accommodations so you can rest easy and travel further.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Brand Hotels List -->
+    <h3 class="font-serif fw-bold mb-4 text-center">Our {{ brand.name }} Locations</h3>
+
+    <div class="row g-4">
+        {% if brand.hotels %}
+        {% for hotel in brand.hotels %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="position-relative">
+                    <img src="{{ hotel.image_url }}" class="card-img-top object-fit-cover" alt="{{ hotel.name }}"
+                        style="height: 250px;">
+                    <span class="position-absolute top-0 end-0 badge bg-dark m-3 opacity-75">
+                        {% for _ in range(hotel.stars) %} <i class="text-warning small">★</i> {% endfor %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold font-serif mb-1">{{ hotel.name }}</h5>
+                    <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> {{ hotel.city }}</p>
+                    <p class="card-text text-truncate">{{ hotel.description }}</p>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0 pb-4">
+                    <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}" class="btn btn-outline-dark w-100">
+                        View Details & Rooms
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12 text-center text-muted">
+            <p>No hotels found for this brand yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .letter-spacing-2 {
+        letter-spacing: 2px;
+    }
+
+    .letter-spacing-1 {
+        letter-spacing: 1px;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}

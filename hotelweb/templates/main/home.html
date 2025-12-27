@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Home - HotelWeb{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light hero-banner"
+    style="background: url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1920&q=80') no-repeat center center; background-size: cover; border-radius: 12px; min-height: 600px; display: flex; align-items: center; justify-content: center;">
+    <div class="overlay" style="background: rgba(0,0,0,0.6); position: absolute; top:0; left:0; right:0; bottom:0;">
+    </div>
+
+    <div class="col-md-8 p-lg-5 mx-auto my-5 position-relative text-white">
+        <h1 class="display-3 fw-bold mb-4 font-serif text-white" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+            Experience the
+            Extraordinary</h1>
+        <p class="lead mb-4 fw-normal text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-size: 1.5rem;">
+            Unforgettable stays in the world's most desirable locations.</p>
+
+        <!-- Search Card -->
+        <div class="card p-4 shadow-lg text-start mx-auto border-0"
+            style="max-width: 900px; background: rgba(255, 255, 255, 0.98); border-radius: 16px;">
+            <form action="{{ url_for('main.search') }}" method="get">
+                <div class="row g-3 footer-links">
+                    <div class="col-lg-3">
+                        <label for="city" class="form-label text-uppercase fw-bold small text-muted">Destination</label>
+                        <input class="form-control border-0 bg-light fw-bold text-dark ps-3 py-2" list="cityOptions"
+                            id="city" name="city" placeholder="Where to?" required>
+                        <datalist id="cityOptions">
+                            {% for city in cities %}
+                            <option value="{{ city }}">
+                                {% endfor %}
+                        </datalist>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label for="check_in"
+                            class="form-label text-uppercase fw-bold small text-muted">Check-in</label>
+                        <input type="date" class="form-control border-0 bg-light py-2" id="check_in" name="check_in"
+                            required min="{{ today }}">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="check_out"
+                            class="form-label text-uppercase fw-bold small text-muted">Check-out</label>
+                        <input type="date" class="form-control border-0 bg-light py-2" id="check_out" name="check_out"
+                            required min="{{ today }}">
+                    </div>
+
+                    <div class="col-lg-3 d-grid">
+                        <label class="form-label d-none d-md-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary fw-bold py-2"
+                            style="border-radius: 8px;">
+                            <i class="bi bi-search me-2" aria-hidden="true"></i>SEARCH
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Expanded Filters Toggle -->
+                <div class="mt-3 text-center">
+                    <a href="#" class="text-decoration-none small text-muted" data-bs-toggle="collapse"
+                        data-bs-target="#advancedSearch">
+                        <i class="bi bi-sliders"></i> Advanced Options
+                    </a>
+                </div>
+                <div class="collapse mt-3" id="advancedSearch">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label small">Guests</label>
+                            <input type="number" class="form-control form-control-sm" name="guests" value="2" min="1">
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label small">Brands</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for brand in brands %}
+                                <div class="form-check form-check-inline small">
+                                    <input class="form-check-input" type="checkbox" value="{{ brand.id }}"
+                                        id="hm_brand_{{ brand.id }}" name="brands">
+                                    <label class="form-check-label" for="hm_brand_{{ brand.id }}"
+                                        style="color: {{ brand.logo_color }};">
+                                        {{ brand.name }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Brands Section -->
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <h2 class="font-serif display-5 fw-bold">Our Collection</h2>
+        <p class="text-muted">Discover the perfect brand for your journey.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        {% set logo_map = {
+        'Grand Apex': 'logo_grand_apex.png',
+        'Urban Pulse': 'logo_urban_pulse.png',
+        'Family Haven': 'logo_family_haven.png',
+        'Metro Express': 'logo_metro_express.png'
+        } %}
+
+        {% for brand in brands %}
+        <div class="col-md-3">
+            <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm text-center p-4 hover-lift"
+                    style="transition: all 0.3s ease;">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 100px;">
+                        <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}"
+                            alt="{{ brand.name }}" class="img-fluid" style="max-height: 80px; max-width: 100%;">
+                    </div>
+                    <h5 class="fw-bold mb-2 font-serif">{{ brand.name }}</h5>
+                    <div
+                        style="height: 3px; width: 40px; background-color: {{ brand.logo_color }}; margin: 0 auto 10px auto;">
+                    </div>
+                    <p class="small text-muted mb-0">{{ brand.description }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-6">
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80"
+                    class="img-fluid rounded-3 shadow-lg" alt="Luxury Interior">
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-warning fw-bold letter-spacing-2">Membership</h6>
+                <h2 class="font-serif display-6 fw-bold mb-4">Unlock Exclusive Benefits</h2>
+                <p class="lead text-muted mb-4">Join our loyalty program to earn points on every stay, enjoy
+                    complimentary upgrades, and access member-only rates.</p>
+                <div class="d-flex gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-star-fill text-warning fs-4 me-2"></i>
+                        <span>Earn Points</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-wifi fs-4 text-primary me-2"></i>
+                        <span>Free Wi-Fi</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock-history fs-4 text-success me-2"></i>
+                        <span>Late Checkout</span>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary rounded-pill px-4">Join
+                        Now</a>
+                    {% else %}
+                    <a href="{{ url_for('main.account') }}" class="btn btn-outline-primary rounded-pill px-4">My
+                        Status</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
