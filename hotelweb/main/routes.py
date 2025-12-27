@@ -368,6 +368,10 @@ def stay_again(booking_id):
 @login_required
 def account():
     """Enhanced account page with tier info and statistics"""
+    # Check and process tier expiry (this will handle retention and downgrades)
+    retention_status = current_user.check_tier_retention_status()
+    db.session.commit()  # Commit any changes from retention check
+    
     # Award points for completed stays
     points_awarded, tier_upgraded = award_points_for_completed_stays(current_user)
     if points_awarded > 0:
