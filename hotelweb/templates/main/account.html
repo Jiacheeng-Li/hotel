@@ -507,7 +507,8 @@
                 <p><strong>Your Multiplier:</strong> {{ current_user.get_points_multiplier() }}x</p>
                 <p><strong>Example:</strong> For a $100/night room:</p>
                 <p>Base = ($100 × 1.15) × 10 = 1,150 points</p>
-                <p>Final = 1,150 × {{ current_user.get_points_multiplier() }} = {{ int(1150 * current_user.get_points_multiplier()) }} points per night</p>
+                {% set example_points = (1150 * current_user.get_points_multiplier())|round|int %}
+                <p>Final = 1,150 × {{ current_user.get_points_multiplier() }} = {{ "{:,}".format(example_points) }} points per night</p>
             </div>
         </div>
 
