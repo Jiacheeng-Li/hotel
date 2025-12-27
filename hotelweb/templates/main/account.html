@@ -54,9 +54,10 @@
     }
 
     .header-left h2 {
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 0.25rem;
+        color: white;
     }
 
     .member-number {
@@ -66,6 +67,9 @@
 
     .header-right {
         text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
     }
 
     .points-label {
@@ -551,7 +555,7 @@
     /* Member Benefits Styles */
     .benefits-header {
         color: white;
-        padding: 2rem;
+        padding: 1.5rem 2rem;
         border-radius: 12px;
         margin-bottom: 2rem;
         text-align: center;
@@ -559,10 +563,14 @@
     
     .benefits-header h2 {
         color: white;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
     }
     
     .benefits-header p {
         color: white;
+        font-size: 1rem;
+        margin-bottom: 0;
     }
     
     {% if current_user.membership_level == 'Member' %}
@@ -614,8 +622,21 @@
     .benefit-icon {
         font-size: 2.5rem;
         margin-bottom: 1rem;
-        color: #5B5B5B;
     }
+    
+    {% if current_user.membership_level == 'Member' %}
+    .benefit-icon { color: #5B5B5B; }
+    {% elif current_user.membership_level == 'Silver' %}
+    .benefit-icon { color: #AEB0C1; }
+    {% elif current_user.membership_level == 'Gold' %}
+    .benefit-icon { color: #A07A0D; }
+    {% elif current_user.membership_level == 'Diamond' %}
+    .benefit-icon { color: #0B254E; }
+    {% elif current_user.membership_level == 'Ambassador' %}
+    .benefit-icon { color: #253639; }
+    {% else %}
+    .benefit-icon { color: #5B5B5B; }
+    {% endif %}
 
     .benefit-title {
         font-size: 1.1rem;
@@ -1192,7 +1213,7 @@
 
         <div class="card">
             <div class="text-center">
-                <a href="#" class="benefits-toggle" onclick="toggleBenefitsComparison()">
+                <a href="#" class="benefits-toggle" onclick="return toggleBenefitsComparison(event);">
                     <i class="bi bi-chevron-down" id="benefits-icon"></i>
                     Compare All Membership Tiers
                 </a>
@@ -1374,7 +1395,10 @@
         }
     }
 
-    function toggleBenefitsComparison() {
+    function toggleBenefitsComparison(e) {
+        if (e) {
+            e.preventDefault();
+        }
         const comparison = document.getElementById('benefits-comparison');
         const icon = document.getElementById('benefits-icon');
         comparison.classList.toggle('show');
@@ -1383,6 +1407,7 @@
         } else {
             icon.className = 'bi bi-chevron-down';
         }
+        return false;
     }
 
     function toggleEdit() {
