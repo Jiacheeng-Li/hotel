@@ -1038,19 +1038,19 @@
                             </div>
                             <div class="progress-bar-segments" style="width: {{ nights_total_progress_pct }}%;">
                                 {% if silver_width > 0 %}
-                                <div class="progress-segment silver" style="width: {{ (silver_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment silver" style="width: {{ (silver_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if gold_20_width > 0 %}
-                                <div class="progress-segment gold-20" style="width: {{ (gold_20_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment gold-20" style="width: {{ (gold_20_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if gold_40_width > 0 %}
-                                <div class="progress-segment gold-40" style="width: {{ (gold_40_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment gold-40" style="width: {{ (gold_40_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if diamond_width > 0 %}
-                                <div class="progress-segment diamond" style="width: {{ (diamond_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment diamond" style="width: {{ (diamond_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if ambassador_width > 0 %}
-                                <div class="progress-segment platinum" style="width: {{ (ambassador_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment platinum" style="width: {{ (ambassador_width / nights_total_progress_pct * 100) if nights_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                             </div>
                         </div>
@@ -1116,16 +1116,16 @@
                             </div>
                             <div class="progress-bar-segments" style="width: {{ points_total_progress_pct }}%;">
                                 {% if points_silver_width > 0 %}
-                                <div class="progress-segment silver" style="width: {{ (points_silver_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment silver" style="width: {{ (points_silver_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if points_gold_width > 0 %}
-                                <div class="progress-segment gold-20" style="width: {{ (points_gold_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment gold-20" style="width: {{ (points_gold_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if points_diamond_width > 0 %}
-                                <div class="progress-segment diamond" style="width: {{ (points_diamond_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment diamond" style="width: {{ (points_diamond_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                                 {% if points_platinum_width > 0 %}
-                                <div class="progress-segment platinum" style="width: {{ (points_platinum_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%;"></div>
+                                <div class="progress-segment platinum" style="width: {{ (points_platinum_width / points_total_progress_pct * 100) if points_total_progress_pct > 0 else 0 }}%; flex-shrink: 0;"></div>
                                 {% endif %}
                             </div>
                         </div>
