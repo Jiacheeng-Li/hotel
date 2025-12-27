@@ -1003,7 +1003,7 @@
                             </div>
                         </div>
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: linear-gradient(to right, {% if current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 10 %}5%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% elif current_user.nights_stayed >= 10 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 20 %}10%{% elif current_user.nights_stayed >= 10 %}5%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 200 %}#253639{% elif current_user.nights_stayed >= 70 %}#37283F{% elif current_user.nights_stayed >= 20 %}#A07A0D{% else %}#d1d5db{% endif %} {% if current_user.nights_stayed >= 70 %}35%{% elif current_user.nights_stayed >= 20 %}10%{% else %}0%{% endif %}, {% if current_user.nights_stayed >= 200 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
+                            <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: {{ nights_bar_color }};"></div>
                         </div>
                     </div>
                     <div class="tier-labels">
@@ -1065,7 +1065,7 @@
                             </div>
                         </div>
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: linear-gradient(to right, {% if current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} 0%, {% if current_user.lifetime_points >= 100000 %}#A07A0D{% elif current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 50000 %}5%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 500000 %}#37283F{% elif current_user.lifetime_points >= 100000 %}#A07A0D{% elif current_user.lifetime_points >= 50000 %}#606060{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 100000 %}10%{% elif current_user.lifetime_points >= 50000 %}5%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 1000000 %}#253639{% elif current_user.lifetime_points >= 500000 %}#37283F{% elif current_user.lifetime_points >= 100000 %}#A07A0D{% else %}#d1d5db{% endif %} {% if current_user.lifetime_points >= 500000 %}50%{% elif current_user.lifetime_points >= 100000 %}10%{% else %}0%{% endif %}, {% if current_user.lifetime_points >= 1000000 %}#253639{% else %}#d1d5db{% endif %} 100%);"></div>
+                            <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: {{ points_bar_color }};"></div>
                         </div>
                     </div>
                     <div class="tier-labels">

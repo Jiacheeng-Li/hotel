@@ -467,16 +467,40 @@ def account():
         progress_in_range = current_user.nights_stayed - prev_milestone
         nights_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 100
     
-    # Calculate progress percentages for progress bars
+    # Calculate progress percentages and colors for progress bars
     # By Nights: 0-200 nights total
     nights_total_range = 200
     nights_stayed = current_user.nights_stayed
     nights_progress_pct = min(100, (nights_stayed / nights_total_range) * 100)
     
+    # Determine current tier color for nights progress bar
+    if nights_stayed >= 200:
+        nights_bar_color = '#253639'  # Platinum
+    elif nights_stayed >= 70:
+        nights_bar_color = '#37283F'  # Diamond
+    elif nights_stayed >= 20:
+        nights_bar_color = '#A07A0D'  # Gold
+    elif nights_stayed >= 10:
+        nights_bar_color = '#606060'  # Silver
+    else:
+        nights_bar_color = '#d1d5db'  # Gray (Club Member)
+    
     # By Points: 0-1M points total
     points_total_range = 1000000
     lifetime_points = current_user.lifetime_points
     points_total_progress_pct = min(100, (lifetime_points / points_total_range) * 100)
+    
+    # Determine current tier color for points progress bar
+    if lifetime_points >= 1000000:
+        points_bar_color = '#253639'  # Platinum
+    elif lifetime_points >= 500000:
+        points_bar_color = '#37283F'  # Diamond
+    elif lifetime_points >= 100000:
+        points_bar_color = '#A07A0D'  # Gold
+    elif lifetime_points >= 50000:
+        points_bar_color = '#606060'  # Silver
+    else:
+        points_bar_color = '#d1d5db'  # Gray (Club Member)
     
     # Calculate progress percentage for tier (points-based)
     tier_thresholds = {
@@ -508,7 +532,9 @@ def account():
                          nights_progress_percent=nights_progress_percent,
                          nights_next_tier=nights_next_tier or 'Platinum Elite',
                          nights_progress_pct=nights_progress_pct,
+                         nights_bar_color=nights_bar_color,
                          points_total_progress_pct=points_total_progress_pct,
+                         points_bar_color=points_bar_color,
                          year_nights=year_nights,
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,
