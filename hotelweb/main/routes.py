@@ -29,10 +29,25 @@ def award_points_for_completed_stays(user):
         if not PointsTransaction.query.filter_by(booking_id=booking.id, transaction_type='EARNED').first():
             points_to_award = booking.points_earned
             if points_to_award > 0:
+                nights = (booking.check_out - booking.check_in).days
+                
+                # Update lifetime stats
                 user.points += points_to_award
                 user.lifetime_points += points_to_award
-                user.nights_stayed += (booking.check_out - booking.check_in).days
+                user.nights_stayed += nights
                 points_awarded_total += points_to_award
+                
+                # Update current tier year stats for retention tracking
+                # Only count if booking is within current tier year (tier_earned_date to tier_expiry_date)
+                if user.tier_earned_date and user.tier_expiry_date:
+                    if booking.check_out >= user.tier_earned_date and booking.check_out <= user.tier_expiry_date:
+                        user.current_year_nights += nights
+                        user.current_year_points += points_to_award
+                elif user.tier_earned_date:
+                    # If only tier_earned_date is set, count bookings after that date
+                    if booking.check_out >= user.tier_earned_date:
+                        user.current_year_nights += nights
+                        user.current_year_points += points_to_award
 
                 # Create points transaction record
                 transaction = PointsTransaction(
@@ -40,7 +55,7 @@ def award_points_for_completed_stays(user):
                     booking_id=booking.id,
                     points=points_to_award,
                     transaction_type='EARNED',
-                    description=f'Stay at {booking.room_type.hotel.name} - {(booking.check_out - booking.check_in).days} night(s)'
+                    description=f'Stay at {booking.room_type.hotel.name} - {nights} night(s)'
                 )
                 db.session.add(transaction)
                 

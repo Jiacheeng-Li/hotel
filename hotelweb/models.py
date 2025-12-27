@@ -167,9 +167,10 @@ class User(UserMixin, db.Model):
     def check_tier_retention_status(self):
         """
         Check if user meets retention requirements for current tier.
+        Also handles tier expiry and downgrade if needed.
         Returns dict with status and progress info.
         """
-        from datetime import date
+        from datetime import date, timedelta
         requirements = self.get_tier_retention_requirements()
         
         if self.membership_level == 'Club Member':
@@ -179,15 +180,27 @@ class User(UserMixin, db.Model):
                 'note': 'Club Member status is permanent'
             }
         
+        # Initialize tier dates if not set
         if not self.tier_expiry_date:
-            # No expiry date set - set it to one year from now
-            from datetime import timedelta
             if not self.tier_earned_date:
                 self.tier_earned_date = date.today()
             self.tier_expiry_date = self.tier_earned_date + timedelta(days=365)
         
         today = date.today()
         days_until_expiry = (self.tier_expiry_date - today).days
+        
+        # Check if tier has expired
+        if days_until_expiry < 0:
+            # Tier expired - check retention and downgrade if needed
+            self.process_tier_expiry()
+            # Recalculate after potential downgrade
+            requirements = self.get_tier_retention_requirements()
+            if self.membership_level == 'Club Member':
+                return {
+                    'status': 'permanent',
+                    'meets_requirement': True,
+                    'note': 'Club Member status is permanent'
+                }
         
         # Check if user meets retention requirement (nights OR points)
         meets_nights = self.current_year_nights >= requirements['nights']
@@ -205,6 +218,40 @@ class User(UserMixin, db.Model):
             'required_points': requirements['points'],
             'note': requirements['note']
         }
+    
+    def process_tier_expiry(self):
+        """
+        Process tier expiry: check if retention requirements are met,
+        and downgrade if not. Reset counters for new tier year if retained.
+        """
+        from datetime import date, timedelta
+        requirements = self.get_tier_retention_requirements()
+        
+        # Check if retention requirement is met
+        meets_nights = self.current_year_nights >= requirements['nights']
+        meets_points = self.current_year_points >= requirements['points']
+        meets_requirement = meets_nights or meets_points
+        
+        if meets_requirement:
+            # Retention requirement met - extend tier for another year
+            self.tier_earned_date = date.today()
+            self.tier_expiry_date = date.today() + timedelta(days=365)
+            # Reset counters for new tier year
+            self.current_year_nights = 0
+            self.current_year_points = 0
+        else:
+            # Retention requirement not met - downgrade based on lifetime stats
+            old_tier = self.membership_level
+            # Recalculate tier based on lifetime points/nights
+            self.calculate_tier()
+            new_tier = self.membership_level
+            
+            if old_tier != new_tier:
+                # Tier was downgraded - reset dates and counters
+                self.tier_earned_date = date.today()
+                self.tier_expiry_date = date.today() + timedelta(days=365)
+                self.current_year_nights = 0
+                self.current_year_points = 0
     
     def get_tier_benefits(self):
         """Return list of benefits for current tier - matches comparison table"""
