@@ -969,24 +969,24 @@
 
                     <!-- Nights Tracker (Default) -->
                     <div id="nights-tracker" class="tracker-content">
-                <div class="progress-info">
+                        <div class="progress-info">
                             <span><strong>{{ current_user.nights_stayed }}</strong> nights stayed</span>
                             {% if nights_to_next_milestone > 0 %}
                             <span style="color: #6b7280; font-size: 0.9rem;">{{ nights_to_next_milestone }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ nights_next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: inherit; cursor: pointer; font-weight: 600;">{{ nights_next_tier }}</a></span>
                             {% else %}
                             <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
                             {% endif %}
-                </div>
-                <div class="progress-bar-container">
+                        </div>
+                        <div class="progress-bar-container">
                             <div class="tier-markers">
                                 <div class="tier-marker silver {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ silver_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">10</div>
-                </div>
+                                </div>
                                 <div class="tier-marker gold {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ gold_20_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">20</div>
-                    </div>
+                                </div>
                                 <div class="tier-marker gold {% if current_user.nights_stayed >= 40 %}active{% endif %}" style="left: {{ gold_40_end_pct }}%; transform: translateX(-50%);">
                                     <div class="tier-marker-dot"></div>
                                     <div class="tier-marker-label">40</div>
@@ -1018,32 +1018,32 @@
                                 {% endif %}
                             </div>
                         </div>
-                <div class="tier-milestones">
+                        <div class="tier-milestones">
                             <div class="milestone silver {% if current_user.nights_stayed >= 10 or current_user.membership_level in ['Silver Elite', 'Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 10 and current_user.nights_stayed < 20 and current_user.membership_level == 'Silver Elite' %}current{% endif %}">
-                        <div class="milestone-name">Silver Elite</div>
+                                <div class="milestone-name">Silver Elite</div>
                                 <div class="milestone-points">10 nights</div>
-                    </div>
+                            </div>
                             <div class="milestone gold {% if current_user.nights_stayed >= 20 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 20 and current_user.nights_stayed < 40 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
-                        <div class="milestone-name">Gold Elite</div>
+                                <div class="milestone-name">Gold Elite</div>
                                 <div class="milestone-points">20 nights</div>
-                    </div>
+                            </div>
                             <div class="milestone gold {% if current_user.nights_stayed >= 40 or current_user.membership_level in ['Gold Elite', 'Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 40 and current_user.nights_stayed < 70 and current_user.membership_level == 'Gold Elite' %}current{% endif %}">
                                 <div class="milestone-name">Gold Elite</div>
                                 <div class="milestone-points">40 nights</div>
-                    </div>
+                            </div>
                             <div class="milestone diamond {% if current_user.nights_stayed >= 70 or current_user.membership_level in ['Diamond Elite', 'Platinum Elite'] %}achieved{% endif %} {% if current_user.nights_stayed >= 70 and current_user.nights_stayed < 200 and current_user.membership_level == 'Diamond Elite' %}current{% endif %}">
-                        <div class="milestone-name">Diamond Elite</div>
+                                <div class="milestone-name">Diamond Elite</div>
                                 <div class="milestone-points">70 nights</div>
-                    </div>
+                            </div>
                             <div class="milestone platinum {% if current_user.nights_stayed >= 200 or current_user.membership_level == 'Platinum Elite' %}achieved current{% endif %}">
-                        <div class="milestone-name">Platinum Elite</div>
+                                <div class="milestone-name">Platinum Elite</div>
                                 <div class="milestone-points">200 nights</div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
                         <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
                             Earn qualifying nights or points to unlock more member benefits.
                         </p>
-            </div>
+                    </div>
 
                     <!-- Points Tracker (Hidden by default) -->
                     <div id="points-tracker" class="tracker-content" style="display: none;">
