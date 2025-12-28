@@ -1160,7 +1160,7 @@
                         <div>
                             <strong>
                                 {% if reward.reward_type == 'points' %}
-                                <i class="bi bi-star-fill text-warning"></i> {{ reward.reward_value|int|format(',') }} Bonus Points
+                                <i class="bi bi-star-fill text-warning"></i> {{ "{:,}".format(reward.reward_value|int) }} Bonus Points
                                 {% elif reward.reward_type == 'breakfast' %}
                                 <i class="bi bi-cup-hot text-primary"></i> {{ reward.reward_value }} Complimentary Breakfast{{ 's' if reward.reward_value != 1 else '' }}
                                 {% endif %}
