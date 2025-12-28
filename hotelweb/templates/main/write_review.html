@@ -50,11 +50,11 @@
                             <div class="rating-input d-flex gap-2 align-items-center">
                                 {% for i in range(1, 6) %}
                                 <label class="rating-star" for="rating-{{ i }}" style="cursor: pointer; font-size: 2rem; color: #ddd; transition: color 0.2s;">
-                                    <input type="radio" name="rating" id="rating-{{ i }}" value="{{ i }}" required style="display: none;">
+                                    <input type="radio" name="rating" id="rating-{{ i }}" value="{{ i }}" required style="display: none;" {% if existing_review and existing_review.rating == i %}checked{% endif %}>
                                     <i class="bi bi-heart-fill"></i>
                                 </label>
                                 {% endfor %}
-                                <span class="ms-3 text-muted" id="rating-text">Select a rating</span>
+                                <span class="ms-3 text-muted" id="rating-text">{% if existing_review %}Current rating: {{ existing_review.rating }}{% else %}Select a rating{% endif %}</span>
                             </div>
                         </div>
 
@@ -62,7 +62,7 @@
                         <div class="mb-4">
                             <label for="comment" class="form-label fw-bold">Your Review</label>
                             <textarea class="form-control" id="comment" name="comment" rows="6" 
-                                placeholder="Share your experience at this hotel..."></textarea>
+                                placeholder="Share your experience at this hotel...">{% if existing_review %}{{ existing_review.comment or '' }}{% endif %}</textarea>
                             <small class="text-muted">Your review will be displayed on the hotel's page.</small>
                         </div>
 
@@ -96,6 +96,19 @@ document.addEventListener('DOMContentLoaded', function() {
         4: 'Very Good',
         5: 'Excellent'
     };
+    
+    // Initialize rating display if existing review
+    {% if existing_review %}
+    const initialRating = {{ existing_review.rating }};
+    ratingText.textContent = ratingTexts[initialRating];
+    ratingLabels.forEach((label, index) => {
+        if (index < initialRating) {
+            label.style.color = '#dc3545'; // Red for selected
+        } else {
+            label.style.color = '#ddd'; // Gray for unselected
+        }
+    });
+    {% endif %}
     
     ratingInputs.forEach(input => {
         input.addEventListener('change', function() {
