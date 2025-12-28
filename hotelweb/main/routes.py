@@ -311,8 +311,8 @@ def roomtype_detail(roomtype_id):
         # Process from_source parameter
         if from_source == 'search':
             breadcrumb_context['from_search'] = True
-            # Try to get search params from referrer if available
-            if referrer and '/search' in referrer:
+            # Try to get search params from referrer if available (should already be set above)
+            if not breadcrumb_context['search_params'] and referrer and '/search' in referrer:
                 from urllib.parse import urlparse, parse_qs
                 parsed = urlparse(referrer)
                 search_params = parse_qs(parsed.query)
