@@ -649,7 +649,7 @@ def book_room(roomtype_id):
         # Use per-night rate with taxes/fees equivalent
         per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
         base_points_per_night = int(per_night_total * 10)  # 10 points per $1
-        multiplier = current_user.get_points_multiplier()
+    multiplier = current_user.get_points_multiplier()
         points_per_night = int(base_points_per_night * multiplier)
         points_earned = points_per_night * nights * rooms_needed
     else:
@@ -724,6 +724,9 @@ def my_stays():
             current.append(booking)
         elif booking.check_out < today:
             past.append(booking)
+    
+    # Sort upcoming by check-in date (ascending - nearest first)
+    upcoming.sort(key=lambda b: b.check_in)
     
     # Check which bookings already have reviews
     reviewed_booking_ids = set()
@@ -828,28 +831,13 @@ def view_bill(booking_id):
 @bp.route('/booking/<int:booking_id>/stay-again')
 @login_required
 def stay_again(booking_id):
-    """Pre-fill search with same hotel for rebooking"""
+    """Navigate to hotel detail page for rebooking"""
     booking = Booking.query.get_or_404(booking_id)
     if booking.user_id != current_user.id:
         abort(403)
     
     hotel = booking.room_type.hotel
-    # Suggest dates 1 year from original booking
-    from datetime import timedelta
-    suggested_check_in = booking.check_in + timedelta(days=365)
-    suggested_check_out = booking.check_out + timedelta(days=365)
-    
-    # If suggested dates are in the past, use today + 7 days
-    if suggested_check_in < date.today():
-        suggested_check_in = date.today() + timedelta(days=7)
-        suggested_check_out = suggested_check_in + (booking.check_out - booking.check_in)
-    
-    return redirect(url_for('main.search',
-                          city=hotel.city,
-                          check_in=suggested_check_in.strftime('%Y-%m-%d'),
-                          check_out=suggested_check_out.strftime('%Y-%m-%d'),
-                          guests=booking.room_type.capacity,
-                          rooms_needed=booking.rooms_count))
+    return redirect(url_for('main.hotel_detail', hotel_id=hotel.id))
     
 @bp.route('/account')
 @login_required

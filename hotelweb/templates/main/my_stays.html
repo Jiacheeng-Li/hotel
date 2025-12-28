@@ -376,6 +376,29 @@
                         </div>
                     </div>
 
+                    <div class="booking-price-info" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;">
+                        {% if booking.payment_method == 'points' and booking.points_used > 0 %}
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="text-muted small">Payment:</span>
+                            <span class="fw-bold" style="color: #7c3aed;">{{ "{:,}".format(booking.points_used) }} points</span>
+                        </div>
+                        {% else %}
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="text-muted small">Total:</span>
+                            <span class="fw-bold" style="color: #059669;">${{ "{:,.2f}".format(booking.total_cost) }}</span>
+                        </div>
+                        {% endif %}
+                        {% if booking.breakfast_included %}
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-cup-hot-fill" style="color: #d97706;"></i>
+                            <span class="text-muted small">Breakfast included</span>
+                            {% if booking.breakfast_voucher_used %}
+                            <span class="badge bg-success ms-1" style="font-size: 0.7rem;">Free (Voucher)</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
                     {% set days_until = (booking.check_in - today).days %}
                     <div class="countdown">
                         ✓ Check-in in {{ days_until }} day{{ 's' if days_until != 1 else '' }}
