@@ -14,7 +14,7 @@
 <div class="position-relative vh-50 d-flex align-items-center justify-content-center text-center text-white"
     style="background: url('{{ bg_map.get(brand.name) }}') no-repeat center center; background-size: cover; min-height: 500px;">
     <!-- Dark overlay is CRITICAL for text contrast - centered overlay -->
-    <div class="position-absolute top-0 start-50 translate-middle-x h-100 bg-dark" style="width: 70%; opacity: 0.25; transform: translateX(-50%);"></div>
+    <div class="position-absolute top-0 h-100 bg-dark" style="width: 70%; left: 50%; transform: translateX(-50%); opacity: 0.25;"></div>
 
     <div class="container position-relative z-1">
         {% set logo_map = {
