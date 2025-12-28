@@ -48,10 +48,12 @@
             <h1 class="display-5 fw-bold mb-2">{{ hotel.name }}</h1>
             <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
             <div class="mb-3">
-                <span class="badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</span>
-                <span class="ms-2">
-                    {% for _ in range(hotel.stars) %} <i class="text-warning">★</i> {% endfor %}
-                </span>
+                <div class="hotel-brand-with-stars">
+                    <a href="{{ url_for('main.brand_detail', brand_id=hotel.brand.id) }}" class="brand-badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</a>
+                    <span class="hotel-brand-stars">
+                        {% for _ in range(hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
+                    </span>
+                </div>
             </div>
             
             {% if hotel.reviews %}
@@ -189,9 +191,6 @@
                         <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                     </div>
                     {% endif %}
-                    <div class="hotel-card-stars-overlay">
-                        {% for _ in range(rec_hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
-                    </div>
                 </div>
                 <div class="hotel-card-body">
                     <h5 class="hotel-card-title">
@@ -205,7 +204,12 @@
                     <p class="hotel-card-description">{{ rec_hotel.description }}</p>
                     <div class="hotel-card-footer">
                         <div class="hotel-card-footer-left">
-                            <span class="hotel-brand-badge" style="background-color: {{ rec_hotel.brand.logo_color }};">{{ rec_hotel.brand.name }}</span>
+                            <div class="hotel-brand-with-stars">
+                                <a href="{{ url_for('main.brand_detail', brand_id=rec_hotel.brand.id) }}" class="hotel-brand-badge" style="background-color: {{ rec_hotel.brand.logo_color }};">{{ rec_hotel.brand.name }}</a>
+                                <span class="hotel-brand-stars">
+                                    {% for _ in range(rec_hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
+                                </span>
+                            </div>
                             {% if rec_hotel.reviews %}
                             {% set rec_avg_rating = (rec_hotel.reviews|sum(attribute='rating') / rec_hotel.reviews|length) %}
                             <div class="hotel-card-rating">

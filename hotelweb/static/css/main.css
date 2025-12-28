@@ -375,15 +375,58 @@ a {
     flex-wrap: wrap;
 }
 
-.hotel-brand-badge {
+/* Unified Brand Badge Style */
+.brand-badge {
     display: inline-block;
-    padding: 0.375rem 0.75rem;
+    padding: 0.375rem 0.625rem;
     border-radius: 6px;
     font-size: 0.8125rem;
     font-weight: 600;
     color: white;
     text-transform: none;
     letter-spacing: 0;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.brand-badge:hover {
+    opacity: 0.85;
+    color: white;
+    text-decoration: none;
+}
+
+.hotel-brand-badge {
+    display: inline-block;
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: white;
+    text-transform: none;
+    letter-spacing: 0;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.hotel-brand-badge:hover {
+    opacity: 0.85;
+    color: white;
+    text-decoration: none;
+}
+
+.hotel-brand-with-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.hotel-brand-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    color: var(--accent-color);
+    font-size: 0.875rem;
 }
 
 .hotel-stars {

@@ -38,9 +38,6 @@
             <div class="card hotel-card">
                 <div class="position-relative">
                     <img src="{{ hotel.image_url }}" class="hotel-card-img" alt="{{ hotel.name }}">
-                    <div class="hotel-card-stars-overlay">
-                        {% for _ in range(hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
-                    </div>
                 </div>
                 <div class="hotel-card-body">
                     <h5 class="hotel-card-title">{{ hotel.name }}</h5>
@@ -50,7 +47,12 @@
                     <p class="hotel-card-description">{{ hotel.description }}</p>
                     <div class="hotel-card-footer">
                         <div class="hotel-card-footer-left">
-                            <span class="hotel-brand-badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</span>
+                            <div class="hotel-brand-with-stars">
+                                <a href="{{ url_for('main.brand_detail', brand_id=hotel.brand.id) }}" class="hotel-brand-badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</a>
+                                <span class="hotel-brand-stars">
+                                    {% for _ in range(hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
+                                </span>
+                            </div>
                             {% if hotel.reviews %}
                             {% set avg_rating = (hotel.reviews|sum(attribute='rating') / hotel.reviews|length) %}
                             <div class="hotel-card-rating">
