@@ -202,7 +202,7 @@
 
                                 <p class="text-truncate">{{ hotel.description }}</p>
 
-                                <div class="d-flex justify-content-between align-items-end">
+                                <div class="d-flex justify-content-between align-items-end mt-3">
                                     <small class="text-muted">
                                         {% if item.total_required > 0 %}
                                         Matched {{ item.match_count }}/{{ item.total_required }} amenities
@@ -211,9 +211,11 @@
                                         {% endif %}
                                     </small>
 
-                                    <div class="text-end">
-                                        <small class="text-muted">From</small>
-                                        <h4 class="text-success fw-bold">${{ item.min_price }}</h4>
+                                    <div class="text-end d-flex flex-column gap-2">
+                                        <div>
+                                            <small class="text-muted">From</small>
+                                            <h4 class="text-success fw-bold mb-0">${{ item.min_price }}</h4>
+                                        </div>
                                         <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
                                             class="btn btn-primary btn-sm">View</a>
                                     </div>
