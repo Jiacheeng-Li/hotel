@@ -30,15 +30,48 @@
         background: white;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
+        padding: 0;
         margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .rules-header {
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s;
+    }
+
+    .rules-header:hover {
+        background-color: #f9fafb;
     }
 
     .milestone-rules-card h2 {
         font-size: 1.5rem;
         font-weight: 600;
         color: #1a1a1a;
-        margin-bottom: 1rem;
+        margin: 0;
+    }
+
+    .rules-toggle-icon {
+        font-size: 1.25rem;
+        color: #6b7280;
+        transition: transform 0.3s ease;
+    }
+
+    .rules-toggle-icon.expanded {
+        transform: rotate(180deg);
+    }
+
+    .rules-content {
+        padding: 0 2rem 2rem 2rem;
+        display: none;
+    }
+
+    .rules-content.expanded {
+        display: block;
     }
 
     .rules-list {
@@ -98,6 +131,12 @@
     .milestone-item.unclaimed {
         border-color: #fbbf24;
         background: #fffbeb;
+    }
+
+    .milestone-item.current {
+        border-color: #d97706;
+        background: #fef3c7;
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
     }
 
     .milestone-header {
@@ -209,7 +248,11 @@
 
     <!-- Milestone Rules -->
     <div class="milestone-rules-card">
-        <h2>How Milestone Rewards Work</h2>
+        <div class="rules-header" onclick="toggleRules()">
+            <h2>How Milestone Rewards Work</h2>
+            <i class="bi bi-chevron-down rules-toggle-icon" id="rules-toggle-icon"></i>
+        </div>
+        <div class="rules-content" id="rules-content">
         <ul class="rules-list">
             <li>
                 <i class="bi bi-check-circle-fill"></i>
@@ -240,6 +283,7 @@
                 </div>
             </li>
         </ul>
+        </div>
     </div>
 
     <!-- Progress Section -->
@@ -249,7 +293,7 @@
         {% if milestone_progress %}
         <div>
             {% for milestone in milestone_progress %}
-            <div class="milestone-item {% if milestone.status == 'claimed' %}claimed{% elif milestone.status == 'unclaimed' %}unclaimed{% else %}upcoming{% endif %}">
+            <div class="milestone-item {% if milestone.status == 'claimed' %}claimed{% elif milestone.status == 'unclaimed' %}unclaimed{% elif milestone.is_current %}current{% else %}upcoming{% endif %}">
                 <div class="milestone-header">
                     <div class="milestone-title">{{ milestone.nights }} Nights Milestone</div>
                     <span class="milestone-status status-{{ milestone.status }}">
@@ -332,5 +376,20 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function toggleRules() {
+    const content = document.getElementById('rules-content');
+    const icon = document.getElementById('rules-toggle-icon');
+    
+    if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        icon.classList.remove('expanded');
+    } else {
+        content.classList.add('expanded');
+        icon.classList.add('expanded');
+    }
+}
+</script>
 {% endblock %}
 
