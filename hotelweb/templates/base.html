@@ -155,6 +155,21 @@
 
     {% block extra_scripts %}{% endblock %}
 
+    <!-- Auto-dismiss alerts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-dismiss alerts after 2 seconds
+            const alerts = document.querySelectorAll('.alert.auto-dismiss');
+            alerts.forEach(function(alert) {
+                const dismissTime = alert.getAttribute('data-auto-dismiss') || 2000;
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, dismissTime);
+            });
+        });
+    </script>
+
     <!-- Active Nav Link Highlighter -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
