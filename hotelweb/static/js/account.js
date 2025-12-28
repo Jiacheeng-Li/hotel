@@ -5,9 +5,18 @@ function switchTab(tabName, event) {
     }
     
     // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
+    const tabs = document.querySelectorAll('.account-page-wrapper .tab-content');
+    if (tabs.length === 0) {
+        // Fallback for when wrapper might not be present or different structure
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+            tab.style.display = 'none'; // Explicitly hide
+        });
+    } else {
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+    }
     
     // Remove active class from all nav tabs
     document.querySelectorAll('.nav-tab').forEach(nav => {
@@ -18,18 +27,26 @@ function switchTab(tabName, event) {
     const targetTab = document.getElementById(tabName);
     if (targetTab) {
         targetTab.classList.add('active');
+        targetTab.style.display = ''; // Reset inline display if set
+    } else {
+        console.error(`Tab content with ID '${tabName}' not found`);
     }
     
     // Add active class to clicked nav tab
-    if (event && event.target) {
-        event.target.classList.add('active');
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
     } else {
-        // Find the nav tab that matches the tabName
-        document.querySelectorAll('.nav-tab').forEach(nav => {
-            if (nav.getAttribute('onclick') && nav.getAttribute('onclick').includes(tabName)) {
-                nav.classList.add('active');
-            }
-        });
+        // Fallback: Find the nav tab that matches the tabName via data-tab or onclick
+        const navTab = document.querySelector(`.nav-tab[data-tab="${tabName}"]`);
+        if (navTab) {
+            navTab.classList.add('active');
+        } else {
+            document.querySelectorAll('.nav-tab').forEach(nav => {
+                if (nav.getAttribute('onclick') && nav.getAttribute('onclick').includes(tabName)) {
+                    nav.classList.add('active');
+                }
+            });
+        }
     }
     
     return false;
@@ -43,13 +60,13 @@ function switchTracker(type) {
     toggleBtns.forEach(btn => btn.classList.remove('active'));
     
     if (type === 'nights') {
-        nightsTracker.style.display = 'block';
-        pointsTracker.style.display = 'none';
-        toggleBtns[0].classList.add('active');
+        if (nightsTracker) nightsTracker.style.display = 'block';
+        if (pointsTracker) pointsTracker.style.display = 'none';
+        if (toggleBtns[0]) toggleBtns[0].classList.add('active');
     } else {
-        nightsTracker.style.display = 'none';
-        pointsTracker.style.display = 'block';
-        toggleBtns[1].classList.add('active');
+        if (nightsTracker) nightsTracker.style.display = 'none';
+        if (pointsTracker) pointsTracker.style.display = 'block';
+        if (toggleBtns[1]) toggleBtns[1].classList.add('active');
     }
 }
 
@@ -59,11 +76,15 @@ function toggleBenefitsComparison(e) {
     }
     const comparison = document.getElementById('benefits-comparison');
     const icon = document.getElementById('benefits-icon');
-    comparison.classList.toggle('show');
-    if (comparison.classList.contains('show')) {
-        icon.className = 'bi bi-chevron-up';
-    } else {
-        icon.className = 'bi bi-chevron-down';
+    if (comparison) {
+        comparison.classList.toggle('show');
+        if (icon) {
+            if (comparison.classList.contains('show')) {
+                icon.className = 'bi bi-chevron-up';
+            } else {
+                icon.className = 'bi bi-chevron-down';
+            }
+        }
     }
     return false;
 }
@@ -90,7 +111,7 @@ function toggleEdit() {
 
     viewElements.forEach(el => el.style.display = 'none');
     editElements.forEach(el => el.style.display = 'block');
-    formActions.style.display = 'flex';
+    if (formActions) formActions.style.display = 'flex';
 }
 
 function cancelEdit() {
@@ -100,7 +121,7 @@ function cancelEdit() {
 
     viewElements.forEach(el => el.style.display = 'block');
     editElements.forEach(el => el.style.display = 'none');
-    formActions.style.display = 'none';
+    if (formActions) formActions.style.display = 'none';
 }
 
 // My Stays Tab functionality (if present on page)
@@ -124,5 +145,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    
+    // Auto-select tab if URL hash exists
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const tabLink = document.querySelector(`.nav-tab[data-tab="${hash}"]`);
+        if (tabLink) {
+            switchTab(hash);
+        }
+    }
 });
-
