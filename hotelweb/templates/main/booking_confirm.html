@@ -75,9 +75,9 @@
                         <span class="fw-bold">${{ "{:,.2f}".format(fees) }}</span>
                     </div>
                     {% if breakfast_included %}
-                    <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex justify-content-between mb-2 breakfast-row">
                         <span class="text-muted">Breakfast ({{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }})</span>
-                        <span class="fw-bold">${{ "{:,.2f}".format(breakfast_total) }}</span>
+                        <span class="fw-bold breakfast-price">${{ "{:,.2f}".format(breakfast_total) }}</span>
                     </div>
                     {% endif %}
                     <hr>
@@ -112,6 +112,34 @@
                         <input type="hidden" name="rooms_needed" value="{{ rooms_needed }}">
                         
                         <input type="hidden" name="breakfast_included" value="{{ '1' if breakfast_included else '0' }}">
+                        
+                        <!-- Breakfast Voucher Selection -->
+                        {% if breakfast_included and available_breakfast_vouchers %}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3">Use Breakfast Voucher</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="no_voucher" value="" checked onchange="updateBreakfastPrice()">
+                                <label class="form-check-label" for="no_voucher">
+                                    <strong>Pay for Breakfast</strong>
+                                    <div class="small text-muted">${{ "{:,.2f}".format(breakfast_price_per_room * rooms_needed) }} total</div>
+                                </label>
+                            </div>
+                            {% for voucher in available_breakfast_vouchers %}
+                            {% if voucher.available >= rooms_needed %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="voucher_{{ voucher.id }}" value="{{ voucher.id }}" onchange="updateBreakfastPrice()">
+                                <label class="form-check-label" for="voucher_{{ voucher.id }}">
+                                    <strong>Use Breakfast Voucher</strong>
+                                    <div class="small text-muted">
+                                        {{ voucher.available }} of {{ voucher.total }} breakfast{{ 's' if voucher.total != 1 else '' }} available
+                                        <span class="badge bg-success ms-1">Free</span>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         
                         <div class="mb-4">
                             <label class="form-label fw-bold mb-3">Payment Method</label>
@@ -216,6 +244,7 @@ function updatePaymentMethod() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    updateBreakfastPrice();
     updatePaymentMethod();
 });
 </script>

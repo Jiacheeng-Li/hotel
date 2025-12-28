@@ -472,9 +472,46 @@ def booking_confirm(roomtype_id):
     base_rate = float(rt.price_per_night)
     subtotal = base_rate * nights * rooms_needed
     
+    # Query available breakfast vouchers (milestone rewards with unused breakfasts)
+    available_breakfast_vouchers = []
+    breakfast_rewards = MilestoneReward.query.filter_by(
+        user_id=current_user.id,
+        reward_type='breakfast'
+    ).all()
+    
+    for reward in breakfast_rewards:
+        available = reward.get_available_breakfasts()
+        if available > 0:
+            available_breakfast_vouchers.append({
+                'id': reward.id,
+                'milestone_nights': reward.milestone_nights,
+                'available': available,
+                'total': reward.reward_value
+            })
+    
     # Breakfast pricing (per room per stay)
     breakfast_price_per_room = 25.00
-    breakfast_total = breakfast_price_per_room * rooms_needed if breakfast_included else 0
+    breakfast_voucher_used = None
+    
+    # Check if user wants to use a breakfast voucher
+    if breakfast_included and breakfast_voucher_id:
+        try:
+            breakfast_voucher_id_int = int(breakfast_voucher_id)
+            voucher = MilestoneReward.query.filter_by(
+                id=breakfast_voucher_id_int,
+                user_id=current_user.id,
+                reward_type='breakfast'
+            ).first()
+            
+            if voucher and voucher.get_available_breakfasts() >= rooms_needed:
+                breakfast_voucher_used = voucher
+                breakfast_total = 0  # Free with voucher
+            else:
+                breakfast_total = breakfast_price_per_room * rooms_needed
+        except (ValueError, TypeError):
+            breakfast_total = breakfast_price_per_room * rooms_needed
+    else:
+        breakfast_total = breakfast_price_per_room * rooms_needed if breakfast_included else 0
     
     # Calculate taxes and fees on base rate only (breakfast may be taxed separately in real system)
     taxes = subtotal * 0.10  # 10% tax
@@ -505,8 +542,10 @@ def booking_confirm(roomtype_id):
                          breakfast_included=breakfast_included,
                          breakfast_total=breakfast_total,
                          breakfast_price_per_room=breakfast_price_per_room,
+                         breakfast_voucher_used=breakfast_voucher_used,
                          final_total=final_total,
-                         points_earned=points_earned)
+                         points_earned=points_earned,
+                         available_breakfast_vouchers=available_breakfast_vouchers)
 
 @bp.route('/book/<int:roomtype_id>', methods=['POST'])
 @login_required
@@ -518,6 +557,7 @@ def book_room(roomtype_id):
     rooms_needed = int(request.form.get('rooms_needed', 1))
     payment_method = request.form.get('payment_method', 'pay_now')
     breakfast_included = request.form.get('breakfast_included') == '1'
+    breakfast_voucher_id = request.form.get('breakfast_voucher_id')  # ID of breakfast voucher to use
     
     try:
         check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
@@ -540,9 +580,37 @@ def book_room(roomtype_id):
     base_rate = float(rt.price_per_night)
     subtotal = base_rate * nights * rooms_needed
     
-    # Breakfast pricing
+    # Breakfast pricing and voucher handling
     breakfast_price_per_room = 25.00
-    breakfast_total = breakfast_price_per_room * rooms_needed if breakfast_included else 0
+    breakfast_voucher_used_id = None
+    breakfast_total = 0
+    
+    if breakfast_included:
+        # Check if user wants to use a breakfast voucher
+        if breakfast_voucher_id:
+            try:
+                breakfast_voucher_id = int(breakfast_voucher_id)
+                voucher = MilestoneReward.query.filter_by(
+                    id=breakfast_voucher_id,
+                    user_id=current_user.id,
+                    reward_type='breakfast'
+                ).first()
+                
+                if voucher and voucher.get_available_breakfasts() >= rooms_needed:
+                    # Use breakfast voucher - breakfast is free
+                    breakfast_voucher_used_id = voucher.id
+                    breakfast_total = 0
+                    # Update voucher usage
+                    voucher.breakfasts_used += rooms_needed
+                else:
+                    # Voucher not available or insufficient, charge for breakfast
+                    breakfast_total = breakfast_price_per_room * rooms_needed
+            except (ValueError, TypeError):
+                # Invalid voucher ID, charge for breakfast
+                breakfast_total = breakfast_price_per_room * rooms_needed
+        else:
+            # No voucher selected, charge for breakfast
+            breakfast_total = breakfast_price_per_room * rooms_needed
     
     taxes = subtotal * 0.10  # 10% tax
     fees = subtotal * 0.05   # 5% service fee
@@ -589,7 +657,8 @@ def book_room(roomtype_id):
     # Create booking
     booking = Booking(
         breakfast_included=breakfast_included,
-        breakfast_price_per_room=breakfast_price_per_room if breakfast_included else 0,
+        breakfast_price_per_room=breakfast_price_per_room if breakfast_included and not breakfast_voucher_used_id else 0,
+        breakfast_voucher_used=breakfast_voucher_used_id,
         points_used=points_used,
         payment_method=payment_method,
         user_id=current_user.id,

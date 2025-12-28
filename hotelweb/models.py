@@ -415,6 +415,7 @@ class Booking(db.Model):
     # Breakfast option
     breakfast_included = db.Column(db.Boolean, default=False)
     breakfast_price_per_room = db.Column(db.Numeric(10, 2), default=0)  # Breakfast price per room per stay
+    breakfast_voucher_used = db.Column(db.Integer, db.ForeignKey('milestone_reward.id'), nullable=True)  # Which breakfast voucher was used
     
     # Payment method
     payment_method = db.Column(db.String(20), default='pay_now')  # pay_now, pay_at_hotel, points
@@ -441,7 +442,14 @@ class MilestoneReward(db.Model):
     milestone_nights = db.Column(db.Integer, nullable=False)  # The milestone threshold (20, 30, 40, etc.)
     reward_type = db.Column(db.String(20), nullable=False)  # 'points' or 'breakfast'
     reward_value = db.Column(db.Integer)  # For points: 5000, For breakfast: 2 (number of breakfasts)
+    breakfasts_used = db.Column(db.Integer, default=0)  # Number of breakfasts used from this reward
     claimed_at = db.Column(db.DateTime)  # When user selected their reward
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User', backref='milestone_rewards', lazy=True)
+    
+    def get_available_breakfasts(self):
+        """Get number of available breakfasts from this reward"""
+        if self.reward_type == 'breakfast':
+            return max(0, self.reward_value - self.breakfasts_used)
+        return 0
