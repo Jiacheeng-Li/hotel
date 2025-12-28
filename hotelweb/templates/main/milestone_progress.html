@@ -334,22 +334,20 @@
                     </span>
                 </div>
                 
+                {% if milestone.is_current %}
                 <div class="milestone-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Threshold</span>
-                        <span class="detail-value">{{ milestone.nights }} nights</span>
-                    </div>
                     <div class="detail-item">
                         <span class="detail-label">Your Progress</span>
                         <span class="detail-value">{{ year_nights }} / {{ milestone.nights }} nights</span>
                     </div>
-                    {% if milestone.status == 'unclaimed' %}
+                    {% if year_nights < milestone.nights %}
                     <div class="detail-item">
                         <span class="detail-label">Nights Needed</span>
                         <span class="detail-value">{{ milestone.nights - year_nights }} more nights</span>
                     </div>
                     {% endif %}
                 </div>
+                {% endif %}
 
                 {% if milestone.reward %}
                 <div class="reward-info">
