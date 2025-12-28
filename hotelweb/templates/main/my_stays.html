@@ -326,10 +326,10 @@
     </div>
 
     <div class="stays-tabs">
-        <button class="tab-button active" data-tab="upcoming">
+        <button class="tab-button" data-tab="upcoming">
             Upcoming <span class="badge text-white ms-1" style="background-color: #1e3a8a;">{{ upcoming|length }}</span>
         </button>
-        <button class="tab-button" data-tab="current">
+        <button class="tab-button active" data-tab="current">
             Current <span class="badge bg-success ms-1">{{ current|length }}</span>
         </button>
         <button class="tab-button" data-tab="past">
@@ -344,7 +344,7 @@
     </div>
 
     <!-- Upcoming Stays Tab -->
-    <div class="tab-content active" id="upcoming">
+    <div class="tab-content" id="upcoming">
         {% if upcoming %}
         {% for booking in upcoming %}
         <div class="booking-card">
@@ -424,7 +424,7 @@
     </div>
 
     <!-- Current Stays Tab -->
-    <div class="tab-content" id="current">
+    <div class="tab-content active" id="current">
         {% if current %}
         {% for booking in current %}
         <div class="booking-card">
