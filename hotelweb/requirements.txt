@@ -2,5 +2,4 @@ Flask
 Flask-SQLAlchemy
 Flask-Login
 email_validator
-requests
 python-dotenv
