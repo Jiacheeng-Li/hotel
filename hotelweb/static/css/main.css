@@ -1076,6 +1076,7 @@ a {
     border-radius: 10px;
     position: relative;
     overflow: visible;
+    margin-top: 1rem;
 }
 
 .progress-bar-fill {
