@@ -299,8 +299,8 @@
     let mapInitialized = false;
     let map;
 
+    {% if results|length > 0 %}
     document.getElementById('map-tab').addEventListener('shown.bs.tab', () => {
-
         if (mapInitialized) {
             map.invalidateSize();
             return;
@@ -309,7 +309,7 @@
         let defaultLat = 40.7128;
         let defaultLon = -74.0060;
 
-        {% if results and results[0].hotel.latitude and results[0].hotel.longitude %}
+        {% if results[0].hotel.latitude and results[0].hotel.longitude %}
         defaultLat = {{ results[0].hotel.latitude }};
         defaultLon = {{ results[0].hotel.longitude }};
         {% endif %}
@@ -346,6 +346,7 @@
         mapInitialized = true;
         setTimeout(() => map.invalidateSize(), 200);
     });
+    {% endif %}
 
     function updateCheckOutMinSidebar() {
         const checkIn = document.querySelector('input[name="check_in"]');
