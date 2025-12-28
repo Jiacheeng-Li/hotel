@@ -1284,6 +1284,9 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Points History</h3>
+                <div class="text-muted small mt-2" style="font-size: 0.85rem;">
+                    <i class="bi bi-info-circle"></i> Points Calculation: 1 dollar = 10 base points × {{ current_user.get_points_multiplier() }}x {{ current_user.membership_level }} multiplier. Points are not earned on amounts paid with points.
+                </div>
         </div>
             {% if all_transactions %}
             <div>
