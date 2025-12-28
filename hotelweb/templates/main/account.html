@@ -834,7 +834,6 @@
 
     .btn-edit {
         padding: 0.75rem 1.5rem;
-        background: #37283F;
         color: white;
         border: none;
         border-radius: 8px;
@@ -844,10 +843,25 @@
         transition: all 0.2s;
     }
 
-    .btn-edit:hover {
-        background: #4a4a4a;
-        transform: translateY(-1px);
-    }
+    {% if actual_tier == 'Club Member' %}
+    .btn-edit { background: #0B254E; }
+    .btn-edit:hover { background: #091d3d; transform: translateY(-1px); }
+    {% elif actual_tier == 'Silver Elite' %}
+    .btn-edit { background: #606060; }
+    .btn-edit:hover { background: #4d4d4d; transform: translateY(-1px); }
+    {% elif actual_tier == 'Gold Elite' %}
+    .btn-edit { background: #A07A0D; }
+    .btn-edit:hover { background: #8a680b; transform: translateY(-1px); }
+    {% elif actual_tier == 'Diamond Elite' %}
+    .btn-edit { background: #37283F; }
+    .btn-edit:hover { background: #2d1f33; transform: translateY(-1px); }
+    {% elif actual_tier == 'Platinum Elite' %}
+    .btn-edit { background: #253639; }
+    .btn-edit:hover { background: #1e2b2e; transform: translateY(-1px); }
+    {% else %}
+    .btn-edit { background: #37283F; }
+    .btn-edit:hover { background: #4a4a4a; transform: translateY(-1px); }
+    {% endif %}
 
     .btn-secondary {
         padding: 0.75rem 1.5rem;
