@@ -148,21 +148,19 @@
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="fw-bold mb-2">
-                                    <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
-                                        class="text-decoration-none text-dark">
-                                        {{ hotel.name }}
-                                    </a>
-                                </h5>
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="fw-bold mb-2">
+                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ hotel.name }}
+                                        </a>
+                                    </h5>
+                                    <div>
+                                        {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
+                                    </div>
+                                </div>
 
                                 <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
-
-                                <div class="mb-3">
-                                    <span class="badge" style="background-color: {{ item.brand.logo_color }};">{{ item.brand.name }}</span>
-                                    <span class="ms-2">
-                                        {% for _ in range(hotel.stars) %} <i class="text-warning">★</i> {% endfor %}
-                                    </span>
-                                </div>
 
                                 {% if hotel.reviews %}
                                 <div class="mb-2">
