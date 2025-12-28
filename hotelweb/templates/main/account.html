@@ -10,6 +10,14 @@
     {% set tier_display_name = actual_tier + ' Member' %}
 {% endif %}
 
+<style>
+    /* Override main container padding for account page to allow full-width header */
+    main.container {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+</style>
+
 <div class="account-page-wrapper tier-{{ actual_tier.lower().replace(' ', '-') }}">
     <div class="account-header">
     <div class="header-content">
