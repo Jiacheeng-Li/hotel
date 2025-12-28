@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block title %}Milestone Rewards Progress - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<style>
+    .milestone-progress-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        color: #6b7280;
+    }
+
+    .milestone-rules-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .milestone-rules-card h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+    }
+
+    .rules-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .rules-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+    }
+
+    .rules-list li:last-child {
+        border-bottom: none;
+    }
+
+    .rules-list li i {
+        color: #d97706;
+        margin-top: 0.25rem;
+    }
+
+    .progress-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .progress-section h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+    }
+
+    .milestone-item {
+        padding: 1.5rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .milestone-item:hover {
+        border-color: #d97706;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.1);
+    }
+
+    .milestone-item.claimed {
+        border-color: #10b981;
+        background: #f0fdf4;
+    }
+
+    .milestone-item.unclaimed {
+        border-color: #fbbf24;
+        background: #fffbeb;
+    }
+
+    .milestone-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .milestone-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .milestone-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-claimed {
+        background: #10b981;
+        color: white;
+    }
+
+    .status-unclaimed {
+        background: #fbbf24;
+        color: #92400e;
+    }
+
+    .status-upcoming {
+        background: #e5e7eb;
+        color: #6b7280;
+    }
+
+    .milestone-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #9ca3af;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+
+    .reward-info {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .reward-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .reward-points {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .reward-breakfast {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+</style>
+
+<div class="milestone-progress-container">
+    <div class="page-header">
+        <h1>Milestone Rewards Progress</h1>
+        <p>Track your progress and view all milestone rewards for {{ current_year }}</p>
+    </div>
+
+    <!-- Milestone Rules -->
+    <div class="milestone-rules-card">
+        <h2>How Milestone Rewards Work</h2>
+        <ul class="rules-list">
+            <li>
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <strong>Earn Milestone Rewards Every 10 Nights</strong>
+                    <p class="text-muted small mb-0 mt-1">Starting at 20 nights, you can claim a reward every 10 nights you stay (20, 30, 40, 50, 60, 70, 80, 90, 100 nights).</p>
+                </div>
+            </li>
+            <li>
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <strong>Choose Your Reward</strong>
+                    <p class="text-muted small mb-0 mt-1">At each milestone, choose between 5,000 bonus points or 2 complimentary breakfasts.</p>
+                </div>
+            </li>
+            <li>
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <strong>Annual Reset</strong>
+                    <p class="text-muted small mb-0 mt-1">Milestone progress resets each calendar year. Nights count from January 1st to December 31st.</p>
+                </div>
+            </li>
+            <li>
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <strong>Use Your Rewards</strong>
+                    <p class="text-muted small mb-0 mt-1">Points are added to your account immediately. Breakfast vouchers can be used on your next booking.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+        <h2>Your {{ current_year }} Milestone Progress</h2>
+        
+        {% if milestone_progress %}
+        <div>
+            {% for milestone in milestone_progress %}
+            <div class="milestone-item {% if milestone.status == 'claimed' %}claimed{% elif milestone.status == 'unclaimed' %}unclaimed{% else %}upcoming{% endif %}">
+                <div class="milestone-header">
+                    <div class="milestone-title">{{ milestone.nights }} Nights Milestone</div>
+                    <span class="milestone-status status-{{ milestone.status }}">
+                        {% if milestone.status == 'claimed' %}
+                        ✓ Claimed
+                        {% elif milestone.status == 'unclaimed' %}
+                        Available
+                        {% else %}
+                        Not Reached
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="milestone-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Threshold</span>
+                        <span class="detail-value">{{ milestone.nights }} nights</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Your Progress</span>
+                        <span class="detail-value">{{ year_nights }} / {{ milestone.nights }} nights</span>
+                    </div>
+                    {% if milestone.status == 'unclaimed' %}
+                    <div class="detail-item">
+                        <span class="detail-label">Nights Needed</span>
+                        <span class="detail-value">{{ milestone.nights - year_nights }} more nights</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if milestone.reward %}
+                <div class="reward-info">
+                    <div class="detail-label mb-2">Reward Claimed:</div>
+                    {% if milestone.reward.reward_type == 'points' %}
+                    <span class="reward-type reward-points">
+                        <i class="bi bi-star-fill"></i>
+                        {{ "{:,}".format(milestone.reward.reward_value|int) }} Bonus Points
+                    </span>
+                    {% elif milestone.reward.reward_type == 'breakfast' %}
+                    <span class="reward-type reward-breakfast">
+                        <i class="bi bi-cup-hot-fill"></i>
+                        {{ milestone.reward.reward_value }} Complimentary Breakfast{{ 's' if milestone.reward.reward_value != 1 else '' }}
+                    </span>
+                    {% endif %}
+                    <div class="text-muted small mt-2">
+                        Claimed: {{ milestone.reward.claimed_at.strftime('%B %d, %Y') if milestone.reward.claimed_at else milestone.reward.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                    {% if milestone.reward.reward_type == 'breakfast' %}
+                    {% set available = milestone.reward.get_available_breakfasts() %}
+                    {% set used = milestone.reward.breakfasts_used %}
+                    <div class="text-muted small mt-1">
+                        {% if used > 0 %}
+                        <span class="badge bg-secondary">{{ used }} used</span>
+                        {% endif %}
+                        {% if available > 0 %}
+                        <span class="badge bg-success">{{ available }} available</span>
+                        {% else %}
+                        <span class="badge bg-danger">All used</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% elif milestone.status == 'unclaimed' %}
+                <div class="reward-info">
+                    <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone.nights) }}" class="btn btn-warning">
+                        Claim Your Reward
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🏨</div>
+            <h3>No Milestone Progress Yet</h3>
+            <p>Start booking stays to earn milestone rewards!</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Book Your First Stay</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

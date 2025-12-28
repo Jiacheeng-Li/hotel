@@ -929,7 +929,7 @@
             <div class="points-label">YOUR POINTS</div>
             <div class="points-value">{{ "{:,}".format(current_user.points) }}</div>
             <div class="header-actions">
-                <a href="{{ url_for('main.search') }}" class="btn-header">Redeem Points</a>
+                <a href="{{ url_for('main.index') }}" class="btn-header">Redeem Points</a>
             </div>
         </div>
     </div>
@@ -1136,7 +1136,7 @@
                     </div>
                     {% endif %}
                     <div class="mt-3">
-                        <a href="#" onclick="return switchTab('activity', event);" style="font-size: 0.9rem; color: #37283F; text-decoration: none; font-weight: 500;">
+                        <a href="{{ url_for('main.milestone_progress') }}" style="font-size: 0.9rem; color: #37283F; text-decoration: none; font-weight: 500;">
                             Milestone Rewards progress >
                         </a>
                     </div>

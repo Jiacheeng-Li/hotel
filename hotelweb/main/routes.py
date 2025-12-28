@@ -1237,6 +1237,50 @@ def claim_milestone_reward(milestone_nights):
     # GET request - show selection page
     return render_template('main/milestone_rewards.html', milestone_nights=milestone_nights)
 
+@bp.route('/account/milestone-progress')
+@login_required
+def milestone_progress():
+    """Display milestone rewards progress page with rules and claimed rewards"""
+    from datetime import datetime
+    
+    current_year = datetime.now().year
+    year_start = datetime(current_year, 1, 1).date()
+    all_bookings = current_user.bookings
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
+    
+    # Milestone thresholds: 20, 30, 40, 50, 60, 70, 80, 90, 100
+    milestone_thresholds = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+    
+    # Get all milestone rewards for this user
+    all_milestone_rewards = MilestoneReward.query.filter_by(
+        user_id=current_user.id
+    ).all()
+    
+    # Create a dictionary mapping milestone_nights to reward
+    rewards_dict = {r.milestone_nights: r for r in all_milestone_rewards}
+    
+    # Build milestone progress list
+    milestone_progress_list = []
+    for threshold in milestone_thresholds:
+        status = 'upcoming'
+        if year_nights >= threshold:
+            if threshold in rewards_dict:
+                status = 'claimed'
+            else:
+                status = 'unclaimed'
+        
+        milestone_progress_list.append({
+            'nights': threshold,
+            'status': status,
+            'reward': rewards_dict.get(threshold)
+        })
+    
+    return render_template('main/milestone_progress.html',
+                         current_year=current_year,
+                         year_nights=year_nights,
+                         milestone_progress=milestone_progress_list)
+
 @bp.route('/account/update', methods=['POST'])
 @login_required
 def update_profile():
