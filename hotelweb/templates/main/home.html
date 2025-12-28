@@ -62,20 +62,20 @@
                     </a>
                 </div>
                 <div class="collapse mt-3" id="advancedSearch">
-                    <div class="row g-3">
-                        <div class="col-md-3">
+                    <div class="row g-2">
+                        <div class="col-md-2">
                             <label class="form-label small">Guests</label>
                             <input type="number" class="form-control form-control-sm" name="guests" value="2" min="1">
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-10">
                             <label class="form-label small">Brands</label>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex flex-wrap gap-1">
                                 {% for brand in brands %}
-                                <div class="form-check form-check-inline small">
+                                <div class="form-check form-check-inline small" style="margin-right: 0.75rem;">
                                     <input class="form-check-input" type="checkbox" value="{{ brand.id }}"
                                         id="hm_brand_{{ brand.id }}" name="brands">
                                     <label class="form-check-label" for="hm_brand_{{ brand.id }}"
-                                        style="color: {{ brand.logo_color }};">
+                                        style="color: {{ brand.logo_color }}; font-size: 0.875rem;">
                                         {{ brand.name }}
                                     </label>
                                 </div>
