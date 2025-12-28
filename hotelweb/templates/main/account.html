@@ -1283,8 +1283,7 @@
     <!-- Club Member Benefits Tab -->
     <div id="benefits" class="tab-content">
         <div class="benefits-header">
-            <h2>Your Membership Benefits</h2>
-            <p>{{ current_user.membership_level }} • {{ current_user.get_points_multiplier() }}x Points Multiplier</p>
+            <h2>Your Membership Benefits <span style="font-weight: 400; font-size: 1.5rem;">|</span> {{ actual_tier }}</h2>
         </div>
 
         <div class="benefits-grid">
