@@ -24,28 +24,45 @@ def award_points_for_completed_stays(user):
     ).all()
 
     for booking in completed_bookings:
-        # Check if points have already been awarded for this booking
-        if not PointsTransaction.query.filter_by(booking_id=booking.id, transaction_type='EARNED').first():
+        nights = (booking.check_out - booking.check_in).days
+        
+        # Check if nights have already been counted for this booking
+        # We check if there's an EARNED transaction (for points bookings) or if booking has been processed
+        existing_earned_transaction = PointsTransaction.query.filter_by(booking_id=booking.id, transaction_type='EARNED').first()
+        
+        # For points-paid bookings (points_used > 0), we still need to count nights even if no points were earned
+        # Check if nights have been counted by looking for any transaction with this booking_id
+        nights_already_counted = PointsTransaction.query.filter_by(booking_id=booking.id).first() is not None
+        
+        if not nights_already_counted:
+            # Count nights for all completed bookings (including points-paid bookings)
+            user.nights_stayed += nights
+            
+            # Update current tier year stats for retention tracking
+            # Only count if booking is within current tier year (tier_earned_date to tier_expiry_date)
+            if user.tier_earned_date and user.tier_expiry_date:
+                if booking.check_out >= user.tier_earned_date and booking.check_out <= user.tier_expiry_date:
+                    user.current_year_nights += nights
+            elif user.tier_earned_date:
+                # If only tier_earned_date is set, count bookings after that date
+                if booking.check_out >= user.tier_earned_date:
+                    user.current_year_nights += nights
+        
+        # Award points if not already awarded and points were earned
+        if not existing_earned_transaction:
             points_to_award = booking.points_earned
             if points_to_award > 0:
-                nights = (booking.check_out - booking.check_in).days
-                
-                # Update lifetime stats
+                # Update lifetime stats for points
                 user.points += points_to_award
                 user.lifetime_points += points_to_award
-                user.nights_stayed += nights
                 points_awarded_total += points_to_award
                 
-                # Update current tier year stats for retention tracking
-                # Only count if booking is within current tier year (tier_earned_date to tier_expiry_date)
+                # Update current tier year stats for points
                 if user.tier_earned_date and user.tier_expiry_date:
                     if booking.check_out >= user.tier_earned_date and booking.check_out <= user.tier_expiry_date:
-                        user.current_year_nights += nights
                         user.current_year_points += points_to_award
                 elif user.tier_earned_date:
-                    # If only tier_earned_date is set, count bookings after that date
                     if booking.check_out >= user.tier_earned_date:
-                        user.current_year_nights += nights
                         user.current_year_points += points_to_award
 
                 # Create points transaction record
@@ -621,6 +638,7 @@ def book_room(roomtype_id):
     
     # Handle points payment
     points_used = 0
+    points_transaction = None
     if payment_method == 'points':
         points_needed = int(final_total * 100)  # 100 points = $1
         if current_user.points < points_needed:
@@ -630,7 +648,7 @@ def book_room(roomtype_id):
                                   rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
         points_used = points_needed
         current_user.points -= points_used
-        # Record points transaction
+        # Record points transaction (will add booking_id after booking is created)
         points_transaction = PointsTransaction(
             user_id=current_user.id,
             points=-points_used,
@@ -638,6 +656,7 @@ def book_room(roomtype_id):
             description=f'Payment for booking at {rt.hotel.name}'
         )
         db.session.add(points_transaction)
+        db.session.flush()  # Get transaction ID
         final_total = 0  # Fully paid with points
     
     # Calculate points earned based on ACTUAL PAYMENT AMOUNT
@@ -679,6 +698,10 @@ def book_room(roomtype_id):
     
     db.session.add(booking)
     db.session.flush()  # Get booking ID
+    
+    # Update points transaction with booking_id if it was a points payment
+    if points_used > 0:
+        points_transaction.booking_id = booking.id
     
     # Store points_earned in booking but don't award yet - points will be awarded after stay ends
     # Check for tier upgrade (based on current points, not including this booking)
