@@ -784,7 +784,7 @@ a {
     --tier-hover: #2d1f33;
     --tier-gradient-start: #37283F;
     --tier-gradient-end: #091d3d;
-    background: transparent;
+    background: transparent !important;
     width: 100%;
 }
 
@@ -918,6 +918,7 @@ a {
     display: flex;
     gap: 2rem;
     padding: 0 1rem;
+    background: transparent !important;
 }
 
 .nav-tab {
@@ -946,6 +947,7 @@ a {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+    background: transparent !important;
 }
 
 .account-page-wrapper .tab-content {
