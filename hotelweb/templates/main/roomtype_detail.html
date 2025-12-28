@@ -129,8 +129,6 @@
                 <hr>
 
                 <form action="{{ url_for('main.booking_confirm', roomtype_id=roomtype.id) }}" method="get">
-                    {% set default_check_in = request.args.get('check_in', '') %}
-                    {% set default_check_out = request.args.get('check_out', '') %}
                     {% set default_rooms = request.args.get('rooms_needed', 1) %}
 
                     <div class="mb-3">

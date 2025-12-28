@@ -36,13 +36,13 @@
                         <label for="check_in"
                             class="form-label text-uppercase fw-bold small text-muted">Check-in</label>
                         <input type="date" class="form-control border-0 bg-light py-2" id="check_in" name="check_in"
-                            required min="{{ today }}">
+                            required min="{{ today }}" value="{{ today.strftime('%Y-%m-%d') }}">
                     </div>
                     <div class="col-lg-3">
                         <label for="check_out"
                             class="form-label text-uppercase fw-bold small text-muted">Check-out</label>
                         <input type="date" class="form-control border-0 bg-light py-2" id="check_out" name="check_out"
-                            required min="{{ today }}">
+                            required min="{{ today }}" value="{{ tomorrow.strftime('%Y-%m-%d') }}">
                     </div>
 
                     <div class="col-lg-3 d-grid">

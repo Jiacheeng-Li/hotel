@@ -185,7 +185,7 @@
                             <div class="card-body h-100" style="min-height: 300px;">
                                 <div class="d-flex justify-content-between">
                                     <h5 class="fw-bold mb-2">
-                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
                                             class="text-decoration-none text-dark">
                                             {{ hotel.name }}
                                         </a>
@@ -235,7 +235,7 @@
                                             <small class="text-muted">From</small>
                                             <h4 class="text-success fw-bold mb-0">${{ item.min_price }}</h4>
                                         </div>
-                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
+                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
                                             class="btn btn-primary btn-sm">View</a>
                                     </div>
                                 </div>
@@ -288,7 +288,7 @@
                 lat: {{ item.hotel.latitude }},
                 lon: {{ item.hotel.longitude }},
                 price: {{ item.min_price | tojson }},
-                url: {{ url_for('main.hotel_detail', hotel_id=item.hotel.id) | tojson }}
+                url: {{ url_for('main.hotel_detail', hotel_id=item.hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) | tojson }}
             }{% if not loop.last %},{% endif %}
             {% endfor %}
         ];

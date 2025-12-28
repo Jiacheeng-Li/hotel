@@ -75,7 +75,9 @@ def index():
     amenities = Amenity.query.all()
     # Featured Hotels (random 3) using SQLAlchemy func.random if supported, else simple slice
     featured_hotels = Hotel.query.limit(3).all()
-    return render_template('main/home.html', cities=cities, brands=brands, amenities=amenities, featured_hotels=featured_hotels, today=date.today())
+    from datetime import timedelta
+    tomorrow = date.today() + timedelta(days=1)
+    return render_template('main/home.html', cities=cities, brands=brands, amenities=amenities, featured_hotels=featured_hotels, today=date.today(), tomorrow=tomorrow)
 
 @bp.route('/brands')
 def brands():
@@ -207,7 +209,14 @@ def hotel_detail(hotel_id):
     
     if from_source == 'search' or (not from_source and referrer and '/search' in referrer):
         breadcrumb_context['from_search'] = True
-        if referrer:
+        # Get search params from URL params first (more reliable)
+        if request.args.get('check_in') or request.args.get('check_out'):
+            breadcrumb_context['search_params'] = {}
+            if request.args.get('check_in'):
+                breadcrumb_context['search_params']['check_in'] = request.args.get('check_in')
+            if request.args.get('check_out'):
+                breadcrumb_context['search_params']['check_out'] = request.args.get('check_out')
+        elif referrer:
             from urllib.parse import urlparse, parse_qs
             parsed = urlparse(referrer)
             search_params = parse_qs(parsed.query)
@@ -296,6 +305,15 @@ def roomtype_detail(roomtype_id):
         ref_params = parse_qs(parsed.query)
         if 'from' in ref_params:
             from_source = ref_params['from'][0]
+            # If from search, also extract check_in and check_out from referrer params
+            if from_source == 'search':
+                search_params = {}
+                if 'check_in' in ref_params:
+                    search_params['check_in'] = ref_params['check_in'][0]
+                if 'check_out' in ref_params:
+                    search_params['check_out'] = ref_params['check_out'][0]
+                if search_params:
+                    breadcrumb_context['search_params'] = search_params
         else:
             # Fallback to checking referrer path
             if '/search' in referrer:
@@ -322,12 +340,32 @@ def roomtype_detail(roomtype_id):
             breadcrumb_context['brand_id'] = rt.hotel.brand_id
         elif from_source == 'destinations':
             breadcrumb_context['from_destinations'] = True
-        
+    
+    # Get default dates from search params or URL params, or use today/tomorrow
+    default_check_in = request.args.get('check_in', '')
+    default_check_out = request.args.get('check_out', '')
+    
+    # If coming from search, try to get dates from search_params
+    if breadcrumb_context['from_search'] and breadcrumb_context['search_params']:
+        if not default_check_in and 'check_in' in breadcrumb_context['search_params']:
+            default_check_in = breadcrumb_context['search_params']['check_in']
+        if not default_check_out and 'check_out' in breadcrumb_context['search_params']:
+            default_check_out = breadcrumb_context['search_params']['check_out']
+    
+    # Set default dates if not provided: today to tomorrow
+    if not default_check_in:
+        default_check_in = date.today().strftime('%Y-%m-%d')
+    if not default_check_out:
+        from datetime import timedelta
+        default_check_out = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+    
     return render_template('main/roomtype_detail.html', 
                          roomtype=rt, 
                          estimated_points_per_night=estimated_points_per_night, 
                          today=date.today(),
-                         breadcrumb=breadcrumb_context)
+                         breadcrumb=breadcrumb_context,
+                         default_check_in=default_check_in,
+                         default_check_out=default_check_out)
 
 @bp.route('/book/<int:roomtype_id>/confirm')
 @login_required
