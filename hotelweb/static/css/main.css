@@ -943,16 +943,16 @@ a {
     padding: 0 1rem;
 }
 
-.tab-content {
+.account-page-wrapper .tab-content {
     display: none;
 }
 
-.tab-content.active {
+.account-page-wrapper .tab-content.active {
     display: block;
 }
 
 /* Cards (Generic) */
-.account-card {
+.account-page-wrapper .card {
     background: white;
     border-radius: 12px;
     padding: 2rem;
@@ -961,7 +961,7 @@ a {
     border: 1px solid #f0f0f0;
 }
 
-.account-card-header {
+.account-page-wrapper .card-header {
     background: #f8fafc;
     padding: 1rem 1.5rem;
     margin: -2rem -2rem 1.5rem -2rem;
@@ -969,7 +969,7 @@ a {
     border-bottom: 1px solid #e5e7eb;
 }
 
-.account-card-title {
+.account-page-wrapper .card-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0;
