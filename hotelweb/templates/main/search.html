@@ -251,7 +251,8 @@
                             <i class="bi bi-search" style="font-size: 4rem; color: #d1d5db;"></i>
                         </div>
                         <h3 class="fw-bold mb-3">No properties found</h3>
-                        <p class="text-muted mb-4">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>
+                        <p class="text-muted mb-3">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>
+                        <p class="text-muted mb-4 fst-italic">We look forward to welcoming you here in the future!</p>
                         <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
                             <a href="{{ url_for('main.destinations') }}" class="btn btn-outline-primary">
                                 <i class="bi bi-geo-alt me-2"></i>Browse All Destinations
@@ -277,15 +278,29 @@
                 {% if results|length > 0 %}
                     <div id="map" style="height: 600px; border-radius: 8px;"></div>
                 {% else %}
-                    <div class="text-center py-5" style="height: 600px; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f9fafb; border-radius: 8px;">
+                    <div class="text-center py-5">
                         <div class="mb-4">
-                            <i class="bi bi-map" style="font-size: 4rem; color: #d1d5db;"></i>
+                            <i class="bi bi-search" style="font-size: 4rem; color: #d1d5db;"></i>
                         </div>
-                        <h3 class="fw-bold mb-3">No properties to display on map</h3>
-                        <p class="text-muted mb-4">No hotels found for <strong>{{ city }}</strong>.</p>
-                        <a href="{{ url_for('main.destinations') }}" class="btn btn-primary">
-                            <i class="bi bi-geo-alt me-2"></i>Explore Other Destinations
-                        </a>
+                        <h3 class="fw-bold mb-3">No properties found</h3>
+                        <p class="text-muted mb-3">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>
+                        <p class="text-muted mb-4 fst-italic">We look forward to welcoming you here in the future!</p>
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                            <a href="{{ url_for('main.destinations') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-geo-alt me-2"></i>Browse All Destinations
+                            </a>
+                            <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                                <i class="bi bi-house me-2"></i>Back to Home
+                            </a>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-muted small mb-2">Try adjusting your search:</p>
+                            <ul class="list-unstyled text-muted small">
+                                <li><i class="bi bi-check-circle me-2"></i>Check different dates</li>
+                                <li><i class="bi bi-check-circle me-2"></i>Modify your filters</li>
+                                <li><i class="bi bi-check-circle me-2"></i>Search for a different city</li>
+                            </ul>
+                        </div>
                     </div>
                 {% endif %}
             </div>
