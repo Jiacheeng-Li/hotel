@@ -1294,8 +1294,8 @@
                             <strong>{{ transaction.description }}</strong>
                             <div class="text-muted small">{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
         </div>
-                        <div class="text-{% if transaction.transaction_type == 'EARNED' %}success{% else %}danger{% endif %} fw-bold">
-                            {% if transaction.transaction_type == 'EARNED' %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points) }} points
+                        <div class="text-{% if transaction.transaction_type in ['EARNED', 'BONUS'] %}success{% else %}danger{% endif %} fw-bold">
+                            {% if transaction.transaction_type in ['EARNED', 'BONUS'] %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points|abs) }} points
         </div>
         </div>
                 </div>
