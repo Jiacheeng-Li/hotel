@@ -363,11 +363,26 @@
                     </div>
                     {% endif %}
                 </div>
-                {% elif milestone.status == 'unclaimed' %}
+                {% else %}
                 <div class="reward-info">
-                    <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone.nights) }}" class="btn btn-warning">
-                        Claim Your Reward
-                    </a>
+                    <div class="detail-label mb-2">Available Rewards:</div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <span class="reward-type reward-points">
+                            <i class="bi bi-star-fill"></i>
+                            5,000 Bonus Points
+                        </span>
+                        <span class="reward-type reward-breakfast">
+                            <i class="bi bi-cup-hot-fill"></i>
+                            2 Complimentary Breakfasts
+                        </span>
+                    </div>
+                    {% if milestone.status == 'unclaimed' %}
+                    <div class="mt-3">
+                        <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone.nights) }}" class="btn btn-warning">
+                            Claim Your Reward
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
