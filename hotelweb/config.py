@@ -1,4 +1,11 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+# Get the base directory (project root, one level up from hotelweb/)
+basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+env_path = os.path.join(basedir, '.env')
+load_dotenv(env_path)
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-prod'
