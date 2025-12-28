@@ -34,14 +34,29 @@
 </style>
 
 <!-- Search Summary -->
-<div class="mb-1">
+<div class="mb-3">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-            <span class="text-muted">{{ city }}</span>
-            <span class="text-muted mx-2">•</span>
-            <span class="text-muted">{{ check_in }} - {{ check_out }}</span>
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <span class="fw-bold">{{ city }}</span>
+            <span class="text-muted">•</span>
+            <span class="text-muted">
+                <i class="bi bi-calendar-event me-1"></i>
+                {{ check_in.strftime('%b %d, %Y') }} - {{ check_out.strftime('%b %d, %Y') }}
+                {% set nights = (check_out - check_in).days %}
+                <span class="ms-1">({{ nights }} night{{ 's' if nights != 1 else '' }})</span>
+            </span>
+            <span class="text-muted">•</span>
+            <span class="text-muted">
+                <i class="bi bi-people me-1"></i>{{ guests }} guest{{ 's' if guests != 1 else '' }}
+            </span>
+            {% if rooms_needed > 1 %}
+            <span class="text-muted">•</span>
+            <span class="text-muted">
+                <i class="bi bi-door-open me-1"></i>{{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }}
+            </span>
+            {% endif %}
         </div>
-        <span class="badge bg-primary">{{ results|length }} properties found</span>
+        <span class="badge bg-primary">{{ results|length }} propert{{ 'ies' if results|length != 1 else 'y' }} found</span>
     </div>
 </div>
 
