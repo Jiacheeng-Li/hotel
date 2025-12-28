@@ -2,6 +2,18 @@
 
 {% block title %}Milestone Rewards Progress - Lumina Hospitality{% endblock %}
 
+{% block breadcrumb %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="py-1">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.account') }}">My Account</a></li>
+            <li class="breadcrumb-item active">Milestone Rewards Progress</li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
 {% block content %}
 
 <div class="milestone-progress-container">
