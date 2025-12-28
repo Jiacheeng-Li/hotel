@@ -82,77 +82,16 @@
     </div>
 </div>
 
+{% block extra_scripts %}
 <script>
-// Interactive rating selection
-document.addEventListener('DOMContentLoaded', function() {
-    const ratingInputs = document.querySelectorAll('input[name="rating"]');
-    const ratingText = document.getElementById('rating-text');
-    const ratingLabels = document.querySelectorAll('.rating-star');
-    
-    const ratingTexts = {
-        1: 'Poor',
-        2: 'Fair',
-        3: 'Good',
-        4: 'Very Good',
-        5: 'Excellent'
+    window.reviewData = {
+        {% if existing_review %}
+        initialRating: {{ existing_review.rating }}
+        {% else %}
+        initialRating: null
+        {% endif %}
     };
-    
-    // Initialize rating display if existing review
-    {% if existing_review %}
-    const initialRating = {{ existing_review.rating }};
-    ratingText.textContent = ratingTexts[initialRating];
-    ratingLabels.forEach((label, index) => {
-        if (index < initialRating) {
-            label.style.color = '#dc3545'; // Red for selected
-        } else {
-            label.style.color = '#ddd'; // Gray for unselected
-        }
-    });
-    {% endif %}
-    
-    ratingInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const rating = parseInt(this.value);
-            ratingText.textContent = ratingTexts[rating];
-            
-            // Update star colors
-            ratingLabels.forEach((label, index) => {
-                if (index < rating) {
-                    label.style.color = '#dc3545'; // Red for selected
-                } else {
-                    label.style.color = '#ddd'; // Gray for unselected
-                }
-            });
-        });
-        
-        // Hover effect
-        const label = input.parentElement;
-        label.addEventListener('mouseenter', function() {
-            const hoverRating = parseInt(input.value);
-            ratingLabels.forEach((l, index) => {
-                if (index < hoverRating) {
-                    l.style.color = '#ff6b6b'; // Light red on hover
-                }
-            });
-        });
-        
-        label.addEventListener('mouseleave', function() {
-            const selectedRating = document.querySelector('input[name="rating"]:checked');
-            if (selectedRating) {
-                const rating = parseInt(selectedRating.value);
-                ratingLabels.forEach((l, index) => {
-                    if (index < rating) {
-                        l.style.color = '#dc3545';
-                    } else {
-                        l.style.color = '#ddd';
-                    }
-                });
-            } else {
-                ratingLabels.forEach(l => l.style.color = '#ddd');
-            }
-        });
-    });
-});
 </script>
+<script src="{{ url_for('static', filename='js/write_review.js') }}"></script>
 {% endblock %}
-
+{% endblock %}
