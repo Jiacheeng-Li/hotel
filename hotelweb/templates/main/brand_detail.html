@@ -24,12 +24,11 @@
         'Metro Express': 'logo_metro_express.png'
         } %}
 
-        <!-- Logo Container: Circular Crop + Semi-Transparent Background -->
-        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4 shadow-lg overflow-hidden"
-            style="width: 180px; height: 180px; background-color: rgba(255, 255, 255, 0.9);">
+        <!-- Logo: Circular Crop with Transparency -->
+        <div class="d-flex align-items-center justify-content-center mx-auto mb-4">
             <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}"
                 alt="{{ brand.name }}" class="img-fluid rounded-circle"
-                style="height: 100%; width: 100%; object-fit: cover; padding: 20px; opacity: 0.85;">
+                style="width: 180px; height: 180px; object-fit: cover; opacity: 0.85;">
         </div>
 
         <!-- FORCE WHITE TEXT with Shadow -->
