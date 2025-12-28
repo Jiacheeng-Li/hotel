@@ -1,5 +1,6 @@
 // Account Page Functions
 function switchTab(tabName, event) {
+    console.log('Switching to tab:', tabName);
     if (event) {
         event.preventDefault();
     }
