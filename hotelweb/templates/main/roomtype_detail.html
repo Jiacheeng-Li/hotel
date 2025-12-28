@@ -177,23 +177,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-function updateCheckOutMin() {
-    const checkIn = document.getElementById('check_in');
-    const checkOut = document.getElementById('check_out');
-    if (checkIn.value) {
-        // Set minimum check-out date to the day after check-in
-        const checkInDate = new Date(checkIn.value);
-        checkInDate.setDate(checkInDate.getDate() + 1);
-        const minCheckOut = checkInDate.toISOString().split('T')[0];
-        checkOut.min = minCheckOut;
-        
-        // If current check-out is before new minimum, update it
-        if (checkOut.value && checkOut.value < minCheckOut) {
-            checkOut.value = minCheckOut;
-        }
-    }
-}
-
-</script>
+<!-- updateCheckOutMin is now in main.js -->
 {% endblock %}

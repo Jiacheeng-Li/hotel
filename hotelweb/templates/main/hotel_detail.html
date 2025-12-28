@@ -215,23 +215,6 @@
 }
 </style>
 
-<script>
-function toggleReviews() {
-    const container = document.querySelector('.reviews-container');
-    const text = document.getElementById('toggle-reviews-text');
-    const icon = document.getElementById('toggle-reviews-icon');
-    
-    if (container.classList.contains('expanded')) {
-        container.classList.remove('expanded');
-        const totalReviews = {{ hotel.reviews|length if hotel.reviews else 0 }};
-        const visibleReviews = {{ max_visible }};
-        text.textContent = `Show More Reviews (${totalReviews - visibleReviews} more)`;
-    } else {
-        container.classList.add('expanded');
-        text.textContent = 'Show Less';
-    }
-}
-</script>
 
 <!-- Recommended Hotels Section -->
 {% if recommended_hotels %}
@@ -300,38 +283,13 @@ function toggleReviews() {
 {% endif %}
 
 <script>
-    // Align image bottom with map bottom
-    document.addEventListener('DOMContentLoaded', function() {
-        const image = document.getElementById('hotel-main-image');
-        const infoColumn = document.getElementById('hotel-info-column');
-        
-        function alignHeights() {
-            if (image && infoColumn) {
-                const infoHeight = infoColumn.offsetHeight;
-                image.style.height = infoHeight + 'px';
-            }
-        }
-        
-        // Align on load
-        alignHeights();
-        
-        // Re-align on window resize
-        window.addEventListener('resize', alignHeights);
-        
-        {% if hotel.latitude and hotel.longitude %}
-        // Use OpenStreetMap for hotel location
-        const mapDiv = document.getElementById('hotel-map');
-        if (mapDiv) {
-            const lat = {{ hotel.latitude }};
-            const lng = {{ hotel.longitude }};
-            const zoom = 15;
-            const bbox = `${lng - 0.01},${lat - 0.01},${lng + 0.01},${lat + 0.01}`;
-            mapDiv.innerHTML = `<iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}&zoom=${zoom}" style="border: none; border-radius: 12px;"></iframe>`;
-            
-            // Re-align after map loads
-            setTimeout(alignHeights, 100);
-        }
-        {% endif %}
-    });
+    // Initialize data for external JS
+    window.hotelDetailData = {
+        totalReviews: {{ hotel.reviews|length if hotel.reviews else 0 }},
+        visibleReviews: {{ max_visible }},
+        lat: {{ hotel.latitude if hotel.latitude else 'null' }},
+        lng: {{ hotel.longitude if hotel.longitude else 'null' }}
+    };
 </script>
+<script src="{{ url_for('static', filename='js/hotel_detail.js') }}"></script>
 {% endblock %}

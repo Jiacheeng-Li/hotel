@@ -151,51 +151,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
+    <!-- Auto-dismiss alerts and Active Nav Link Highlighter moved to main.js -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-    {% block extra_scripts %}{% endblock %}
-
-    <!-- Auto-dismiss alerts -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Auto-dismiss alerts after 2 seconds
-            const alerts = document.querySelectorAll('.alert.auto-dismiss');
-            alerts.forEach(function(alert) {
-                const dismissTime = alert.getAttribute('data-auto-dismiss') || 2000;
-                setTimeout(function() {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, dismissTime);
-            });
-        });
-    </script>
-
-    <!-- Active Nav Link Highlighter -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get current path
-            const currentPath = window.location.pathname;
-
-            // Get all nav links
-            const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)');
-
-            // Remove active class from all links first
-            navLinks.forEach(link => link.classList.remove('active'));
-
-            // Add active class to matching link
-            navLinks.forEach(link => {
-                const linkPath = new URL(link.href).pathname;
-
-                // Exact match or home page special case
-                if (linkPath === currentPath ||
-                    (currentPath === '/' && linkPath === '/') ||
-                    (currentPath.startsWith('/search') && linkPath === '/') ||
-                    (currentPath.startsWith('/brand') && linkPath === '/brands')) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>

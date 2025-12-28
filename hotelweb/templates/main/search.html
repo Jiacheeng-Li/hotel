@@ -319,31 +319,21 @@ main.container {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    let mapInitialized = false;
-    let map;
+    // Initialize search data for external JS
+    window.searchData = {
+        hasResults: {{ (results|length > 0) | tojson }},
+        defaultLat: 40.7128,
+        defaultLon: -74.0060,
+        hotels: []
+    };
 
     {% if results|length > 0 %}
-    document.getElementById('map-tab').addEventListener('shown.bs.tab', () => {
-        if (mapInitialized) {
-            map.invalidateSize();
-            return;
-        }
-
-        let defaultLat = 40.7128;
-        let defaultLon = -74.0060;
-
         {% if results[0].hotel.latitude and results[0].hotel.longitude %}
-        defaultLat = {{ results[0].hotel.latitude }};
-        defaultLon = {{ results[0].hotel.longitude }};
+        window.searchData.defaultLat = {{ results[0].hotel.latitude }};
+        window.searchData.defaultLon = {{ results[0].hotel.longitude }};
         {% endif %}
 
-        map = L.map('map').setView([defaultLat, defaultLon], 10);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        const hotels = [
+        window.searchData.hotels = [
             {% for item in results %}
             {
                 name: {{ item.hotel.name | tojson }},
@@ -354,39 +344,7 @@ main.container {
             }{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
-
-        hotels.forEach(h => {
-            if (h.lat && h.lon) {
-                L.marker([h.lat, h.lon]).addTo(map)
-                    .bindPopup(
-                        `<b>${h.name}</b><br>
-                         From $${h.price}<br>
-                         <a href="${h.url}">View</a>`
-                    );
-            }
-        });
-
-        mapInitialized = true;
-        setTimeout(() => map.invalidateSize(), 200);
-    });
     {% endif %}
-
-    function updateCheckOutMinSidebar() {
-        const checkIn = document.querySelector('input[name="check_in"]');
-        const checkOut = document.getElementById('sidebar_check_out');
-        if (checkIn && checkOut && checkIn.value) {
-            // Set minimum check-out date to the day after check-in
-            const checkInDate = new Date(checkIn.value);
-            checkInDate.setDate(checkInDate.getDate() + 1);
-            const minCheckOut = checkInDate.toISOString().split('T')[0];
-            checkOut.min = minCheckOut;
-            
-            // If current check-out is before new minimum, update it
-            if (checkOut.value && checkOut.value < minCheckOut) {
-                checkOut.value = minCheckOut;
-            }
-        }
-    }
 </script>
-
+<script src="{{ url_for('static', filename='js/search_results.js') }}"></script>
 {% endblock %}

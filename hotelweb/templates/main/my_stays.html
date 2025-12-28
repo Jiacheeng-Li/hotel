@@ -344,20 +344,6 @@
     </div>
 </div>
 
-<script>
-    // Tab switching functionality
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const tabName = button.dataset.tab;
-
-            // Update active button
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            // Update active content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-        });
-    });
-</script>
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/account.js') }}"></script>
 {% endblock %}

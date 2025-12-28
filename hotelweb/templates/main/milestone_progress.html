@@ -154,19 +154,7 @@
     </div>
 </div>
 
-<script>
-function toggleRules() {
-    const content = document.getElementById('rules-content');
-    const icon = document.getElementById('rules-toggle-icon');
-    
-    if (content.classList.contains('expanded')) {
-        content.classList.remove('expanded');
-        icon.classList.remove('expanded');
-    } else {
-        content.classList.add('expanded');
-        icon.classList.add('expanded');
-    }
-}
-</script>
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/milestone_progress.js') }}"></script>
 {% endblock %}
 
