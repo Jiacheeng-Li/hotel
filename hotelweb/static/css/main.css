@@ -1553,10 +1553,10 @@ a {
     background-color: white;
     color: #1e3a8a;
     border: 2px solid #1e3a8a;
-    border-radius: 8px;
-    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
@@ -1575,14 +1575,14 @@ a {
     background-color: #1e3a8a;
     color: white;
     border: 2px solid #1e3a8a;
-    border-radius: 8px;
-    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
 }
 
@@ -1599,10 +1599,10 @@ a {
     background-color: white;
     color: #1e3a8a;
     border: 2px solid #1e3a8a;
-    border-radius: 8px;
-    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
