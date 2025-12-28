@@ -152,6 +152,7 @@
         margin: 1rem 0;
         display: flex;
         justify-content: center;
+        padding: 0.5rem 0;
     }
     
     .alert-warning {
@@ -262,8 +263,16 @@
                         </div>
                     </div>
                     
+                    <!-- reCAPTCHA Verification -->
                     {% if recaptcha_site_key %}
-                    <div class="g-recaptcha mb-3" data-sitekey="{{ recaptcha_site_key }}"></div>
+                    <div class="mb-3">
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-3" style="font-size: 0.85rem;">
+                        <i class="bi bi-shield-exclamation me-2"></i>
+                        reCAPTCHA verification is not configured. Please contact the administrator.
+                    </div>
                     {% endif %}
                     
                     <div class="d-grid gap-2 mb-3" style="margin-top: 1.5rem;">
