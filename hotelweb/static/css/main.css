@@ -1548,6 +1548,75 @@ a {
     border-color: #9ca3af;
 }
 
+/* My Stays Page Button Styles */
+.stays-container .btn-secondary {
+    background-color: white;
+    color: #1e3a8a;
+    border: 2px solid #1e3a8a;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.stays-container .btn-secondary:hover {
+    background-color: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
+    text-decoration: none;
+}
+
+.stays-container .btn-primary {
+    background-color: #1e3a8a;
+    color: white;
+    border: 2px solid #1e3a8a;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.stays-container .btn-primary:hover {
+    background-color: #1e40af;
+    border-color: #1e40af;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+    text-decoration: none;
+}
+
+.stays-container .btn-outline {
+    background-color: white;
+    color: #1e3a8a;
+    border: 2px solid #1e3a8a;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.stays-container .btn-outline:hover {
+    background-color: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
+    text-decoration: none;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;
