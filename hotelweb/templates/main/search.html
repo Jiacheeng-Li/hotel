@@ -170,85 +170,124 @@
         <div class="tab-content">
             <!-- LIST VIEW -->
             <div class="tab-pane fade show active" id="list-view">
-                {% for item in results %}
-                {% set hotel = item.hotel %}
-                <div class="card mb-4 shadow-sm border-0">
-                    <div class="row g-0">
-                        <div class="col-md-4 position-relative">
-                            <img src="{{ hotel.image_url }}" class="img-fluid rounded-start"
-                                style="width: 100%; height: 300px; object-fit: cover; display: block;" alt="{{ hotel.name }}">
-                            <span class="badge position-absolute top-0 start-0 m-2" style="background-color: {{ item.brand.logo_color }};">
-                                {{ item.brand.name }}
-                            </span>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body h-100" style="min-height: 300px;">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="fw-bold mb-2">
-                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
-                                            class="text-decoration-none text-dark">
-                                            {{ hotel.name }}
-                                        </a>
-                                    </h5>
-                                    <div>
-                                        {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
-                                    </div>
-                                </div>
-
-                                <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
-
-                                <div class="mb-2 d-flex align-items-center gap-3 flex-wrap">
-                                    <span class="badge bg-info text-white">{{ item.room_types|length }} Room Types</span>
-                                    {% if hotel.reviews %}
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="d-flex align-items-center">
-                                            {% set avg_rating = item.avg_rating %}
-                                            {% for i in range(5) %}
-                                                {% if i < avg_rating|int %}
-                                                    <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
-                                                {% elif i < avg_rating|round(1)|int %}
-                                                    <i class="bi bi-heart-half text-danger" aria-hidden="true"></i>
-                                                {% else %}
-                                                    <i class="bi bi-heart text-danger" aria-hidden="true"></i>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                        <span class="fw-bold">{{ "%.1f"|format(avg_rating) }}</span>
-                                        <span class="text-muted">({{ hotel.reviews|length }} review{{ 's' if hotel.reviews|length != 1 else '' }})</span>
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <p class="text-truncate">{{ hotel.description }}</p>
-
-                                <div class="d-flex justify-content-between align-items-end mt-3">
-                                    <small class="text-muted">
-                                        {% if item.total_required > 0 %}
-                                        Matched {{ item.match_count }}/{{ item.total_required }} amenities
-                                        {% else %}
-                                        Amenities matched: {{ item.match_count }}
-                                        {% endif %}
-                                    </small>
-
-                                    <div class="text-end d-flex flex-column gap-2">
+                {% if results|length > 0 %}
+                    {% for item in results %}
+                    {% set hotel = item.hotel %}
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="row g-0">
+                            <div class="col-md-4 position-relative">
+                                <img src="{{ hotel.image_url }}" class="img-fluid rounded-start"
+                                    style="width: 100%; height: 300px; object-fit: cover; display: block;" alt="{{ hotel.name }}">
+                                <span class="badge position-absolute top-0 start-0 m-2" style="background-color: {{ item.brand.logo_color }};">
+                                    {{ item.brand.name }}
+                                </span>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body h-100" style="min-height: 300px;">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="fw-bold mb-2">
+                                            <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
+                                                class="text-decoration-none text-dark">
+                                                {{ hotel.name }}
+                                            </a>
+                                        </h5>
                                         <div>
-                                            <small class="text-muted">From</small>
-                                            <h4 class="text-success fw-bold mb-0">${{ item.min_price }}</h4>
+                                            {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
                                         </div>
-                                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
-                                            class="btn btn-primary btn-sm">View</a>
+                                    </div>
+
+                                    <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
+
+                                    <div class="mb-2 d-flex align-items-center gap-3 flex-wrap">
+                                        <span class="badge bg-info text-white">{{ item.room_types|length }} Room Types</span>
+                                        {% if hotel.reviews %}
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="d-flex align-items-center">
+                                                {% set avg_rating = item.avg_rating %}
+                                                {% for i in range(5) %}
+                                                    {% if i < avg_rating|int %}
+                                                        <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
+                                                    {% elif i < avg_rating|round(1)|int %}
+                                                        <i class="bi bi-heart-half text-danger" aria-hidden="true"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-heart text-danger" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <span class="fw-bold">{{ "%.1f"|format(avg_rating) }}</span>
+                                            <span class="text-muted">({{ hotel.reviews|length }} review{{ 's' if hotel.reviews|length != 1 else '' }})</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <p class="text-truncate">{{ hotel.description }}</p>
+
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <small class="text-muted">
+                                            {% if item.total_required > 0 %}
+                                            Matched {{ item.match_count }}/{{ item.total_required }} amenities
+                                            {% else %}
+                                            Amenities matched: {{ item.match_count }}
+                                            {% endif %}
+                                        </small>
+
+                                        <div class="text-end d-flex flex-column gap-2">
+                                            <div>
+                                                <small class="text-muted">From</small>
+                                                <h4 class="text-success fw-bold mb-0">${{ item.min_price }}</h4>
+                                            </div>
+                                            <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
+                                                class="btn btn-primary btn-sm">View</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-search" style="font-size: 4rem; color: #d1d5db;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">No properties found</h3>
+                        <p class="text-muted mb-4">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                            <a href="{{ url_for('main.destinations') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-geo-alt me-2"></i>Browse All Destinations
+                            </a>
+                            <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                                <i class="bi bi-house me-2"></i>Back to Home
+                            </a>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-muted small mb-2">Try adjusting your search:</p>
+                            <ul class="list-unstyled text-muted small">
+                                <li><i class="bi bi-check-circle me-2"></i>Check different dates</li>
+                                <li><i class="bi bi-check-circle me-2"></i>Modify your filters</li>
+                                <li><i class="bi bi-check-circle me-2"></i>Search for a different city</li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
             <!-- MAP VIEW -->
             <div class="tab-pane fade" id="map-view">
-                <div id="map" style="height: 600px; border-radius: 8px;"></div>
+                {% if results|length > 0 %}
+                    <div id="map" style="height: 600px; border-radius: 8px;"></div>
+                {% else %}
+                    <div class="text-center py-5" style="height: 600px; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f9fafb; border-radius: 8px;">
+                        <div class="mb-4">
+                            <i class="bi bi-map" style="font-size: 4rem; color: #d1d5db;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">No properties to display on map</h3>
+                        <p class="text-muted mb-4">No hotels found for <strong>{{ city }}</strong>.</p>
+                        <a href="{{ url_for('main.destinations') }}" class="btn btn-primary">
+                            <i class="bi bi-geo-alt me-2"></i>Explore Other Destinations
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
