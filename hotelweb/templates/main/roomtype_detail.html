@@ -30,7 +30,7 @@
                 <a href="{{ url_for('main.destinations') }}">Destinations</a>
             </li>
             {% endif %}
-            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id, from=breadcrumb.from_source_param if breadcrumb.from_source_param else '', city_name=breadcrumb.city_name if breadcrumb.city_name else '') }}">{{ roomtype.hotel.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}{% if breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_search %}?from=search{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}">{{ roomtype.hotel.name }}</a></li>
             <li class="breadcrumb-item active">{{ roomtype.name }}</li>
         </ol>
     </nav>
