@@ -95,6 +95,24 @@
     </div>
 </div>
 
+<!-- Hotel Description Section -->
+{% if hotel.description %}
+<section class="mt-5 mb-4" aria-labelledby="description-heading">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 id="description-heading" class="h4 fw-bold mb-3">About {{ hotel.name }}</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <p class="card-text mb-0" style="font-size: 1rem; line-height: 1.8; color: #4b5563;">
+                        {{ hotel.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Room Types Section - Display First -->
 <section class="mt-4 mb-4" aria-labelledby="rooms-heading">
     <h2 id="rooms-heading" class="h4 fw-bold mb-4">Room Types</h2>
