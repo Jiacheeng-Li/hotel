@@ -1405,8 +1405,8 @@
                 <button type="button" class="btn-secondary" onclick="cancelEdit()">Cancel</button>
             </div>
         </form>
-        </div>
     </div>
+</div>
 
     <!-- Club Member Benefits Tab -->
     <div id="benefits" class="tab-content">
@@ -1677,4 +1677,8 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/account.js') }}"></script>
 {% endblock %}
