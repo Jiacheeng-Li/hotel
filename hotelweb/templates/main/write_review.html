@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Write a Review - HotelWeb{% endblock %}
+
+{% block breadcrumb %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="py-1">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.my_stays') }}">My Stays</a></li>
+            <li class="breadcrumb-item active">Write Review</li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h2 class="h4 fw-bold mb-0">Write a Review</h2>
+                    <p class="text-muted small mb-0 mt-2">{{ hotel.name }}</p>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Booking Information -->
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <h5 class="fw-bold mb-3">Your Stay</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <strong>Check-in:</strong> {{ booking.check_in.strftime('%B %d, %Y') }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Check-out:</strong> {{ booking.check_out.strftime('%B %d, %Y') }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Room:</strong> {{ booking.room_type.name }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Nights:</strong> {{ (booking.check_out - booking.check_in).days }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('main.write_review', booking_id=booking.id) }}">
+                        <!-- Rating Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Rating <span class="text-danger">*</span></label>
+                            <div class="rating-input d-flex gap-2 align-items-center">
+                                {% for i in range(1, 6) %}
+                                <label class="rating-star" for="rating-{{ i }}" style="cursor: pointer; font-size: 2rem; color: #ddd; transition: color 0.2s;">
+                                    <input type="radio" name="rating" id="rating-{{ i }}" value="{{ i }}" required style="display: none;">
+                                    <i class="bi bi-heart-fill"></i>
+                                </label>
+                                {% endfor %}
+                                <span class="ms-3 text-muted" id="rating-text">Select a rating</span>
+                            </div>
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="mb-4">
+                            <label for="comment" class="form-label fw-bold">Your Review</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="6" 
+                                placeholder="Share your experience at this hotel..."></textarea>
+                            <small class="text-muted">Your review will be displayed on the hotel's page.</small>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-check-circle me-2"></i>Submit Review
+                            </button>
+                            <a href="{{ url_for('main.my_stays') }}" class="btn btn-outline-secondary btn-lg px-4">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Interactive rating selection
+document.addEventListener('DOMContentLoaded', function() {
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingText = document.getElementById('rating-text');
+    const ratingLabels = document.querySelectorAll('.rating-star');
+    
+    const ratingTexts = {
+        1: 'Poor',
+        2: 'Fair',
+        3: 'Good',
+        4: 'Very Good',
+        5: 'Excellent'
+    };
+    
+    ratingInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const rating = parseInt(this.value);
+            ratingText.textContent = ratingTexts[rating];
+            
+            // Update star colors
+            ratingLabels.forEach((label, index) => {
+                if (index < rating) {
+                    label.style.color = '#dc3545'; // Red for selected
+                } else {
+                    label.style.color = '#ddd'; // Gray for unselected
+                }
+            });
+        });
+        
+        // Hover effect
+        const label = input.parentElement;
+        label.addEventListener('mouseenter', function() {
+            const hoverRating = parseInt(input.value);
+            ratingLabels.forEach((l, index) => {
+                if (index < hoverRating) {
+                    l.style.color = '#ff6b6b'; // Light red on hover
+                }
+            });
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            if (selectedRating) {
+                const rating = parseInt(selectedRating.value);
+                ratingLabels.forEach((l, index) => {
+                    if (index < rating) {
+                        l.style.color = '#dc3545';
+                    } else {
+                        l.style.color = '#ddd';
+                    }
+                });
+            } else {
+                ratingLabels.forEach(l => l.style.color = '#ddd');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+

@@ -364,9 +364,12 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=True)  # Optional: link to specific booking
     rating = db.Column(db.Integer, nullable=False) # 1-5
     comment = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    booking = db.relationship('Booking', backref='review', lazy=True)
 
 class RoomType(db.Model):
     __tablename__ = 'room_type'

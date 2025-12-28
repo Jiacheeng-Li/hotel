@@ -643,12 +643,76 @@ def my_stays():
         elif booking.check_out < today:
             past.append(booking)
     
+    # Check which bookings already have reviews
+    reviewed_booking_ids = set()
+    for booking in past:
+        existing_review = Review.query.filter_by(booking_id=booking.id, user_id=current_user.id).first()
+        if existing_review:
+            reviewed_booking_ids.add(booking.id)
+    
     return render_template('main/my_stays.html', 
                          upcoming=upcoming,
                          current=current,
                          past=past,
                          cancelled=cancelled,
-                         today=today)
+                         today=today,
+                         reviewed_booking_ids=reviewed_booking_ids)
+
+@bp.route('/booking/<int:booking_id>/review', methods=['GET', 'POST'])
+@login_required
+def write_review(booking_id):
+    """Write a review for a completed booking"""
+    booking = Booking.query.get_or_404(booking_id)
+    
+    # Verify ownership
+    if booking.user_id != current_user.id:
+        abort(403)
+    
+    # Check if booking is completed
+    if booking.check_out > date.today():
+        flash('You can only review completed stays.', 'warning')
+        return redirect(url_for('main.my_stays'))
+    
+    # Check if already reviewed
+    existing_review = Review.query.filter_by(booking_id=booking_id, user_id=current_user.id).first()
+    if existing_review:
+        flash('You have already reviewed this stay.', 'info')
+        return redirect(url_for('main.my_stays'))
+    
+    hotel = booking.room_type.hotel
+    
+    if request.method == 'POST':
+        rating = request.form.get('rating')
+        comment = request.form.get('comment', '').strip()
+        
+        # Validation
+        if not rating:
+            flash('Please select a rating.', 'danger')
+            return render_template('main/write_review.html', booking=booking, hotel=hotel)
+        
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                raise ValueError
+        except (ValueError, TypeError):
+            flash('Invalid rating. Please select a rating between 1 and 5.', 'danger')
+            return render_template('main/write_review.html', booking=booking, hotel=hotel)
+        
+        # Create review
+        review = Review(
+            user_id=current_user.id,
+            hotel_id=hotel.id,
+            booking_id=booking_id,
+            rating=rating,
+            comment=comment if comment else None
+        )
+        db.session.add(review)
+        db.session.commit()
+        
+        flash('Thank you for your review!', 'success')
+        return redirect(url_for('main.hotel_detail', hotel_id=hotel.id))
+    
+    return render_template('main/write_review.html', booking=booking, hotel=hotel)
 
 @bp.route('/cancel/<int:booking_id>', methods=['POST'])
 @login_required

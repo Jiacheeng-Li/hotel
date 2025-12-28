@@ -495,6 +495,11 @@
                         <span class="status-badge status-past">Completed</span>
                         <a href="{{ url_for('main.view_bill', booking_id=booking.id) }}" class="btn-secondary">View
                             Bill</a>
+                        {% if booking.id not in reviewed_booking_ids %}
+                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary">Write Review</a>
+                        {% else %}
+                        <span class="btn-outline" style="opacity: 0.6; cursor: default;">Reviewed</span>
+                        {% endif %}
                         <a href="{{ url_for('main.stay_again', booking_id=booking.id) }}" class="btn-outline">Stay
                             Again</a>
                     </div>
