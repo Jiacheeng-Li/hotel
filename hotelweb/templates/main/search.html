@@ -67,8 +67,8 @@
             <h5 class="fw-bold text-primary mb-2 mt-2">Filter Results</h5>
 
             <form action="{{ url_for('main.search') }}" method="get">
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Destination</label>
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Destination</label>
                     <input class="form-control form-control-sm" list="sidebarCityOptions" name="city" value="{{ city }}"
                         placeholder="Where to?">
                     <datalist id="sidebarCityOptions">
@@ -78,26 +78,26 @@
                     </datalist>
                 </div>
 
-                <!-- Dates -->
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Dates</label>
-                    <div class="mb-2">
-                        <label class="form-label small text-muted">Check-in</label>
-                        <input type="date" name="check_in" class="form-control form-control-sm" required 
-                            value="{{ check_in.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
-                            onchange="updateCheckOutMinSidebar()">
-                    </div>
-                    <div>
-                        <label class="form-label small text-muted">Check-out</label>
-                        <input type="date" name="check_out" class="form-control form-control-sm" required 
-                            value="{{ check_out.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
-                            id="sidebar_check_out">
+                <!-- Dates in one line -->
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Dates</label>
+                    <div class="row g-1">
+                        <div class="col-6">
+                            <input type="date" name="check_in" class="form-control form-control-sm" required 
+                                value="{{ check_in.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
+                                onchange="updateCheckOutMinSidebar()" title="Check-in">
+                        </div>
+                        <div class="col-6">
+                            <input type="date" name="check_out" class="form-control form-control-sm" required 
+                                value="{{ check_out.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
+                                id="sidebar_check_out" title="Check-out">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Sort -->
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Sort By</label>
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Sort By</label>
                     <select name="sort_by" class="form-select form-select-sm" onchange="this.form.submit()">
                         <option value="best_match" {% if sort_by=='best_match' %}selected{% endif %}>Best Match</option>
                         <option value="lowest_price" {% if sort_by=='lowest_price' %}selected{% endif %}>Lowest Price</option>
@@ -106,18 +106,18 @@
                 </div>
 
                 <!-- People and Rooms on one line -->
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Details</label>
-                    <div class="row g-2">
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Details</label>
+                    <div class="row g-1">
                         <div class="col-6">
                             <div class="input-group input-group-sm">
-                        <span class="input-group-text">People</span>
-                        <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
-                    </div>
+                                <span class="input-group-text" style="font-size: 0.75rem;">People</span>
+                                <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
+                            </div>
                         </div>
                         <div class="col-6">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text">Rooms</span>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text" style="font-size: 0.75rem;">Rooms</span>
                                 <input type="number" name="rooms_needed" class="form-control" value="{{ rooms_needed }}" min="1">
                             </div>
                         </div>
@@ -125,17 +125,17 @@
                 </div>
 
                 <!-- Brands - Two per line -->
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Brands</label>
-                    <div class="row g-2">
-                    {% for brand in all_brands %}
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Brands</label>
+                    <div class="row g-1" style="max-height: 80px; overflow-y: auto;">
+                        {% for brand in all_brands %}
                         <div class="col-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
-                            id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
-                                <label class="form-check-label small" for="f_br_{{ brand.id }}">
-                            {{ brand.name }}
-                        </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
+                                    id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
+                                <label class="form-check-label small" style="font-size: 0.75rem;" for="f_br_{{ brand.id }}">
+                                    {{ brand.name }}
+                                </label>
                             </div>
                         </div>
                         {% endfor %}
@@ -143,14 +143,14 @@
                 </div>
 
                 <!-- Amenities -->
-                <div class="mb-1">
-                    <label class="form-label small text-uppercase text-muted fw-bold">Amenities</label>
-                    <div style="max-height: 100px; overflow-y: auto;">
+                <div class="mb-2">
+                    <label class="form-label small text-uppercase text-muted fw-bold mb-1">Amenities</label>
+                    <div style="max-height: 80px; overflow-y: auto;">
                         {% for amenity in all_amenities %}
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="amenities" value="{{ amenity.id }}"
                                 id="f_am_{{ amenity.id }}" {% if amenity.id|string in required_amenities %}checked{% endif %}>
-                            <label class="form-check-label small" for="f_am_{{ amenity.id }}">
+                            <label class="form-check-label small" style="font-size: 0.75rem;" for="f_am_{{ amenity.id }}">
                                 {{ amenity.name }}
                             </label>
                         </div>
@@ -158,10 +158,10 @@
                     </div>
                 </div>
 
-                <div class="d-grid">
+                <div class="d-grid gap-1">
                     <button type="submit" class="btn btn-primary btn-sm">APPLY FILTERS</button>
-                    <a href="{{ url_for('main.search', city=city, check_in=check_in, check_out=check_out) }}"
-                        class="btn btn-link btn-sm text-muted mt-2">Reset Filters</a>
+                    <a href="{{ url_for('main.search', city=city, check_in=check_in, check_out=check_out, guests=guests, rooms_needed=rooms_needed) }}"
+                        class="btn btn-link btn-sm text-muted" style="padding: 0.25rem;">Reset Filters</a>
                 </div>
             </form>
         </div>
