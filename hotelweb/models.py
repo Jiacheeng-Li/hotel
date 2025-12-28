@@ -407,6 +407,14 @@ class Booking(db.Model):
     
     # Points tracking
     points_earned = db.Column(db.Integer, default=0)  # Points earned from this booking
+    points_used = db.Column(db.Integer, default=0)  # Points used to pay for this booking
+    
+    # Breakfast option
+    breakfast_included = db.Column(db.Boolean, default=False)
+    breakfast_price_per_room = db.Column(db.Numeric(10, 2), default=0)  # Breakfast price per room per stay
+    
+    # Payment method
+    payment_method = db.Column(db.String(20), default='pay_now')  # pay_now, pay_at_hotel, points
     
     user = db.relationship('User', backref='bookings', lazy=True)
 
@@ -422,3 +430,15 @@ class PointsTransaction(db.Model):
     
     user = db.relationship('User', backref='points_transactions', lazy=True)
     booking = db.relationship('Booking', backref='points_transaction', lazy=True)
+
+class MilestoneReward(db.Model):
+    """Track milestone rewards earned by users"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    milestone_nights = db.Column(db.Integer, nullable=False)  # The milestone threshold (20, 30, 40, etc.)
+    reward_type = db.Column(db.String(20), nullable=False)  # 'points' or 'breakfast'
+    reward_value = db.Column(db.Integer)  # For points: 5000, For breakfast: 2 (number of breakfasts)
+    claimed_at = db.Column(db.DateTime)  # When user selected their reward
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref='milestone_rewards', lazy=True)

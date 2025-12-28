@@ -431,6 +431,7 @@ def booking_confirm(roomtype_id):
     check_in_str = request.args.get('check_in')
     check_out_str = request.args.get('check_out')
     rooms_needed = int(request.args.get('rooms_needed', 1))
+    breakfast_included = request.args.get('breakfast_included') == '1'
     
     if not check_in_str or not check_out_str:
         flash('Please select check-in and check-out dates.', 'warning')
@@ -456,9 +457,16 @@ def booking_confirm(roomtype_id):
     nights = (check_out - check_in).days
     base_rate = float(rt.price_per_night)
     subtotal = base_rate * nights * rooms_needed
+    
+    # Breakfast pricing (per room per stay)
+    breakfast_price_per_room = 25.00
+    breakfast_total = breakfast_price_per_room * rooms_needed if breakfast_included else 0
+    
+    # Calculate taxes and fees on base rate only (breakfast may be taxed separately in real system)
     taxes = subtotal * 0.10  # 10% tax
     fees = subtotal * 0.05   # 5% service fee
     total_cost = subtotal + taxes + fees
+    final_total = total_cost + breakfast_total
     
     # Calculate points
     per_night_total = base_rate * 1.15
@@ -478,6 +486,10 @@ def booking_confirm(roomtype_id):
                          taxes=taxes,
                          fees=fees,
                          total_cost=total_cost,
+                         breakfast_included=breakfast_included,
+                         breakfast_total=breakfast_total,
+                         breakfast_price_per_room=breakfast_price_per_room,
+                         final_total=final_total,
                          points_earned=points_earned)
 
 @bp.route('/book/<int:roomtype_id>', methods=['POST'])
@@ -491,6 +503,7 @@ def book_room(roomtype_id):
     check_out_str = request.form.get('check_out')
     rooms_needed = int(request.form.get('rooms_needed', 1))
     payment_method = request.form.get('payment_method', 'pay_now')
+    breakfast_included = request.form.get('breakfast_included') == '1'
     
     try:
         check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
@@ -512,9 +525,36 @@ def book_room(roomtype_id):
     nights = (check_out - check_in).days
     base_rate = float(rt.price_per_night)
     subtotal = base_rate * nights * rooms_needed
+    
+    # Breakfast pricing
+    breakfast_price_per_room = 25.00
+    breakfast_total = breakfast_price_per_room * rooms_needed if breakfast_included else 0
+    
     taxes = subtotal * 0.10  # 10% tax
     fees = subtotal * 0.05   # 5% service fee
     total_cost = subtotal + taxes + fees
+    final_total = total_cost + breakfast_total
+    
+    # Handle points payment
+    points_used = 0
+    if payment_method == 'points':
+        points_needed = int(final_total * 100)  # 100 points = $1
+        if current_user.points < points_needed:
+            flash(f'Insufficient points. You have {current_user.points:,} points but need {points_needed:,} points.', 'danger')
+            return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
+                                  check_in=check_in_str, check_out=check_out_str, 
+                                  rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
+        points_used = points_needed
+        current_user.points -= points_used
+        # Record points transaction
+        points_transaction = PointsTransaction(
+            user_id=current_user.id,
+            points=-points_used,
+            transaction_type='REDEEMED',
+            description=f'Payment for booking at {rt.hotel.name}'
+        )
+        db.session.add(points_transaction)
+        final_total = 0  # Fully paid with points
     
     # Calculate points with tier multiplier
     # Formula: Base Points = (Room Rate × 1.15) × 10 per night
@@ -527,6 +567,10 @@ def book_room(roomtype_id):
     
     # Create booking
     booking = Booking(
+        breakfast_included=breakfast_included,
+        breakfast_price_per_room=breakfast_price_per_room if breakfast_included else 0,
+        points_used=points_used,
+        payment_method=payment_method,
         user_id=current_user.id,
         roomtype_id=rt.id,
         check_in=check_in,
@@ -537,7 +581,7 @@ def book_room(roomtype_id):
         subtotal=subtotal,
         taxes=taxes,
         fees=fees,
-        total_cost=total_cost,
+        total_cost=final_total,  # Include breakfast in total
         points_earned=points_earned
     )
     
@@ -687,6 +731,17 @@ def account():
         transaction_type='REDEEMED'
     ).order_by(PointsTransaction.created_at.desc()).all()
     
+    # Bookings paid with points
+    points_bookings = Booking.query.filter_by(
+        user_id=current_user.id,
+        payment_method='points'
+    ).order_by(Booking.created_at.desc()).all()
+    
+    # Milestone rewards
+    milestone_rewards = MilestoneReward.query.filter_by(
+        user_id=current_user.id
+    ).order_by(MilestoneReward.created_at.desc()).all()
+    
     # Calculate milestone progress for current year
     from datetime import datetime
     current_year = datetime.now().year
@@ -714,6 +769,19 @@ def account():
         range_size = next_milestone_year - prev_milestone
         progress_in_range = year_nights - prev_milestone
         milestone_progress_percent = min(100, int((progress_in_range / range_size) * 100))
+    
+    # Check for unclaimed milestone rewards
+    from ..models import MilestoneReward, Booking
+    unclaimed_milestones = []
+    for threshold in milestone_thresholds:
+        if year_nights >= threshold:
+            # Check if user has already claimed this milestone
+            existing_reward = MilestoneReward.query.filter_by(
+                user_id=current_user.id,
+                milestone_nights=threshold
+            ).first()
+            if not existing_reward:
+                unclaimed_milestones.append(threshold)
     
     # Tier progress (points-based)
     points_to_next = current_user.points_to_next_tier()
@@ -849,6 +917,8 @@ def account():
                          all_transactions=all_transactions,
                          all_bookings=all_bookings,
                          redeemed_transactions=redeemed_transactions,
+                         points_bookings=points_bookings,
+                         milestone_rewards=milestone_rewards,
                          points_to_next=points_to_next,
                          next_tier=next_tier,
                          tier_benefits=tier_benefits,
@@ -877,7 +947,78 @@ def account():
                          next_milestone_year=next_milestone_year or 100,
                          nights_to_milestone_year=nights_to_milestone_year,
                          milestone_progress_percent=milestone_progress_percent,
-                         current_year=current_year)
+                         current_year=current_year,
+                         unclaimed_milestones=unclaimed_milestones)
+
+@bp.route('/milestone-rewards/<int:milestone_nights>', methods=['GET', 'POST'])
+@login_required
+def claim_milestone_reward(milestone_nights):
+    """Display milestone reward selection page or process reward claim"""
+    from ..models import MilestoneReward
+    from datetime import datetime
+    
+    # Validate milestone threshold
+    valid_milestones = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+    if milestone_nights not in valid_milestones:
+        flash('Invalid milestone.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Check if user has reached this milestone
+    current_year = datetime.now().year
+    year_start = datetime(current_year, 1, 1).date()
+    all_bookings = current_user.bookings
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
+    
+    if year_nights < milestone_nights:
+        flash(f'You have not reached {milestone_nights} nights yet. You currently have {year_nights} nights this year.', 'warning')
+        return redirect(url_for('main.account'))
+    
+    # Check if already claimed
+    existing_reward = MilestoneReward.query.filter_by(
+        user_id=current_user.id,
+        milestone_nights=milestone_nights
+    ).first()
+    
+    if existing_reward:
+        flash('You have already claimed this milestone reward.', 'info')
+        return redirect(url_for('main.account'))
+    
+    if request.method == 'POST':
+        reward_type = request.form.get('reward_type')
+        reward_value = int(request.form.get('reward_value', 0))
+        
+        if reward_type == 'points':
+            # Award points
+            current_user.points += reward_value
+            from ..models import PointsTransaction
+            transaction = PointsTransaction(
+                user_id=current_user.id,
+                points=reward_value,
+                transaction_type='BONUS',
+                description=f'Milestone reward: {milestone_nights} nights - {reward_value} bonus points'
+            )
+            db.session.add(transaction)
+            flash(f'Congratulations! {reward_value:,} bonus points have been added to your account.', 'success')
+        elif reward_type == 'breakfast':
+            # Store breakfast reward (will be applied on next booking)
+            flash(f'Congratulations! You have earned {reward_value} complimentary breakfasts. They will be available on your next booking.', 'success')
+        
+        # Create milestone reward record
+        milestone_reward = MilestoneReward(
+            user_id=current_user.id,
+            milestone_nights=milestone_nights,
+            reward_type=reward_type,
+            reward_value=reward_value,
+            claimed_at=datetime.utcnow()
+        )
+        db.session.add(milestone_reward)
+        db.session.commit()
+        
+        return redirect(url_for('main.account'))
+    
+    # GET request - show selection page
+    return render_template('main/milestone_rewards.html', milestone_nights=milestone_nights)
 
 @bp.route('/account/update', methods=['POST'])
 @login_required

@@ -1125,7 +1125,16 @@
                             <div class="milestone-label">nights to next milestone</div>
                         </div>
                     </div>
-                    <a href="#" class="btn-premium">See reward options</a>
+                    {% if unclaimed_milestones %}
+                    <div class="alert alert-warning mb-3">
+                        <strong>You have unclaimed rewards!</strong><br>
+                        {% for milestone in unclaimed_milestones %}
+                        <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone) }}" class="btn btn-sm btn-warning mt-2">
+                            Claim {{ milestone }}-Night Reward
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <div class="mt-3">
                         <a href="#" onclick="return switchTab('activity', event);" style="font-size: 0.9rem; color: #37283F; text-decoration: none; font-weight: 500;">
                             Milestone Rewards progress >
@@ -1138,6 +1147,77 @@
 
     <!-- Rewards Wallet Tab -->
     <div id="rewards" class="tab-content">
+        <!-- Milestone Rewards Section -->
+        {% if milestone_rewards %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">Milestone Rewards</h3>
+            </div>
+            <div class="rewards-list">
+                {% for reward in milestone_rewards %}
+                <div class="reward-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>
+                                {% if reward.reward_type == 'points' %}
+                                <i class="bi bi-star-fill text-warning"></i> {{ reward.reward_value|int|format(',') }} Bonus Points
+                                {% elif reward.reward_type == 'breakfast' %}
+                                <i class="bi bi-cup-hot text-primary"></i> {{ reward.reward_value }} Complimentary Breakfast{{ 's' if reward.reward_value != 1 else '' }}
+                                {% endif %}
+                            </strong>
+                            <div class="text-muted small mt-1">
+                                {{ reward.milestone_nights }}-Night Milestone Reward
+                            </div>
+                            <div class="text-muted small">
+                                Claimed: {{ reward.claimed_at.strftime('%B %d, %Y') if reward.claimed_at else reward.created_at.strftime('%B %d, %Y') }}
+                            </div>
+                        </div>
+                        <div class="text-success fw-bold">
+                            {% if reward.reward_type == 'points' %}
+                            +{{ "{:,}".format(reward.reward_value) }} pts
+                            {% else %}
+                            {{ reward.reward_value }}x Breakfast
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Points Redemption History -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">Bookings Paid with Points</h3>
+            </div>
+            {% if points_bookings %}
+            <div class="rewards-list">
+                {% for booking in points_bookings %}
+                <div class="reward-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ booking.room_type.hotel.name }}</strong>
+                            <div class="text-muted small mt-1">{{ booking.room_type.name }}</div>
+                            <div class="text-muted small">
+                                {{ booking.check_in.strftime('%B %d') }} - {{ booking.check_out.strftime('%B %d, %Y') }}
+                            </div>
+                        </div>
+                        <div class="text-danger fw-bold">
+                            -{{ "{:,}".format(booking.points_used) }} points
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-3">
+                <p class="text-muted mb-0">No bookings paid with points yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Points Redemption Transactions -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Points Redemption History</h3>
@@ -1145,7 +1225,7 @@
             {% if redeemed_transactions %}
             <div class="rewards-list">
                 {% for transaction in redeemed_transactions %}
-                <div class="reward-item" onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) if transaction.booking_id else '#' }}'">
+                <div class="reward-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ transaction.description or 'Points Redeemed' }}</strong>

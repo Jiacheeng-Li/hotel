@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Milestone Rewards - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="fw-bold mb-4">Milestone Rewards</h1>
+            <p class="lead text-muted mb-5">
+                Congratulations! You've reached {{ milestone_nights }} nights this year. Choose your reward:
+            </p>
+
+            <div class="row g-4">
+                <!-- Points Reward Option -->
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0" style="border-radius: 12px; transition: all 0.3s;">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">5,000 Bonus Points</h3>
+                            <p class="text-muted mb-4">
+                                Get 5,000 bonus points added to your account immediately. Use them for future bookings or rewards.
+                            </p>
+                            <form method="POST" action="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone_nights) }}">
+                                <input type="hidden" name="reward_type" value="points">
+                                <input type="hidden" name="reward_value" value="5000">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    Claim 5,000 Points
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakfast Reward Option -->
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0" style="border-radius: 12px; transition: all 0.3s;">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-cup-hot text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">2 Complimentary Breakfasts</h3>
+                            <p class="text-muted mb-4">
+                                Enjoy 2 complimentary breakfasts (valued at $25 each) on your next stay. Valid for one year.
+                            </p>
+                            <form method="POST" action="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone_nights) }}">
+                                <input type="hidden" name="reward_type" value="breakfast">
+                                <input type="hidden" name="reward_value" value="2">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    Claim 2 Breakfasts
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 text-center">
+                <a href="{{ url_for('main.account') }}" class="btn btn-outline-secondary">
+                    Back to My Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
