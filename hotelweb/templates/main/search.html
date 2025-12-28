@@ -318,6 +318,23 @@
         mapInitialized = true;
         setTimeout(() => map.invalidateSize(), 200);
     });
+
+    function updateCheckOutMinSidebar() {
+        const checkIn = document.querySelector('input[name="check_in"]');
+        const checkOut = document.getElementById('sidebar_check_out');
+        if (checkIn && checkOut && checkIn.value) {
+            // Set minimum check-out date to the day after check-in
+            const checkInDate = new Date(checkIn.value);
+            checkInDate.setDate(checkInDate.getDate() + 1);
+            const minCheckOut = checkInDate.toISOString().split('T')[0];
+            checkOut.min = minCheckOut;
+            
+            // If current check-out is before new minimum, update it
+            if (checkOut.value && checkOut.value < minCheckOut) {
+                checkOut.value = minCheckOut;
+            }
+        }
+    }
 </script>
 
 {% endblock %}
