@@ -20,10 +20,14 @@
     background-color: transparent;
     border-bottom: 2px solid #d97706;
 }
+/* Reduce top spacing for search page */
+main.container {
+    padding-top: 0.5rem !important;
+}
 </style>
 
 <!-- Search Summary -->
-<div class="mb-2 mt-2">
+<div class="mb-2 mt-0">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="d-flex align-items-center flex-wrap gap-2">
             <span class="fw-bold">{{ city }}</span>
