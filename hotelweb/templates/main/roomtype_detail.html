@@ -18,12 +18,19 @@
             <li class="breadcrumb-item">
                 <a href="{{ url_for('main.brand_detail', brand_id=breadcrumb.brand_id) }}">{{ roomtype.hotel.brand.name }}</a>
             </li>
+            {% elif breadcrumb.from_city %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.destinations') }}">Destinations</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.city_hotels', city_name=breadcrumb.city_name) }}">{{ breadcrumb.city_name }}</a>
+            </li>
             {% elif breadcrumb.from_destinations %}
             <li class="breadcrumb-item">
                 <a href="{{ url_for('main.destinations') }}">Destinations</a>
             </li>
             {% endif %}
-            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id, from=breadcrumb.from_source_param if breadcrumb.from_source_param else '', city_name=breadcrumb.city_name if breadcrumb.city_name else '') }}">{{ roomtype.hotel.name }}</a></li>
             <li class="breadcrumb-item active">{{ roomtype.name }}</li>
         </ol>
     </nav>

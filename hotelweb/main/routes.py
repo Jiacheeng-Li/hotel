@@ -213,8 +213,10 @@ def hotel_detail(hotel_id):
         'from_search': False,
         'from_brand': False,
         'from_destinations': False,
+        'from_city': False,
         'search_params': {},
-        'brand_id': None
+        'brand_id': None,
+        'city_name': None
     }
     
     if from_source == 'search' or (not from_source and referrer and '/search' in referrer):
@@ -231,6 +233,22 @@ def hotel_detail(hotel_id):
             parsed = urlparse(referrer)
             search_params = parse_qs(parsed.query)
             breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
+    elif from_source == 'city' or (not from_source and referrer and '/city/' in referrer):
+        breadcrumb_context['from_city'] = True
+        # Get city name from URL param or referrer
+        city_name = request.args.get('city_name')
+        if city_name:
+            breadcrumb_context['city_name'] = city_name
+        elif referrer and '/city/' in referrer:
+            from urllib.parse import urlparse
+            parsed = urlparse(referrer)
+            # Extract city name from /city/city_name URL
+            path_parts = parsed.path.split('/')
+            if len(path_parts) >= 3 and path_parts[1] == 'city':
+                breadcrumb_context['city_name'] = path_parts[2]
+        # Fallback to hotel's city if not found
+        if not breadcrumb_context['city_name']:
+            breadcrumb_context['city_name'] = hotel.city
     elif from_source == 'brand' or (not from_source and referrer and '/brand/' in referrer):
         breadcrumb_context['from_brand'] = True
         breadcrumb_context['brand_id'] = hotel.brand_id
@@ -303,8 +321,10 @@ def roomtype_detail(roomtype_id):
         'from_search': False,
         'from_brand': False,
         'from_destinations': False,
+        'from_city': False,
         'search_params': {},
-        'brand_id': None
+        'brand_id': None,
+        'city_name': None
     }
     
     # Check if came from hotel detail page (check referrer chain)
@@ -324,6 +344,8 @@ def roomtype_detail(roomtype_id):
                     search_params['check_out'] = ref_params['check_out'][0]
                 if search_params:
                     breadcrumb_context['search_params'] = search_params
+            elif from_source == 'city' and 'city_name' in ref_params:
+                breadcrumb_context['city_name'] = ref_params['city_name'][0]
         else:
             # Fallback to checking referrer path
             if '/search' in referrer:
@@ -332,6 +354,11 @@ def roomtype_detail(roomtype_id):
                 breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
             elif '/brand/' in referrer:
                 from_source = 'brand'
+            elif '/city/' in referrer:
+                from_source = 'city'
+                path_parts = parsed.path.split('/')
+                if len(path_parts) >= 3 and path_parts[1] == 'city':
+                    breadcrumb_context['city_name'] = path_parts[2]
             elif '/destinations' in referrer:
                 from_source = 'destinations'
     
@@ -345,6 +372,11 @@ def roomtype_detail(roomtype_id):
                 parsed = urlparse(referrer)
                 search_params = parse_qs(parsed.query)
                 breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
+        elif from_source == 'city':
+            breadcrumb_context['from_city'] = True
+            # Get city_name from URL param if not already set
+            if not breadcrumb_context['city_name']:
+                breadcrumb_context['city_name'] = request.args.get('city_name') or rt.hotel.city
         elif from_source == 'brand':
             breadcrumb_context['from_brand'] = True
             breadcrumb_context['brand_id'] = rt.hotel.brand_id
