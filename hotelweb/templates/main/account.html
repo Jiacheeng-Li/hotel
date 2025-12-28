@@ -1265,17 +1265,17 @@
         </div>
         </div>
             <div class="summary-card">
-                <div class="summary-label">Total Stays</div>
-                <div class="summary-value">{{ total_bookings }}</div>
+                <div class="summary-label">Total Nights</div>
+                <div class="summary-value">{{ current_user.nights_stayed }}</div>
                 <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
-                    {{ current_user.nights_stayed }} nights stayed
+                    {{ total_bookings }} stay{{ 's' if total_bookings != 1 else '' }}
         </div>
             </div>
             <div class="summary-card">
                 <div class="summary-label">Total Spent</div>
                 <div class="summary-value">${{ "{:,.0f}".format(total_spent) }}</div>
                 <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
-                    {{ "{:,}".format(current_user.lifetime_points) }} lifetime points
+                    {{ "{:,}".format(current_user.points) }} points
                 </div>
         </div>
     </div>
@@ -1288,7 +1288,7 @@
             {% if all_transactions %}
             <div>
                 {% for transaction in all_transactions %}
-                <div class="activity-item" onclick="window.location.href='{{ url_for('main.account') }}'">
+                <div class="activity-item" {% if transaction.booking_id and transaction.transaction_type == 'EARNED' %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ transaction.description }}</strong>
