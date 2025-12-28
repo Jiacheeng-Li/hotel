@@ -77,8 +77,23 @@
                             {% endfor %}
                     </datalist>
                 </div>
-                <input type="hidden" name="check_in" value="{{ check_in }}">
-                <input type="hidden" name="check_out" value="{{ check_out }}">
+
+                <!-- Dates -->
+                <div class="mb-1">
+                    <label class="form-label small text-uppercase text-muted fw-bold">Dates</label>
+                    <div class="mb-2">
+                        <label class="form-label small text-muted">Check-in</label>
+                        <input type="date" name="check_in" class="form-control form-control-sm" required 
+                            value="{{ check_in.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
+                            onchange="updateCheckOutMinSidebar()">
+                    </div>
+                    <div>
+                        <label class="form-label small text-muted">Check-out</label>
+                        <input type="date" name="check_out" class="form-control form-control-sm" required 
+                            value="{{ check_out.strftime('%Y-%m-%d') }}" min="{{ today.strftime('%Y-%m-%d') }}" 
+                            id="sidebar_check_out">
+                    </div>
+                </div>
 
                 <!-- Sort -->
                 <div class="mb-1">
