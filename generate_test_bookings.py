@@ -160,10 +160,14 @@ def create_booking(user, room_type, check_in, check_out, nights, cancelled=False
     total_cost = subtotal + taxes + fees
     
     # Calculate points (only for non-cancelled bookings)
+    # Formula: 1 dollar = 10 base points, then multiply by tier multiplier
+    # Note: This is for test data generation - actual bookings check for points payment
     if not cancelled:
-        base_points = int(total_cost * 10)
+        per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
+        base_points_per_night = int(per_night_total * 10)  # 10 points per $1
         multiplier = user.get_points_multiplier()
-        points_earned = int(base_points * multiplier)
+        points_per_night = int(base_points_per_night * multiplier)
+        points_earned = points_per_night * nights * rooms_count
     else:
         points_earned = 0
     
