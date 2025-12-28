@@ -141,9 +141,9 @@
                             <div class="mt-1">
                                 {% set avail = room_availability[rt.id] %}
                                 {% if avail == 0 %}
-                                <span class="badge bg-secondary text-white" style="font-size: 0.75rem;">售罄</span>
+                                <span class="badge bg-secondary text-white" style="font-size: 0.75rem;">Sold Out</span>
                                 {% elif avail < 5 %}
-                                <span class="badge bg-warning text-dark" style="font-size: 0.75rem;">仅剩 {{ avail }} 间</span>
+                                <span class="badge bg-warning text-dark" style="font-size: 0.75rem;">Only {{ avail }} left</span>
                                 {% endif %}
                             </div>
                             {% endif %}

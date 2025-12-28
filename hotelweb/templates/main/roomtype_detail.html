@@ -128,11 +128,9 @@
                     {% if available_rooms is defined %}
                     <div class="mt-2">
                         {% if available_rooms == 0 %}
-                        <span class="badge bg-secondary text-white" style="font-size: 0.9rem; padding: 0.5rem 1rem;">售罄 Sold Out</span>
+                        <span class="badge bg-secondary text-white" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Sold Out</span>
                         {% elif available_rooms < 5 %}
-                        <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1rem;">仅剩 {{ available_rooms }} 间 Only {{ available_rooms }} left</span>
-                        {% else %}
-                        <span class="badge bg-success text-white" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">有房 Available</span>
+                        <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Only {{ available_rooms }} left</span>
                         {% endif %}
                     </div>
                     {% endif %}
