@@ -11,7 +11,12 @@
 <div class="container">
     {% for dest in destinations %}
     <div class="mb-5">
-        <h3 class="fw-bold mb-4 ps-3 border-start border-4 border-warning">{{ dest.city }}</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ url_for('main.city_hotels', city_name=dest.city) }}" class="text-decoration-none">
+                <h3 class="fw-bold mb-0 ps-3 border-start border-4 border-warning text-dark">{{ dest.city }}</h3>
+            </a>
+            <a href="{{ url_for('main.city_hotels', city_name=dest.city) }}" class="text-decoration-none fw-bold">See all in {{ dest.city }} <i class="bi bi-arrow-right"></i></a>
+        </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for hotel in dest.hotels %}
             <div class="col">
@@ -32,12 +37,21 @@
             </div>
             {% endfor %}
         </div>
-        <div class="text-end mt-3">
-            <a href="{{ url_for('main.search', city=dest.city) }}" class="text-decoration-none fw-bold">See all in {{
-                dest.city }} <i class="bi bi-arrow-right"></i></a>
-        </div>
     </div>
+    {% if not loop.last %}
     <hr class="my-5 opacity-25">
+    {% endif %}
     {% endfor %}
 </div>
+
+<style>
+.hover-effect {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>
 {% endblock %}

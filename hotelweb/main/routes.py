@@ -93,16 +93,26 @@ def brand_detail(brand_id):
 def destinations():
     cities = db.session.query(Hotel.city).distinct().all()
     cities_list = [c[0] for c in cities]
-    # Get hotels grouped by city
+    # Get hotels grouped by city - limit to 3 for display
     destinations_data = []
     for city_name in cities_list:
-        hotels = Hotel.query.filter_by(city=city_name).limit(4).all()
+        hotels = Hotel.query.filter_by(city=city_name).limit(3).all()
         destinations_data.append({
             'city': city_name,
             'hotels': hotels,
             'image': hotels[0].image_url if hotels else ''
         })
     return render_template('main/destinations.html', destinations=destinations_data)
+
+@bp.route('/city/<city_name>')
+def city_hotels(city_name):
+    """Display all hotels in a specific city"""
+    hotels = Hotel.query.filter_by(city=city_name).all()
+    if not hotels:
+        flash(f'No hotels found in {city_name}.', 'warning')
+        return redirect(url_for('main.destinations'))
+    
+    return render_template('main/city_hotels.html', city=city_name, hotels=hotels)
 
 @bp.route('/about')
 def about():
