@@ -23,7 +23,7 @@
 </style>
 
 <!-- Search Summary -->
-<div class="mb-3">
+<div class="mb-2 mt-2">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="d-flex align-items-center flex-wrap gap-2">
             <span class="fw-bold">{{ city }}</span>
@@ -45,7 +45,7 @@
             </span>
             {% endif %}
         </div>
-        <span class="badge bg-primary">{{ results|length }} propert{{ 'ies' if results|length != 1 else 'y' }} found</span>
+        <span class="badge text-white" style="background-color: #1e3a8a;">{{ results|length }} propert{{ 'ies' if results|length != 1 else 'y' }} found</span>
     </div>
 </div>
 
