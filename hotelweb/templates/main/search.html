@@ -94,7 +94,11 @@ main.container {
                     <select name="sort_by" class="form-select form-select-sm" onchange="this.form.submit()">
                         <option value="best_match" {% if sort_by=='best_match' %}selected{% endif %}>Best Match</option>
                         <option value="lowest_price" {% if sort_by=='lowest_price' %}selected{% endif %}>Lowest Price</option>
+                        <option value="highest_price" {% if sort_by=='highest_price' %}selected{% endif %}>Highest Price</option>
                         <option value="highest_rating" {% if sort_by=='highest_rating' %}selected{% endif %}>Highest Rating</option>
+                        <option value="lowest_rating" {% if sort_by=='lowest_rating' %}selected{% endif %}>Lowest Rating</option>
+                        <option value="highest_stars" {% if sort_by=='highest_stars' %}selected{% endif %}>Highest Stars</option>
+                        <option value="lowest_stars" {% if sort_by=='lowest_stars' %}selected{% endif %}>Lowest Stars</option>
                     </select>
                 </div>
 

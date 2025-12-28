@@ -82,8 +82,16 @@ def search_available_roomtypes(city, check_in, check_out, guests, rooms_needed=1
 def sort_results(results, sort_by='best_match'):
     if sort_by == 'lowest_price':
         return sorted(results, key=lambda x: x['price'])
+    elif sort_by == 'highest_price':
+        return sorted(results, key=lambda x: x['price'], reverse=True)
     elif sort_by == 'highest_rating':
         return sorted(results, key=lambda x: x['avg_rating'], reverse=True)
+    elif sort_by == 'lowest_rating':
+        return sorted(results, key=lambda x: x['avg_rating'])
+    elif sort_by == 'highest_stars':
+        return sorted(results, key=lambda x: x['hotel'].stars if hasattr(x['hotel'], 'stars') else 0, reverse=True)
+    elif sort_by == 'lowest_stars':
+        return sorted(results, key=lambda x: x['hotel'].stars if hasattr(x['hotel'], 'stars') else 0)
     elif sort_by == 'best_match':
         # Combined Score: Rating * 20% + Price (normalized inverse) ... simplified
         # Sort by Rating desc, then price asc

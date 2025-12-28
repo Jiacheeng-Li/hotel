@@ -174,12 +174,15 @@ def search():
                 'match_count': item['match_count'],
                 'total_required': item['total_required'],
                 'min_price': item['price'],
+                'max_price': item['price'],
                 'room_types': []
             }
         
-        # Update min price if lower found (though usually query might be ordered, let's be safe)
+        # Update min and max price
         if item['price'] < grouped_results[h_id]['min_price']:
             grouped_results[h_id]['min_price'] = item['price']
+        if item['price'] > grouped_results[h_id]['max_price']:
+            grouped_results[h_id]['max_price'] = item['price']
             
         grouped_results[h_id]['room_types'].append(item['room_type'])
     
@@ -188,8 +191,16 @@ def search():
     # Sorting Logic for Grouped Results
     if sort_by == 'lowest_price':
         final_results.sort(key=lambda x: x['min_price'])
+    elif sort_by == 'highest_price':
+        final_results.sort(key=lambda x: x['max_price'], reverse=True)
     elif sort_by == 'highest_rating':
         final_results.sort(key=lambda x: x['avg_rating'], reverse=True)
+    elif sort_by == 'lowest_rating':
+        final_results.sort(key=lambda x: x['avg_rating'])
+    elif sort_by == 'highest_stars':
+        final_results.sort(key=lambda x: x['hotel'].stars if x['hotel'].stars else 0, reverse=True)
+    elif sort_by == 'lowest_stars':
+        final_results.sort(key=lambda x: x['hotel'].stars if x['hotel'].stars else 0)
     else: # best_match
         final_results.sort(key=lambda x: (-x['avg_rating'], x['min_price']))
     
