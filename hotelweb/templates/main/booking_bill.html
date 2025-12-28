@@ -194,28 +194,37 @@
     }
 
     .payment-info {
-        background: #f9fafb;
-        border-left: 4px solid #1e3a8a;
-        padding: 1.25rem;
-        border-radius: 8px;
         margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #e5e7eb;
     }
 
     .payment-info h4 {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        color: #6b7280;
+        color: #9ca3af;
         font-weight: 700;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.75rem;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .payment-info h4::before {
+        content: '';
+        width: 3px;
+        height: 16px;
+        background: #1e3a8a;
+        border-radius: 2px;
     }
 
     .payment-info-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
     }
 
     .payment-info-item:last-child {
@@ -232,25 +241,6 @@
         font-weight: 600;
     }
 
-    .badge-payment {
-        display: inline-block;
-        padding: 0.35rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .badge-paid {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .badge-pending {
-        background: #fef3c7;
-        color: #92400e;
-    }
 
     .bill-footer {
         text-align: center;
