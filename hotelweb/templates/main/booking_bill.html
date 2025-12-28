@@ -304,17 +304,6 @@
         transform: translateY(-2px);
     }
 
-    .icon-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: #f3f4f6;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #1a1a1a;
-    }
 
     @media (max-width: 768px) {
         .bill-container {
@@ -452,11 +441,11 @@
             <span class="payment-label">Payment Method:</span>
             <span class="payment-value">
                 {% if booking.payment_method == 'points' %}
-                    <span class="badge-payment badge-paid">Points Payment</span>
+                    Points Payment
                 {% elif booking.payment_method == 'pay_at_hotel' %}
-                    <span class="badge-payment badge-pending">Pay at Hotel</span>
+                    Pay at Hotel
                 {% else %}
-                    <span class="badge-payment badge-paid">Paid Online</span>
+                    Paid Online
                 {% endif %}
             </span>
         </div>
@@ -464,11 +453,11 @@
             <span class="payment-label">Payment Status:</span>
             <span class="payment-value">
                 {% if booking.payment_method == 'points' and booking.points_used >= booking.total_cost * 100 %}
-                    <span class="badge-payment badge-paid">Fully Paid</span>
+                    Fully Paid
                 {% elif booking.payment_method == 'pay_at_hotel' %}
-                    <span class="badge-payment badge-pending">Pending</span>
+                    Pending
                 {% else %}
-                    <span class="badge-payment badge-paid">Paid</span>
+                    Paid
                 {% endif %}
             </span>
         </div>
