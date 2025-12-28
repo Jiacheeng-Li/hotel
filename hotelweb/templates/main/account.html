@@ -1305,8 +1305,8 @@
                             {% endif %}
                             {% endif %}
         </div>
-                        <div class="text-{% if transaction.transaction_type in ['EARNED', 'BONUS'] %}success{% else %}danger{% endif %} fw-bold">
-                            {% if transaction.transaction_type in ['EARNED', 'BONUS'] %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points|abs) }} points
+                        <div class="text-{% if transaction.transaction_type in ['EARNED', 'BONUS', 'REFUNDED'] %}success{% else %}danger{% endif %} fw-bold">
+                            {% if transaction.transaction_type in ['EARNED', 'BONUS', 'REFUNDED'] %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points|abs) }} points
         </div>
         </div>
                 </div>
