@@ -1,27 +1,9 @@
-from flask import render_template, redirect, url_for, flash, request, session, current_app
+from flask import render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
 from email_validator import validate_email, EmailNotValidError
 from ..models import User
 from ..extensions import db
 from . import bp
-import requests
-
-def verify_recaptcha(response):
-    """Verify reCAPTCHA response with Google's API"""
-    try:
-        secret_key = current_app.config.get('RECAPTCHA_SECRET_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJv')
-        verify_url = 'https://www.google.com/recaptcha/api/siteverify'
-        data = {
-            'secret': secret_key,
-            'response': response
-        }
-        result = requests.post(verify_url, data=data, timeout=5)
-        result_json = result.json()
-        return result_json.get('success', False)
-    except Exception as e:
-        # In development, return True to allow testing
-        print(f"reCAPTCHA verification error: {e}")
-        return True
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
