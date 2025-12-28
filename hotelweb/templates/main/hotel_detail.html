@@ -203,29 +203,31 @@
                         <i class="bi bi-geo-alt-fill"></i> {{ rec_hotel.address }}, {{ rec_hotel.city }}
                     </p>
                     <p class="hotel-card-description">{{ rec_hotel.description }}</p>
-                    {% if rec_hotel.reviews %}
-                    {% set rec_avg_rating = (rec_hotel.reviews|sum(attribute='rating') / rec_hotel.reviews|length) %}
-                    <div class="hotel-card-rating">
-                        <div class="hotel-card-rating-hearts">
-                            {% for i in range(5) %}
-                                {% if i < rec_avg_rating|int %}
-                                    <i class="bi bi-heart-fill"></i>
-                                {% elif i < rec_avg_rating|round(1)|int %}
-                                    <i class="bi bi-heart-half"></i>
-                                {% else %}
-                                    <i class="bi bi-heart"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <span class="hotel-card-rating-score">{{ "%.1f"|format(rec_avg_rating) }}</span>
-                        <span class="hotel-card-rating-count">({{ rec_hotel.reviews|length }} review{{ 's' if rec_hotel.reviews|length != 1 else '' }})</span>
-                    </div>
-                    {% endif %}
                     <div class="hotel-card-footer">
-                        <div class="hotel-card-brand">
+                        <div class="hotel-card-footer-left">
                             <span class="hotel-brand-badge" style="background-color: {{ rec_hotel.brand.logo_color }};">{{ rec_hotel.brand.name }}</span>
+                            {% if rec_hotel.reviews %}
+                            {% set rec_avg_rating = (rec_hotel.reviews|sum(attribute='rating') / rec_hotel.reviews|length) %}
+                            <div class="hotel-card-rating">
+                                <div class="hotel-card-rating-hearts">
+                                    {% for i in range(5) %}
+                                        {% if i < rec_avg_rating|int %}
+                                            <i class="bi bi-heart-fill"></i>
+                                        {% elif i < rec_avg_rating|round(1)|int %}
+                                            <i class="bi bi-heart-half"></i>
+                                        {% else %}
+                                            <i class="bi bi-heart"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="hotel-card-rating-score">{{ "%.1f"|format(rec_avg_rating) }}</span>
+                                <span class="hotel-card-rating-count">({{ rec_hotel.reviews|length }} review{{ 's' if rec_hotel.reviews|length != 1 else '' }})</span>
+                            </div>
+                            {% endif %}
                         </div>
-                        <a href="{{ url_for('main.hotel_detail', hotel_id=rec_hotel.id) }}" class="hotel-card-btn hotel-card-btn-primary">VIEW DETAILS</a>
+                        <div class="hotel-card-footer-right">
+                            <a href="{{ url_for('main.hotel_detail', hotel_id=rec_hotel.id) }}" class="hotel-card-btn hotel-card-btn-primary">VIEW DETAILS</a>
+                        </div>
                     </div>
                 </div>
             </div>

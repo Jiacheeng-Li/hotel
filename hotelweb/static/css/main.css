@@ -320,8 +320,8 @@ a {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0;
+    margin-bottom: 0;
+    padding: 0;
 }
 
 .hotel-card-rating-hearts {
@@ -353,8 +353,19 @@ a {
     margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid #f3f4f6;
-    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hotel-card-footer-left {
+    display: flex;
+    align-items: center;
     gap: 0.75rem;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.hotel-card-footer-right {
+    flex-shrink: 0;
 }
 
 .hotel-card-brand {
@@ -447,8 +458,18 @@ a {
     
     .hotel-card-footer {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 0.75rem;
+    }
+    
+    .hotel-card-footer-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .hotel-card-footer-right {
+        width: 100%;
     }
     
     .hotel-card-btn {
