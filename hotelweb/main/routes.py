@@ -118,6 +118,18 @@ def city_hotels(city_name):
 def about():
     return render_template('main/about.html')
 
+@bp.route('/sustainability')
+def sustainability():
+    return render_template('main/sustainability.html')
+
+@bp.route('/careers')
+def careers():
+    return render_template('main/careers.html')
+
+@bp.route('/contact')
+def contact():
+    return render_template('main/contact.html')
+
 @bp.route('/search')
 def search():
     print(f"DEBUG: Search params: {request.args}")

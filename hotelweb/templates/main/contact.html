@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<div class="py-5 text-center bg-light mb-5">
+    <h1 class="display-4 fw-bold text-primary">Contact Us</h1>
+    <p class="lead text-muted">We're here to help. Get in touch with us.</p>
+</div>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <h2 class="font-serif display-6 fw-bold mb-4">Get in Touch</h2>
+            <p class="text-muted mb-4">
+                Have a question or need assistance? Our team is ready to help you with any inquiries 
+                about reservations, services, or general information.
+            </p>
+
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-envelope-fill text-primary me-2"></i>Email</h5>
+                <p class="text-muted mb-2">
+                    <strong>General Inquiries:</strong><br>
+                    <a href="mailto:info@luminahotels.com" class="text-decoration-none">info@luminahotels.com</a>
+                </p>
+                <p class="text-muted mb-2">
+                    <strong>Reservations:</strong><br>
+                    <a href="mailto:reservations@luminahotels.com" class="text-decoration-none">reservations@luminahotels.com</a>
+                </p>
+                <p class="text-muted mb-2">
+                    <strong>Customer Service:</strong><br>
+                    <a href="mailto:support@luminahotels.com" class="text-decoration-none">support@luminahotels.com</a>
+                </p>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-telephone-fill text-primary me-2"></i>Phone</h5>
+                <p class="text-muted mb-2">
+                    <strong>Reservations:</strong> +1 (800) 555-LUMINA<br>
+                    <strong>Customer Service:</strong> +1 (800) 555-HELP
+                </p>
+                <p class="text-muted small">Monday - Friday: 8:00 AM - 8:00 PM EST<br>
+                Saturday - Sunday: 9:00 AM - 6:00 PM EST</p>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-primary me-2"></i>Corporate Office</h5>
+                <p class="text-muted">
+                    Lumina Hospitality Group<br>
+                    123 Hospitality Boulevard<br>
+                    New York, NY 10001<br>
+                    United States
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 p-4">
+                <h3 class="fw-bold mb-4">Send Us a Message</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <select class="form-select" id="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="reservation">Reservation Inquiry</option>
+                            <option value="service">Customer Service</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-send me-2"></i>Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

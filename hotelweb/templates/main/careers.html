@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Careers - Lumina Hospitality{% endblock %}
+
+{% block content %}
+<div class="py-5 text-center bg-light mb-5">
+    <h1 class="display-4 fw-bold text-primary">Careers</h1>
+    <p class="lead text-muted">Join our team and shape the future of hospitality</p>
+</div>
+
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2 class="font-serif display-6 fw-bold mb-4">Why Work With Us?</h2>
+            <p class="lead text-muted">
+                At Lumina Hospitality, we're not just building hotels—we're creating experiences. 
+                Join a team that values innovation, diversity, and excellence.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
+                <i class="bi bi-people-fill text-primary fs-1 mb-3"></i>
+                <h4 class="fw-bold mb-3">Inclusive Culture</h4>
+                <p class="text-muted">We celebrate diversity and create an environment where everyone can thrive and grow.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
+                <i class="bi bi-graph-up-arrow text-success fs-1 mb-3"></i>
+                <h4 class="fw-bold mb-3">Career Growth</h4>
+                <p class="text-muted">Comprehensive training programs and clear career paths help you reach your professional goals.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
+                <i class="bi bi-heart-fill text-danger fs-1 mb-3"></i>
+                <h4 class="fw-bold mb-3">Work-Life Balance</h4>
+                <p class="text-muted">We believe in supporting our team members with flexible schedules and comprehensive benefits.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="p-4 bg-light rounded-3 h-100">
+                <h3 class="fw-bold mb-3">Open Positions</h3>
+                <p class="text-muted mb-4">We're always looking for talented individuals to join our team across all departments.</p>
+                <div class="mb-3">
+                    <h5 class="fw-bold">Hotel Operations</h5>
+                    <ul class="text-muted">
+                        <li>Front Desk Associates</li>
+                        <li>Housekeeping Supervisors</li>
+                        <li>Guest Services Managers</li>
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <h5 class="fw-bold">Corporate</h5>
+                    <ul class="text-muted">
+                        <li>Marketing Specialists</li>
+                        <li>Revenue Analysts</li>
+                        <li>IT Support Engineers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 bg-light rounded-3 h-100">
+                <h3 class="fw-bold mb-3">Benefits & Perks</h3>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Competitive salary and performance bonuses</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Health, dental, and vision insurance</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Employee discounts on stays</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Professional development opportunities</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Paid time off and holidays</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Retirement savings plan</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h3 class="fw-bold mb-4">Ready to Join Us?</h3>
+            <p class="text-muted mb-4">Send your resume and cover letter to careers@luminahotels.com</p>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-envelope me-2"></i>Contact Our HR Team
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

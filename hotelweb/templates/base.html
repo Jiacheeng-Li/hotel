@@ -95,27 +95,75 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-5 mt-auto" style="background: #0f172a !important;">
+    <footer class="bg-dark text-white py-5 mt-auto" style="background: #0f172a !important;">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5 class="font-serif text-warning fw-bold mb-3 ls-1">Lumina Hospitality</h5>
+            <div class="row mb-4">
+                <div class="col-md-3 mb-4">
+                    <h5 class="font-serif text-warning fw-bold mb-3">Lumina Hospitality</h5>
                     <p class="small text-white-50">Redefining luxury and comfort across the globe. Experience the
                         extraordinary with our collection of distinct brands.</p>
                 </div>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-3 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3">Quick Links</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('main.about') }}"
+                        <li class="mb-2"><a href="{{ url_for('main.about') }}"
                                 class="text-white-50 text-decoration-none hover-white">About Us</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none hover-white">Sustainability</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none hover-white">Careers</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.sustainability') }}" class="text-white-50 text-decoration-none hover-white">Sustainability</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.careers') }}" class="text-white-50 text-decoration-none hover-white">Careers</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="text-white-50 text-decoration-none hover-white">Contact Us</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 mb-4">
+                    <h6 class="text-uppercase fw-bold mb-3">Our Brands</h6>
+                    <ul class="list-unstyled">
+                        {% for brand in brands %}
+                        <li class="mb-2">
+                            <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-white-50 text-decoration-none hover-white" style="color: {{ brand.logo_color }} !important;">
+                                {{ brand.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
-                    <p class="small text-white-50">info@luminahotels.com</p>
+                    <p class="small text-white-50 mb-2">info@luminahotels.com</p>
                     <p class="small text-white-50">&copy; 2025 Lumina Hospitality. All rights reserved.</p>
+                </div>
+            </div>
+            
+            <!-- Logos Section -->
+            <div class="row pt-4 border-top border-secondary">
+                <div class="col-12 text-center mb-3">
+                    <h6 class="text-uppercase fw-bold mb-3 text-white-50 small">Our Collection</h6>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
+                        <!-- Group Logo -->
+                        <div class="text-center">
+                            <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Lumina Hospitality" style="height: 50px; opacity: 0.9;">
+                            <p class="small text-white-50 mt-2 mb-0">Lumina Hospitality</p>
+                        </div>
+                        <!-- Brand Logos -->
+                        {% set logo_map = {
+                            'Grand Apex': 'logo_grand_apex.png',
+                            'Urban Pulse': 'logo_urban_pulse.png',
+                            'Family Haven': 'logo_family_haven.png',
+                            'Metro Express': 'logo_metro_express.png'
+                        } %}
+                        {% for brand in brands %}
+                        <div class="text-center">
+                            <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-decoration-none">
+                                <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}" 
+                                     alt="{{ brand.name }}" 
+                                     style="height: 50px; opacity: 0.9; transition: opacity 0.2s;"
+                                     onmouseover="this.style.opacity='1'" 
+                                     onmouseout="this.style.opacity='0.9'">
+                                <p class="small mt-2 mb-0" style="color: {{ brand.logo_color }};">{{ brand.name }}</p>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
