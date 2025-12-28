@@ -7,6 +7,22 @@
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            {% if breadcrumb.from_search %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.search', **breadcrumb.search_params) }}">Search Results</a>
+            </li>
+            {% elif breadcrumb.from_brand %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.brands') }}">Brands</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.brand_detail', brand_id=breadcrumb.brand_id) }}">{{ roomtype.hotel.brand.name }}</a>
+            </li>
+            {% elif breadcrumb.from_destinations %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.destinations') }}">Destinations</a>
+            </li>
+            {% endif %}
             <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
             <li class="breadcrumb-item active">{{ roomtype.name }}</li>
         </ol>

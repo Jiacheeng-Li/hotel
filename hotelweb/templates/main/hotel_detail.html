@@ -7,9 +7,20 @@
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-            {% if from_search %}
+            {% if breadcrumb.from_search %}
             <li class="breadcrumb-item">
-                <a href="{{ url_for('main.search', **search_params) }}">Search Results</a>
+                <a href="{{ url_for('main.search', **breadcrumb.search_params) }}">Search Results</a>
+            </li>
+            {% elif breadcrumb.from_brand %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.brands') }}">Brands</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.brand_detail', brand_id=breadcrumb.brand_id) }}">{{ hotel.brand.name }}</a>
+            </li>
+            {% elif breadcrumb.from_destinations %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.destinations') }}">Destinations</a>
             </li>
             {% endif %}
             <li class="breadcrumb-item active">{{ hotel.name }}</li>
@@ -93,7 +104,7 @@
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div class="flex-grow-1 me-3">
                             <h3 class="h5 fw-bold mb-1">
-                                <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}" class="text-decoration-none text-dark">
+                                <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="text-decoration-none text-dark">
                                     {{ rt.name }}
                                 </a>
                             </h3>
@@ -111,7 +122,7 @@
                             <small class="text-muted">per night</small>
                         </div>
                     </div>
-                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}" class="btn btn-primary w-100 mt-auto">
+                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-primary w-100 mt-auto">
                         View Details
                         <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>

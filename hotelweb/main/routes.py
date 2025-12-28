@@ -192,18 +192,31 @@ def search():
 def hotel_detail(hotel_id):
     hotel = Hotel.query.get_or_404(hotel_id)
     
-    # Check if user came from search page
+    # Detect where user came from (via referrer or URL params)
     referrer = request.referrer
-    from_search = referrer and '/search' in referrer
+    from_source = request.args.get('from')  # from=search, from=brand, from=destinations
     
-    # Get search parameters if available (for breadcrumb link)
-    search_params = {}
-    if from_search and referrer:
-        from urllib.parse import urlparse, parse_qs
-        parsed = urlparse(referrer)
-        search_params = parse_qs(parsed.query)
-        # Convert to simple dict format
-        search_params = {k: v[0] if v else '' for k, v in search_params.items()}
+    # Determine breadcrumb context
+    breadcrumb_context = {
+        'from_search': False,
+        'from_brand': False,
+        'from_destinations': False,
+        'search_params': {},
+        'brand_id': None
+    }
+    
+    if from_source == 'search' or (not from_source and referrer and '/search' in referrer):
+        breadcrumb_context['from_search'] = True
+        if referrer:
+            from urllib.parse import urlparse, parse_qs
+            parsed = urlparse(referrer)
+            search_params = parse_qs(parsed.query)
+            breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
+    elif from_source == 'brand' or (not from_source and referrer and '/brand/' in referrer):
+        breadcrumb_context['from_brand'] = True
+        breadcrumb_context['brand_id'] = hotel.brand_id
+    elif from_source == 'destinations' or (not from_source and referrer and '/destinations' in referrer):
+        breadcrumb_context['from_destinations'] = True
     
     # Get recommended hotels (same city, same brand, or same stars, excluding current hotel)
     recommended_hotels = []
@@ -250,8 +263,7 @@ def hotel_detail(hotel_id):
     return render_template('main/hotel_detail.html', 
                           hotel=hotel, 
                           recommended_hotels=recommended_hotels,
-                          from_search=from_search,
-                          search_params=search_params)
+                          breadcrumb=breadcrumb_context)
 
 @bp.route('/roomtype/<int:roomtype_id>')
 def roomtype_detail(roomtype_id):
@@ -262,8 +274,60 @@ def roomtype_detail(roomtype_id):
         base_points = int(per_night_total * 10)
         multiplier = current_user.get_points_multiplier()
         estimated_points_per_night = int(base_points * multiplier)
+    
+    # Detect where user came from (via referrer or URL params)
+    referrer = request.referrer
+    from_source = request.args.get('from')
+    
+    # Determine breadcrumb context
+    breadcrumb_context = {
+        'from_search': False,
+        'from_brand': False,
+        'from_destinations': False,
+        'search_params': {},
+        'brand_id': None
+    }
+    
+    # Check if came from hotel detail page (check referrer chain)
+    if referrer and '/hotel/' in referrer:
+        # Try to detect the original source - check if there's a from parameter in the referrer
+        from urllib.parse import urlparse, parse_qs
+        parsed = urlparse(referrer)
+        ref_params = parse_qs(parsed.query)
+        if 'from' in ref_params:
+            from_source = ref_params['from'][0]
+        else:
+            # Fallback to checking referrer path
+            if '/search' in referrer:
+                from_source = 'search'
+                search_params = parse_qs(parsed.query)
+                breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
+            elif '/brand/' in referrer:
+                from_source = 'brand'
+            elif '/destinations' in referrer:
+                from_source = 'destinations'
+    
+    if from_source:
+        # Process from_source parameter
+        if from_source == 'search':
+            breadcrumb_context['from_search'] = True
+            # Try to get search params from referrer if available
+            if referrer and '/search' in referrer:
+                from urllib.parse import urlparse, parse_qs
+                parsed = urlparse(referrer)
+                search_params = parse_qs(parsed.query)
+                breadcrumb_context['search_params'] = {k: v[0] if v else '' for k, v in search_params.items()}
+        elif from_source == 'brand':
+            breadcrumb_context['from_brand'] = True
+            breadcrumb_context['brand_id'] = rt.hotel.brand_id
+        elif from_source == 'destinations':
+            breadcrumb_context['from_destinations'] = True
         
-    return render_template('main/roomtype_detail.html', roomtype=rt, estimated_points_per_night=estimated_points_per_night, today=date.today())
+    return render_template('main/roomtype_detail.html', 
+                         roomtype=rt, 
+                         estimated_points_per_night=estimated_points_per_night, 
+                         today=date.today(),
+                         breadcrumb=breadcrumb_context)
 
 @bp.route('/book/<int:roomtype_id>/confirm')
 @login_required
