@@ -3,25 +3,24 @@
 {% block title %}Sustainability - Lumina Hospitality{% endblock %}
 
 {% block content %}
-<div class="position-relative text-center text-white mb-5" style="height: 400px; overflow: hidden;">
-    <img src="{{ url_for('static', filename='img/sustain.jpg') }}" alt="Sustainability" 
-         class="w-100 h-100" style="object-fit: cover;">
-    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" 
-         style="background: rgba(0, 0, 0, 0.4);">
-        <h1 class="display-4 fw-bold mb-3">Sustainability</h1>
-        <p class="lead">Our commitment to a sustainable future</p>
-    </div>
+<div class="py-5 text-center bg-light mb-5">
+    <h1 class="display-4 fw-bold text-primary">Sustainability</h1>
+    <p class="lead text-muted">Our commitment to a sustainable future</p>
 </div>
 
 <div class="container py-5">
-    <div class="row mb-5">
-        <div class="col-lg-8 mx-auto">
+    <div class="row mb-5 align-items-center">
+        <div class="col-lg-6">
             <h2 class="font-serif display-6 fw-bold mb-4">Our Environmental Commitment</h2>
             <p class="lead text-muted mb-4">
                 At Lumina Hospitality, we believe that luxury and sustainability go hand in hand. 
                 We are committed to reducing our environmental footprint while providing exceptional 
                 experiences for our guests.
             </p>
+        </div>
+        <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='img/sustain.jpg') }}" alt="Sustainability" 
+                 class="img-fluid rounded shadow">
         </div>
     </div>
 
