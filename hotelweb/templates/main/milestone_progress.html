@@ -118,14 +118,8 @@
         transition: all 0.3s ease;
     }
 
-    .milestone-item:not(.current) {
-        opacity: 0.6;
-        filter: grayscale(0.5);
-    }
-
+    /* Current Milestone - Yellow */
     .milestone-item.current {
-        opacity: 1;
-        filter: grayscale(0);
         border-color: #d97706;
         background: #fef3c7;
         box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
@@ -136,14 +130,40 @@
         box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
     }
 
+    /* Claimed Milestone - Green */
     .milestone-item.claimed {
         border-color: #10b981;
         background: #f0fdf4;
     }
 
+    /* Unclaimed (but reached) Milestone - Yellow/Warning */
     .milestone-item.unclaimed {
         border-color: #fbbf24;
         background: #fffbeb;
+    }
+
+    /* Upcoming Milestone - Grey */
+    .milestone-item.upcoming {
+        border-color: #e5e7eb;
+        background: #f9fafb;
+        color: #6b7280;
+    }
+
+    .milestone-item.upcoming .milestone-title {
+        color: #4b5563;
+    }
+    
+    .milestone-item.upcoming .detail-label {
+        color: #6b7280;
+    }
+    
+    .milestone-item.upcoming .reward-info {
+        border-top-color: #e5e7eb;
+    }
+
+    .milestone-item.upcoming .reward-type {
+        opacity: 0.7;
+        filter: grayscale(1);
     }
 
     .milestone-header {
