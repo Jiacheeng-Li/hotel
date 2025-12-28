@@ -254,9 +254,9 @@ main.container {
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="text-center py-5">
+                    <div class="empty-state">
                         <div class="mb-4">
-                            <i class="bi bi-search" style="font-size: 4rem; color: #d1d5db;"></i>
+                            <i class="bi bi-search empty-state-icon"></i>
                         </div>
                         <h3 class="fw-bold mb-3">No properties found</h3>
                         <p class="text-muted mb-3">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>
@@ -286,9 +286,9 @@ main.container {
                 {% if results|length > 0 %}
                     <div id="map" style="height: 600px; border-radius: 8px;"></div>
                 {% else %}
-                    <div class="text-center py-5">
+                    <div class="empty-state">
                         <div class="mb-4">
-                            <i class="bi bi-search" style="font-size: 4rem; color: #d1d5db;"></i>
+                            <i class="bi bi-search empty-state-icon"></i>
                         </div>
                         <h3 class="fw-bold mb-3">No properties found</h3>
                         <p class="text-muted mb-3">We couldn't find any hotels matching your search criteria for <strong>{{ city }}</strong>.</p>

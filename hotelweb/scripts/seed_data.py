@@ -145,7 +145,7 @@ def seed():
                     # Set breakfast price based on star rating: 5-star=$50, 4-star=$40, 3-star=$30, 2-star=$20, 1-star=$10
                     breakfast_price_map = {5: 50.00, 4: 40.00, 3: 30.00, 2: 20.00, 1: 10.00}
                     breakfast_price = breakfast_price_map.get(stars, 25.00)
-                    
+
                     hotel = Hotel(
                         name=hotel_name,
                         city=city_name,

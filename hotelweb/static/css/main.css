@@ -507,3 +507,1350 @@ a {
         flex-wrap: wrap;
     }
 }
+/* 
+ * Milestone Progress Page Styles 
+ * Specific styles for the milestone progress tracker
+ */
+.milestone-progress-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: #6b7280;
+}
+
+.milestone-rules-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.rules-header {
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.rules-header:hover {
+    background-color: #f9fafb;
+}
+
+.milestone-rules-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.rules-toggle-icon {
+    font-size: 1.25rem;
+    color: #6b7280;
+    transition: transform 0.3s ease;
+}
+
+.rules-toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.rules-content {
+    padding: 0 2rem 2rem 2rem;
+    display: none;
+}
+
+.rules-content.expanded {
+    display: block;
+}
+
+.rules-list {
+    list-style: none;
+    padding: 0;
+}
+
+.rules-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.rules-list li:last-child {
+    border-bottom: none;
+}
+
+.rules-list li i {
+    color: #d97706;
+    margin-top: 0.25rem;
+}
+
+.progress-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.progress-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1.5rem;
+}
+
+.milestone-item {
+    padding: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Current Milestone - Yellow */
+.milestone-item.current {
+    border-color: #d97706;
+    background: #fffbeb;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+
+.milestone-item.current:hover {
+    border-color: #d97706;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+}
+
+/* Claimed Milestone - Green */
+.milestone-item.claimed {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+/* Unclaimed (but reached) Milestone - Yellow/Warning */
+.milestone-item.unclaimed {
+    border-color: #fbbf24;
+    background: #fffbeb;
+}
+
+/* Upcoming Milestone - Grey */
+.milestone-item.upcoming {
+    border-color: #e5e7eb;
+    background: #f9fafb;
+    color: #6b7280;
+}
+
+.milestone-item.upcoming .milestone-title {
+    color: #4b5563;
+}
+
+.milestone-item.upcoming .detail-label {
+    color: #6b7280;
+}
+
+.milestone-item.upcoming .reward-info {
+    border-top-color: #e5e7eb;
+}
+
+.milestone-item.upcoming .reward-type {
+    opacity: 0.7;
+    filter: grayscale(1);
+}
+
+.milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.milestone-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.milestone-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-claimed {
+    background: #10b981;
+    color: white;
+}
+
+.status-unclaimed {
+    background: #fbbf24;
+    color: #92400e;
+}
+
+.status-upcoming {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.milestone-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+.reward-info {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.reward-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.reward-points {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.reward-breakfast {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Generic Empty State (Used in Milestone and Search) */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+/* 
+ * Account Page Styles 
+ */
+
+/* Tier Theme Variables */
+.account-page-wrapper {
+    --tier-color: #37283F;
+    --tier-hover: #2d1f33;
+    --tier-gradient-start: #37283F;
+    --tier-gradient-end: #091d3d;
+}
+
+.account-page-wrapper.tier-club-member {
+    --tier-color: #0B254E;
+    --tier-hover: #091d3d;
+    --tier-gradient-start: #0B254E;
+    --tier-gradient-end: #091d3d;
+}
+
+.account-page-wrapper.tier-silver-elite {
+    --tier-color: #606060;
+    --tier-hover: #4d4d4d;
+    --tier-gradient-start: #606060;
+    --tier-gradient-end: #9a9ca8;
+}
+
+.account-page-wrapper.tier-gold-elite {
+    --tier-color: #A07A0D;
+    --tier-hover: #8a680b;
+    --tier-gradient-start: #A07A0D;
+    --tier-gradient-end: #8a680b;
+}
+
+.account-page-wrapper.tier-platinum-elite {
+    --tier-color: #253639;
+    --tier-hover: #1e2b2e;
+    --tier-gradient-start: #253639;
+    --tier-gradient-end: #1e2b2e;
+}
+
+.account-page-wrapper.tier-diamond-elite {
+    --tier-color: #37283F;
+    --tier-hover: #2d1f33;
+    --tier-gradient-start: #37283F;
+    --tier-gradient-end: #091d3d;
+}
+
+/* Account Header */
+.account-header {
+    background: linear-gradient(135deg, var(--tier-gradient-start) 0%, var(--tier-gradient-end) 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 0;
+}
+
+.header-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left h1 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.header-left h2 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: white;
+}
+
+.member-number {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-top: 0.75rem;
+}
+
+.header-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.points-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.points-value {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-header {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header:hover {
+    background: var(--tier-color);
+    border-color: var(--tier-color);
+}
+
+/* Navigation */
+.account-nav {
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.nav-tab {
+    padding: 1rem 0;
+    border-bottom: 3px solid transparent;
+    color: #6b7280;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.nav-tab.active {
+    color: #37283F;
+    border-bottom-color: #37283F;
+}
+
+.nav-tab:hover {
+    color: #37283F;
+}
+
+.account-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Cards (Generic) */
+.account-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid #f0f0f0;
+}
+
+.account-card-header {
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    margin: -2rem -2rem 1.5rem -2rem;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.account-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #1a1a1a;
+}
+
+/* Overview Grid */
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.current-tier-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.tier-club-member { background: #0B254E; color: white; }
+.tier-silver-elite { background: #606060; color: white; }
+.tier-gold-elite { background: #A07A0D; color: white; }
+.tier-diamond-elite { background: #37283F; color: white; }
+.tier-platinum-elite { background: #253639; color: white; }
+
+.status-tracker-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.toggle-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    position: relative;
+    padding-left: 2rem;
+}
+
+.toggle-btn::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.toggle-btn.active::before {
+    content: '✓';
+    opacity: 1;
+    width: auto;
+    height: auto;
+}
+
+.toggle-btn.active {
+    border-color: var(--tier-color);
+    background: var(--tier-color);
+    color: white;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.progress-tracker {
+    margin: 2rem 0;
+}
+
+.progress-bar-wrapper {
+    position: relative;
+    margin: 3rem 0 1rem 0;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 20px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.5s ease;
+}
+
+.progress-markers {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    right: 0;
+    height: 40px;
+}
+
+.progress-marker {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progress-marker-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    margin-bottom: 6px;
+    flex-shrink: 0;
+}
+
+.progress-marker.active .progress-marker-dot {
+    width: 20px;
+    height: 20px;
+}
+
+.progress-marker-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.progress-marker.active .progress-marker-label {
+    color: #111827;
+    font-weight: 700;
+}
+
+.tier-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding: 0;
+}
+
+.tier-label {
+    text-align: center;
+    flex: 1;
+}
+
+.tier-label-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.tier-label.achieved .tier-label-name {
+    font-weight: 700;
+}
+
+.tier-label.club-member .tier-label-name { color: #0B254E; }
+.tier-label.silver .tier-label-name { color: #606060; }
+.tier-label.gold .tier-label-name { color: #A07A0D; }
+.tier-label.diamond .tier-label-name { color: #37283F; }
+.tier-label.platinum .tier-label-name { color: #253639; }
+
+.tier-label-requirement {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.tier-label.achieved .tier-label-requirement {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.next-tier-info {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    text-align: center;
+    color: #1a1a1a;
+}
+
+.next-tier-info .next-tier-badge {
+    color: white;
+}
+
+.next-tier-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+}
+
+/* Milestone Circle */
+.milestone-circle {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.milestone-circle-inner {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.milestone-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1;
+}
+
+.milestone-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+.milestone-description {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.btn-premium {
+    background: var(--tier-color);
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-premium:hover {
+    background: var(--tier-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: white;
+}
+
+/* Rewards Wallet */
+.rewards-list {
+    margin-top: 1.5rem;
+}
+
+.reward-item {
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.reward-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Activity Summary */
+.activity-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.summary-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.activity-item {
+    padding: 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.activity-item:hover {
+    background: #f8fafc;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+/* Benefits Section */
+.benefits-header {
+    background: linear-gradient(135deg, var(--tier-gradient-start) 0%, var(--tier-gradient-end) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.benefits-header h2 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.benefits-header p {
+    color: white;
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 0;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.benefit-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.2s;
+}
+
+.benefit-card:hover {
+    border-color: #37283F;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--tier-color);
+}
+
+.benefit-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.benefit-description {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.benefits-comparison {
+    margin-top: 2rem;
+    display: none;
+}
+
+.benefits-comparison.show {
+    display: block;
+}
+
+.benefits-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.benefits-table th {
+    color: white;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.benefits-table th:last-child {
+    border-right: none;
+}
+
+.benefits-table th.tier-club-member { background: #0B254E; }
+.benefits-table th.tier-silver-elite { background: #606060; }
+.benefits-table th.tier-gold-elite { background: #A07A0D; }
+.benefits-table th.tier-diamond-elite { background: #37283F; }
+.benefits-table th.tier-platinum-elite { background: #253639; }
+
+.benefits-table td {
+    padding: 1.25rem;
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.benefits-table td:last-child {
+    border-right: none;
+}
+
+.benefits-table tr:last-child td {
+    border-bottom: none;
+}
+
+.benefits-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.benefits-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+.benefits-table tbody tr:nth-child(even):hover {
+    background: #f0f2f5;
+}
+
+.tier-header {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.benefits-toggle {
+    color: #37283F;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.benefits-toggle:hover {
+    color: #4a4a4a;
+}
+
+/* Profile Form */
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.profile-value {
+    font-size: 1rem;
+    color: #1a1a1a;
+}
+
+.profile-input {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: #37283F;
+}
+
+.btn-edit {
+    padding: 0.75rem 1.5rem;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background: var(--tier-color);
+}
+
+.btn-edit:hover {
+    background: var(--tier-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 968px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .activity-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-right {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .account-nav {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    .nav-tab {
+        white-space: nowrap;
+    }
+    
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 
+ * My Stays Page Styles 
+ */
+.stays-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stays-header {
+    margin-bottom: 2rem;
+}
+
+.stays-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.stays-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #6b7280;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.tab-button:hover {
+    color: #1a1a1a;
+    background-color: #f9fafb;
+}
+
+.tab-button.active {
+    color: #1e3a8a;
+    border-bottom-color: #1e3a8a;
+}
+
+/* Reusing generic tab-content from account styles if possible, but defining specific animations here */
+.stays-container .tab-content {
+    display: none;
+}
+
+.stays-container .tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.booking-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.booking-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.booking-card.cancelled {
+    opacity: 0.7;
+    background-color: #f9fafb;
+}
+
+.card-content {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.hotel-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.booking-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.hotel-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.room-type {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.date-info {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.date-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.date-value {
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.booking-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-upcoming {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-current {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-past {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.status-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-cancel {
+    padding: 0.5rem 1.25rem;
+    background-color: white;
+    color: #dc2626;
+    border: 1px solid #dc2626;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-cancel:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+/* btn-secondary already defined, ensuring consistency or override */
+/* Using specificity if needed, but btn-secondary is generic */
+
+.btn-outline {
+    padding: 0.5rem 1.25rem;
+    background-color: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-outline:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.countdown {
+    font-size: 0.85rem;
+    color: #059669;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.points-earned {
+    font-size: 0.85rem;
+    color: #7c3aed;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .card-content {
+        flex-direction: column;
+    }
+
+    .hotel-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .date-info {
+        gap: 1rem;
+    }
+
+    .booking-actions {
+        flex-wrap: wrap;
+    }
+}

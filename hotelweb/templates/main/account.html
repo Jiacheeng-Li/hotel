@@ -238,7 +238,7 @@
         position: relative;
         padding-left: 2rem;
     }
-    
+
     .toggle-btn::before {
         content: '';
         position: absolute;
@@ -1119,7 +1119,7 @@
                     <div class="milestone-description">
                         Choose your first reward at 20 nights, and again every 10 nights you stay this year, up to 100 nights.
                     </div>
-            <div class="milestone-circle">
+            <div class="milestone-circle" style="background: conic-gradient(from 0deg, #e5e7eb 0%, #e5e7eb {{ 100 - milestone_progress_percent }}%, var(--tier-color) {{ 100 - milestone_progress_percent }}%, var(--tier-color) 100%);">
                         <div class="milestone-circle-inner">
                             <div class="milestone-number">{{ nights_to_milestone_year }}</div>
                             <div class="milestone-label">nights to next milestone</div>
@@ -1204,7 +1204,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Free Nights and Booking Rewards</h3>
-            </div>
+                </div>
             {% if points_bookings or breakfast_voucher_bookings %}
             <div class="rewards-list">
                 <!-- Bookings Paid with Points -->
@@ -1219,7 +1219,7 @@
                             <div class="text-muted small">
                                 {{ booking.check_in.strftime('%B %d') }} - {{ booking.check_out.strftime('%B %d, %Y') }}
                                 ({{ (booking.check_out - booking.check_in).days }} night{{ 's' if (booking.check_out - booking.check_in).days != 1 else '' }})
-                            </div>
+            </div>
                             {% if booking.status == 'CANCELLED' %}
                             <div class="text-muted small mt-1">
                                 <span class="badge bg-danger">Cancelled</span>
