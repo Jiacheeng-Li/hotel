@@ -1288,10 +1288,34 @@
         </div>
 
         <div class="benefits-grid">
+            {% set benefit_icons = {
+                'Earn Points on Stays': 'bi-star-fill',
+                'Club Member-only Rates': 'bi-percent',
+                'Mobile Check-in': 'bi-phone',
+                '1.0x Points Multiplier': 'bi-arrow-repeat',
+                '1.2x Points Multiplier': 'bi-arrow-repeat',
+                '1.5x Points Multiplier': 'bi-arrow-repeat',
+                '2.0x Points Multiplier': 'bi-arrow-repeat',
+                '2.5x Points Multiplier': 'bi-arrow-repeat',
+                'Late Checkout (2 PM)': 'bi-clock-history',
+                'Late Checkout (4 PM)': 'bi-clock-history',
+                'Welcome Amenity': 'bi-gift',
+                'Priority Support': 'bi-headset',
+                'Room Upgrade (Subject to availability)': 'bi-arrow-up-circle',
+                'Suite Upgrade (Subject to availability)': 'bi-arrow-up-circle',
+                'Penthouse Upgrade (Subject to availability)': 'bi-arrow-up-circle',
+                'Complimentary Breakfast': 'bi-cup-hot',
+                'Priority Check-in': 'bi-check-circle',
+                'Executive Lounge Access': 'bi-door-open',
+                'Dedicated Concierge': 'bi-person-badge',
+                'Personal Travel Advisor': 'bi-person-workspace',
+                'Exclusive Events Access': 'bi-calendar-event',
+                'Complimentary Spa Services': 'bi-water'
+            } %}
             {% for benefit in tier_benefits %}
             <div class="benefit-card">
                 <div class="benefit-icon">
-                    <i class="bi bi-check-circle-fill"></i>
+                    <i class="bi {{ benefit_icons.get(benefit, 'bi-check-circle-fill') }}"></i>
                 </div>
                 <div class="benefit-title">{{ benefit }}</div>
                 <div class="benefit-description">Available with your {{ current_user.membership_level }} status</div>
