@@ -40,7 +40,7 @@ def seed():
         amenity_names = [
             "Free Wi-Fi", "Swimming Pool", "Gym", "Spa", "Restaurant", "Bar", 
             "Room Service", "Parking", "Airport Shuttle", "Pet Friendly", 
-            "Conference Room", "Kids Club", "Ocean View", "Smart TV", "Mini Bar", "Rooftop Terrace", "Yoga Studio"
+            "Conference Room", "Kids Club", "Ocean View", "Smart TV", "Mini Bar", "Rooftop Terrace", "Yoga Studio", "Breakfast"
         ]
         amenities = {}
         for name in amenity_names:
@@ -142,6 +142,10 @@ def seed():
                     if random.random() > 0.9:
                         stars = max(1, min(5, stars + random.choice([-1, 1])))
 
+                    # Set breakfast price based on star rating: 5-star=$50, 4-star=$40, 3-star=$30, 2-star=$20, 1-star=$10
+                    breakfast_price_map = {5: 50.00, 4: 40.00, 3: 30.00, 2: 20.00, 1: 10.00}
+                    breakfast_price = breakfast_price_map.get(stars, 25.00)
+                    
                     hotel = Hotel(
                         name=hotel_name,
                         city=city_name,
@@ -151,7 +155,8 @@ def seed():
                         image_url=random.choice(images_pool[brand_name]),
                         latitude=base_lat + lat_offset,
                         longitude=base_lon + lon_offset,
-                        brand=brand_obj
+                        brand=brand_obj,
+                        breakfast_price=breakfast_price
                     )
                     db.session.add(hotel)
                     created_hotels.append(hotel)
@@ -208,6 +213,10 @@ def seed():
                              rt.amenities = random.sample(possible_amenities, k=3)
                         else:
                              rt.amenities = random.sample(possible_amenities, k=8)
+                        
+                        # Ensure all room types have Breakfast amenity
+                        if "Breakfast" in amenities and amenities["Breakfast"] not in rt.amenities:
+                            rt.amenities.append(amenities["Breakfast"])
                         
                         db.session.add(rt)
         

@@ -357,6 +357,9 @@ class Hotel(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     
+    # Breakfast pricing (varies by hotel star rating: 5-star=$50, 4-star=$40, 3-star=$30, 2-star=$20, 1-star=$10)
+    breakfast_price = db.Column(db.Numeric(10, 2), default=25.00)
+    
     room_types = db.relationship('RoomType', backref='hotel', lazy=True)
     reviews = db.relationship('Review', backref='hotel', lazy=True, cascade="all, delete-orphan")
 

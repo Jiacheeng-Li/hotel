@@ -423,8 +423,8 @@ def roomtype_detail(roomtype_id):
         from datetime import timedelta
         default_check_out = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
     
-    # Breakfast price per room per stay
-    breakfast_price_per_room = 25.00
+    # Breakfast price from hotel (varies by hotel star rating)
+    breakfast_price_per_room = float(rt.hotel.breakfast_price)
     
     return render_template('main/roomtype_detail.html', 
                          roomtype=rt, 
@@ -446,6 +446,7 @@ def booking_confirm(roomtype_id):
     check_out_str = request.args.get('check_out')
     rooms_needed = int(request.args.get('rooms_needed', 1))
     breakfast_included = request.args.get('breakfast_included') == '1'
+    breakfast_voucher_id = request.args.get('breakfast_voucher_id')  # For pre-selection
     
     if not check_in_str or not check_out_str:
         flash('Please select check-in and check-out dates.', 'warning')
@@ -489,8 +490,8 @@ def booking_confirm(roomtype_id):
                 'total': reward.reward_value
             })
     
-    # Breakfast pricing (per room per stay)
-    breakfast_price_per_room = 25.00
+    # Breakfast pricing (per room per stay) - from hotel database
+    breakfast_price_per_room = float(rt.hotel.breakfast_price)
     breakfast_voucher_used = None
     
     # Check if user wants to use a breakfast voucher
@@ -581,7 +582,8 @@ def book_room(roomtype_id):
     subtotal = base_rate * nights * rooms_needed
     
     # Breakfast pricing and voucher handling
-    breakfast_price_per_room = 25.00
+    # Breakfast pricing - from hotel database
+    breakfast_price_per_room = float(rt.hotel.breakfast_price)
     breakfast_voucher_used_id = None
     breakfast_total = 0
     
