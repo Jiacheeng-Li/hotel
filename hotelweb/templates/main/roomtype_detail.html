@@ -41,7 +41,7 @@
 <div class="row">
     <div class="col-md-8">
         <h2 class="text-primary fw-bold">{{ roomtype.name }}</h2>
-        <p class="text-muted fs-5">{{ roomtype.hotel.name }} <span class="badge bg-secondary ms-2">{{ roomtype.hotel.brand.name }}</span></p>
+        <p class="text-muted fs-5">{{ roomtype.hotel.name }} <a href="{{ url_for('main.brand_detail', brand_id=roomtype.hotel.brand.id) }}" class="brand-badge ms-2" style="background-color: {{ roomtype.hotel.brand.logo_color }};">{{ roomtype.hotel.brand.name }}</a></p>
 
         <!-- Room Image -->
         <div class="mt-4">
@@ -122,13 +122,12 @@
                     {% set service_fee_rate = 0.05 %}
                     {% set price_per_night_float = roomtype.price_per_night|float %}
                     {% set price_with_tax = price_per_night_float * (1 + tax_rate + service_fee_rate) %}
-                    <div class="text-muted mb-1" style="font-size: 0.85rem;">${{ "{:,.2f}".format(price_with_tax) }} incl. tax</div>
                     <h3 class="text-success fw-bold mb-0">${{ "{:,.0f}".format(price_per_night_float) }}</h3>
-                    <small class="text-muted">per night</small>
+                    <small class="text-muted">per night <span class="text-muted" style="font-size: 0.85rem;">${{ "{:,.2f}".format(price_with_tax) }} incl. tax</span></small>
                 </div>
 
                 {% if current_user.is_authenticated and estimated_points_per_night > 0 %}
-                <div class="text-center mb-3 p-3" style="background: #fef3c7; border-radius: 12px;">
+                <div class="text-center mb-3 py-2 px-3" style="background: #fef3c7; border-radius: 12px;">
                     <span class="text-dark" style="font-size: 0.9rem;">Earn <span class="fw-bold" style="font-size: 1.3rem; color: #d97706;">{{ "{:,}".format(estimated_points_per_night) }}</span> points per night</span>
                 </div>
                 {% endif %}
@@ -153,14 +152,11 @@
 
                     <div class="mb-3">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="breakfast_included" id="breakfast_included" value="1" onchange="updateBreakfastPrice()">
-                            <label class="form-check-label" for="breakfast_included">
+                            <input class="form-check-input" type="checkbox" name="breakfast_included" id="breakfast_included" value="1">
+                            <label class="form-check-label d-flex justify-content-between align-items-center" for="breakfast_included">
                                 <strong>Add Breakfast</strong>
-                                <div class="small text-muted">$25 per room per stay</div>
+                                <span class="small text-muted ms-2">${{ "{:,.2f}".format(breakfast_price_per_room) }} per room per stay</span>
                             </label>
-                        </div>
-                        <div id="breakfast_total" class="mt-2 text-muted small" style="display: none;">
-                            <strong>Breakfast Total: $<span id="breakfast_total_amount">0</span></strong>
                         </div>
                     </div>
 
@@ -200,30 +196,5 @@ function updateCheckOutMin() {
     updateBreakfastPrice();
 }
 
-function updateBreakfastPrice() {
-    const breakfastCheckbox = document.getElementById('breakfast_included');
-    const roomsInput = document.querySelector('input[name="rooms_needed"]');
-    const breakfastTotalDiv = document.getElementById('breakfast_total');
-    const breakfastTotalAmount = document.getElementById('breakfast_total_amount');
-    
-    if (breakfastCheckbox.checked && roomsInput) {
-        const rooms = parseInt(roomsInput.value) || 1;
-        const breakfastPricePerRoom = 25;
-        const total = rooms * breakfastPricePerRoom;
-        breakfastTotalAmount.textContent = total.toFixed(2);
-        breakfastTotalDiv.style.display = 'block';
-    } else {
-        breakfastTotalDiv.style.display = 'none';
-    }
-}
-
-// Update breakfast price when rooms change
-document.addEventListener('DOMContentLoaded', function() {
-    const roomsInput = document.querySelector('input[name="rooms_needed"]');
-    if (roomsInput) {
-        roomsInput.addEventListener('change', updateBreakfastPrice);
-        roomsInput.addEventListener('input', updateBreakfastPrice);
-    }
-});
 </script>
 {% endblock %}

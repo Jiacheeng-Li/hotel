@@ -412,13 +412,17 @@ def roomtype_detail(roomtype_id):
         from datetime import timedelta
         default_check_out = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
     
+    # Breakfast price per room per stay
+    breakfast_price_per_room = 25.00
+    
     return render_template('main/roomtype_detail.html', 
                          roomtype=rt, 
                          estimated_points_per_night=estimated_points_per_night, 
                          today=date.today(),
                          breadcrumb=breadcrumb_context,
                          default_check_in=default_check_in,
-                         default_check_out=default_check_out)
+                         default_check_out=default_check_out,
+                         breakfast_price_per_room=breakfast_price_per_room)
 
 @bp.route('/book/<int:roomtype_id>/confirm')
 @login_required
