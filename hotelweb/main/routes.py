@@ -668,7 +668,7 @@ def book_room(roomtype_id):
         # Use per-night rate with taxes/fees equivalent
         per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
         base_points_per_night = int(per_night_total * 10)  # 10 points per $1
-    multiplier = current_user.get_points_multiplier()
+        multiplier = current_user.get_points_multiplier()
         points_per_night = int(base_points_per_night * multiplier)
         points_earned = points_per_night * nights * rooms_needed
     else:
