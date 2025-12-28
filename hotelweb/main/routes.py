@@ -248,7 +248,7 @@ def roomtype_detail(roomtype_id):
         multiplier = current_user.get_points_multiplier()
         estimated_points_per_night = int(base_points * multiplier)
         
-    return render_template('main/roomtype_detail.html', roomtype=rt, estimated_points_per_night=estimated_points_per_night)
+    return render_template('main/roomtype_detail.html', roomtype=rt, estimated_points_per_night=estimated_points_per_night, today=date.today())
 
 @bp.route('/book/<int:roomtype_id>/confirm')
 @login_required

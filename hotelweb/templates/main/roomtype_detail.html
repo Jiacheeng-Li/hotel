@@ -119,11 +119,11 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Check-in</label>
-                        <input type="date" name="check_in" class="form-control" required value="{{ default_check_in }}">
+                        <input type="date" name="check_in" class="form-control" required value="{{ default_check_in }}" min="{{ today }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Check-out</label>
-                        <input type="date" name="check_out" class="form-control" required value="{{ default_check_out }}">
+                        <input type="date" name="check_out" class="form-control" required value="{{ default_check_out }}" min="{{ today }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Rooms Required</label>
