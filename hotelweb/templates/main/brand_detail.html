@@ -98,7 +98,7 @@
                     <p class="card-text text-truncate">{{ hotel.description }}</p>
                 </div>
                 <div class="card-footer bg-white border-0 pt-0 pb-4">
-                    <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}" class="btn btn-outline-dark w-100">
+                    <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}?from=brand" class="btn btn-outline-dark w-100">
                         View Details & Rooms
                     </a>
                 </div>
