@@ -161,27 +161,77 @@
         </div>
     </div>
     {% else %}
-    <div class="row g-3">
-        {% for review in hotel.reviews[:6] %}
-        <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm border-0" style="background-color: white;">
-            <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="fw-bold mb-0">{{ review.author.username }}</h6>
-                        <div class="text-danger">
-                            {% for _ in range(review.rating) %}<i class="bi bi-heart-fill" aria-hidden="true"></i>{% endfor %}
-                            {% for _ in range(5 - review.rating) %}<i class="bi bi-heart" aria-hidden="true"></i>{% endfor %}
+    {% set reviews_list = hotel.reviews|list %}
+    {% set reviews_per_row = 3 %}
+    {% set max_rows = 2 %}
+    {% set max_visible = reviews_per_row * max_rows %}
+    <div class="reviews-container">
+        <div class="row g-3 reviews-row" id="reviews-display">
+            {% for review in reviews_list %}
+            <div class="col-md-6 col-lg-4 review-item {% if loop.index > max_visible %}review-hidden{% endif %}">
+                <div class="card h-100 shadow-sm border-0" style="background-color: white;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold mb-0">{{ review.author.username }}</h6>
+                            <div class="text-danger">
+                                {% for _ in range(review.rating) %}<i class="bi bi-heart-fill" aria-hidden="true"></i>{% endfor %}
+                                {% for _ in range(5 - review.rating) %}<i class="bi bi-heart" aria-hidden="true"></i>{% endfor %}
+                            </div>
                         </div>
+                        <p class="card-text small mb-2">"{{ review.comment }}"</p>
+                        <small class="text-muted">{{ review.created_at.strftime('%Y-%m-%d') }}</small>
                     </div>
-                    <p class="card-text small mb-2">"{{ review.comment }}"</p>
-                    <small class="text-muted">{{ review.created_at.strftime('%Y-%m-%d') }}</small>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% if reviews_list|length > max_visible %}
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-outline-secondary" id="toggle-reviews-btn" onclick="toggleReviews()">
+                <span id="toggle-reviews-text">Show More Reviews ({{ reviews_list|length - max_visible }} more)</span>
+                <i class="bi bi-chevron-down ms-2" id="toggle-reviews-icon"></i>
+            </button>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 </section>
+
+<style>
+.review-hidden {
+    display: none;
+}
+
+.reviews-container.expanded .review-hidden {
+    display: block;
+}
+
+#toggle-reviews-icon {
+    transition: transform 0.3s ease;
+}
+
+.reviews-container.expanded #toggle-reviews-icon {
+    transform: rotate(180deg);
+}
+</style>
+
+<script>
+function toggleReviews() {
+    const container = document.querySelector('.reviews-container');
+    const text = document.getElementById('toggle-reviews-text');
+    const icon = document.getElementById('toggle-reviews-icon');
+    
+    if (container.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        const totalReviews = {{ hotel.reviews|length if hotel.reviews else 0 }};
+        const visibleReviews = {{ max_visible }};
+        text.textContent = `Show More Reviews (${totalReviews - visibleReviews} more)`;
+    } else {
+        container.classList.add('expanded');
+        text.textContent = 'Show Less';
+    }
+}
+</script>
 
 <!-- Recommended Hotels Section -->
 {% if recommended_hotels %}
