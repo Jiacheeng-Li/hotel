@@ -137,12 +137,28 @@
                 <div class="text-end">
                             <div class="text-success fw-bold fs-4 mb-0">${{ "{:,.0f}".format(rt.price_per_night) }}</div>
                             <small class="text-muted">per night</small>
+                            {% if room_availability and rt.id in room_availability %}
+                            <div class="mt-1">
+                                {% set avail = room_availability[rt.id] %}
+                                {% if avail == 0 %}
+                                <span class="badge bg-secondary text-white" style="font-size: 0.75rem;">售罄</span>
+                                {% elif avail < 5 %}
+                                <span class="badge bg-warning text-dark" style="font-size: 0.75rem;">仅剩 {{ avail }} 间</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
+                    {% if room_availability and rt.id in room_availability and room_availability[rt.id] == 0 %}
+                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% if breadcrumb.search_params.check_in %}&check_in={{ breadcrumb.search_params.check_in }}{% endif %}{% if breadcrumb.search_params.check_out %}&check_out={{ breadcrumb.search_params.check_out }}{% endif %}{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-secondary w-100 mt-auto" style="opacity: 0.6; cursor: not-allowed;" onclick="return false;">
+                        Sold Out
+                    </a>
+                    {% else %}
                     <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% if breadcrumb.search_params.check_in %}&check_in={{ breadcrumb.search_params.check_in }}{% endif %}{% if breadcrumb.search_params.check_out %}&check_out={{ breadcrumb.search_params.check_out }}{% endif %}{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-primary w-100 mt-auto">
                         View Details
                         <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

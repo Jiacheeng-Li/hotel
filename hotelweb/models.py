@@ -389,6 +389,31 @@ class RoomType(db.Model):
         backref=db.backref('room_types', lazy=True))
     
     bookings = db.relationship('Booking', backref='room_type', lazy=True)
+    
+    def get_available_rooms(self, check_in, check_out):
+        """
+        Calculate available rooms for a given date range.
+        Returns the number of available rooms (inventory - booked rooms).
+        """
+        from sqlalchemy import and_, or_
+        from datetime import date
+        
+        # Count rooms booked for overlapping dates
+        # A booking overlaps if:
+        # - booking.check_in < check_out AND booking.check_out > check_in
+        overlapping_bookings = Booking.query.filter(
+            Booking.roomtype_id == self.id,
+            Booking.status == 'CONFIRMED',
+            Booking.check_in < check_out,
+            Booking.check_out > check_in
+        ).all()
+        
+        # Sum up all booked rooms for overlapping dates
+        booked_rooms = sum(booking.rooms_count for booking in overlapping_bookings)
+        
+        # Available rooms = total inventory - booked rooms
+        available = self.inventory - booked_rooms
+        return max(0, available)  # Ensure non-negative
 
 class Amenity(db.Model):
     id = db.Column(db.Integer, primary_key=True)

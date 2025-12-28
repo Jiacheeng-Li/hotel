@@ -124,6 +124,18 @@
                     {% set price_with_tax = price_per_night_float * (1 + tax_rate + service_fee_rate) %}
                     <h3 class="text-success fw-bold mb-0">${{ "{:,.0f}".format(price_per_night_float) }}</h3>
                     <small class="text-muted">per night <span class="text-muted" style="font-size: 0.85rem;">${{ "{:,.2f}".format(price_with_tax) }} incl. tax</span></small>
+                    
+                    {% if available_rooms is defined %}
+                    <div class="mt-2">
+                        {% if available_rooms == 0 %}
+                        <span class="badge bg-secondary text-white" style="font-size: 0.9rem; padding: 0.5rem 1rem;">售罄 Sold Out</span>
+                        {% elif available_rooms < 5 %}
+                        <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1rem;">仅剩 {{ available_rooms }} 间 Only {{ available_rooms }} left</span>
+                        {% else %}
+                        <span class="badge bg-success text-white" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">有房 Available</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 {% if current_user.is_authenticated and estimated_points_per_night > 0 %}
@@ -162,7 +174,11 @@
 
                     {% if current_user.is_authenticated %}
                     <div class="d-grid">
+                        {% if available_rooms is defined and available_rooms == 0 %}
+                        <button type="button" class="btn btn-lg fw-bold text-white" style="background: #9ca3af; border: none; cursor: not-allowed;" disabled>Sold Out</button>
+                        {% else %}
                         <button type="submit" class="btn btn-lg fw-bold text-white" style="background: #1e3a8a; border: none;">Confirm Booking</button>
+                        {% endif %}
                     </div>
                     {% else %}
                     <div class="alert alert-secondary text-center">

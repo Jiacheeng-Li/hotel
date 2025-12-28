@@ -200,8 +200,15 @@ def search():
             grouped_results[h_id]['min_price'] = item['price']
         if item['price'] > grouped_results[h_id]['max_price']:
             grouped_results[h_id]['max_price'] = item['price']
-            
-        grouped_results[h_id]['room_types'].append(item['room_type'])
+        
+        # Calculate available rooms for this room type
+        rt = item['room_type']
+        available_rooms = rt.get_available_rooms(check_in, check_out)
+        room_type_info = {
+            'room_type': rt,
+            'available_rooms': available_rooms
+        }
+        grouped_results[h_id]['room_types'].append(room_type_info)
     
     final_results = list(grouped_results.values())
 
@@ -336,10 +343,32 @@ def hotel_detail(hotel_id):
     # Limit to 3 hotels
     recommended_hotels = recommended_hotels[:3]
     
+    # Calculate available rooms for each room type if dates are provided
+    room_availability = {}
+    check_in_date = None
+    check_out_date = None
+    
+    # Try to get dates from search params or URL params
+    if breadcrumb_context.get('search_params'):
+        check_in_str = breadcrumb_context['search_params'].get('check_in')
+        check_out_str = breadcrumb_context['search_params'].get('check_out')
+        if check_in_str and check_out_str:
+            try:
+                check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d').date()
+                check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                pass
+    
+    # If dates are available, calculate availability for each room type
+    if check_in_date and check_out_date:
+        for rt in hotel.room_types:
+            room_availability[rt.id] = rt.get_available_rooms(check_in_date, check_out_date)
+    
     return render_template('main/hotel_detail.html', 
                           hotel=hotel, 
                           recommended_hotels=recommended_hotels,
-                          breadcrumb=breadcrumb_context)
+                          breadcrumb=breadcrumb_context,
+                          room_availability=room_availability)
 
 @bp.route('/roomtype/<int:roomtype_id>')
 def roomtype_detail(roomtype_id):
@@ -440,6 +469,15 @@ def roomtype_detail(roomtype_id):
         from datetime import timedelta
         default_check_out = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
     
+    # Calculate available rooms for the selected dates
+    try:
+        check_in_date = datetime.strptime(default_check_in, '%Y-%m-%d').date()
+        check_out_date = datetime.strptime(default_check_out, '%Y-%m-%d').date()
+        available_rooms = rt.get_available_rooms(check_in_date, check_out_date)
+    except (ValueError, TypeError):
+        # If dates are invalid, use inventory as fallback
+        available_rooms = rt.inventory
+    
     # Breakfast price from hotel (varies by hotel star rating)
     breakfast_price_per_room = float(rt.hotel.breakfast_price)
     
@@ -450,7 +488,8 @@ def roomtype_detail(roomtype_id):
                          breadcrumb=breadcrumb_context,
                          default_check_in=default_check_in,
                          default_check_out=default_check_out,
-                         breakfast_price_per_room=breakfast_price_per_room)
+                         breakfast_price_per_room=breakfast_price_per_room,
+                         available_rooms=available_rooms)
 
 @bp.route('/book/<int:roomtype_id>/confirm')
 @login_required
@@ -592,6 +631,15 @@ def book_room(roomtype_id):
     if check_out <= check_in:
         flash('Check-out date must be after check-in date.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    # Check room availability
+    available_rooms = rt.get_available_rooms(check_in, check_out)
+    if available_rooms < rooms_needed:
+        if available_rooms == 0:
+            flash('Sorry, this room type is sold out for the selected dates.', 'danger')
+        else:
+            flash(f'Only {available_rooms} room(s) available for the selected dates. Please adjust your booking.', 'warning')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id, check_in=check_in_str, check_out=check_out_str))
 
     # Calculate billing
     nights = (check_out - check_in).days
