@@ -511,9 +511,9 @@
 
     <!-- Payment Methods Section -->
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header">
             <h3 class="card-title">Payment Methods</h3>
-            <button class="btn btn-sm btn-outline-primary" onclick="toggleAddCard()">
+            <button id="add-card-btn" class="btn-edit" onclick="toggleAddCard()">
                 <i class="bi bi-plus-lg"></i> Add Card
             </button>
         </div>
@@ -594,7 +594,7 @@
                         </div>
                         <div class="col-12 mt-3">
                             <button type="submit" class="btn btn-primary">Save Card</button>
-                            <button type="button" class="btn btn-secondary ms-2" onclick="toggleAddCard()">Cancel</button>
+                            <button type="button" class="btn btn-secondary ms-2" onclick="cancelAddCard()">Cancel</button>
                         </div>
                     </div>
                 </form>

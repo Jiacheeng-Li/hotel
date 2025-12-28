@@ -49,43 +49,34 @@ function switchTab(tabName, event) {
             });
         }
     }
-    
     return false;
 }
 
 function switchTracker(type) {
-    const nightsTracker = document.getElementById('nights-tracker');
-    const pointsTracker = document.getElementById('points-tracker');
-    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    // Hide all trackers
+    document.querySelectorAll('.tracker-content').forEach(el => el.style.display = 'none');
     
-    toggleBtns.forEach(btn => btn.classList.remove('active'));
+    // Deactivate all toggles
+    document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
     
-    if (type === 'nights') {
-        if (nightsTracker) nightsTracker.style.display = 'block';
-        if (pointsTracker) pointsTracker.style.display = 'none';
-        if (toggleBtns[0]) toggleBtns[0].classList.add('active');
-    } else {
-        if (nightsTracker) nightsTracker.style.display = 'none';
-        if (pointsTracker) pointsTracker.style.display = 'block';
-        if (toggleBtns[1]) toggleBtns[1].classList.add('active');
-    }
+    // Show selected tracker
+    document.getElementById(type + '-tracker').style.display = 'block';
+    document.getElementById(type + '-toggle').classList.add('active');
 }
 
-function toggleBenefitsComparison(e) {
-    if (e) {
-        e.preventDefault();
-    }
+function toggleBenefitsComparison(event) {
+    if (event) event.preventDefault();
     const comparison = document.getElementById('benefits-comparison');
     const icon = document.getElementById('benefits-icon');
-    if (comparison) {
-        comparison.classList.toggle('show');
-        if (icon) {
-            if (comparison.classList.contains('show')) {
-                icon.className = 'bi bi-chevron-up';
-            } else {
-                icon.className = 'bi bi-chevron-down';
-            }
-        }
+    
+    if (comparison.classList.contains('show')) {
+        comparison.classList.remove('show');
+        icon.classList.remove('bi-chevron-up');
+        icon.classList.add('bi-chevron-down');
+    } else {
+        comparison.classList.add('show');
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-up');
     }
     return false;
 }
@@ -93,55 +84,99 @@ function toggleBenefitsComparison(e) {
 function toggleRetentionRules() {
     const modal = document.getElementById('retention-rules-modal');
     if (modal) {
-        modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+        modal.style.display = (modal.style.display === 'flex' ? 'none' : 'flex');
     }
 }
 
-// Close modal when clicking on backdrop
+// Close modal when clicking outside
 window.onclick = function(event) {
     const modal = document.getElementById('retention-rules-modal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
 }
 
 function toggleEdit() {
-    const viewElements = document.querySelectorAll('[id^="view-"]');
-    const editElements = document.querySelectorAll('[id^="edit-"]');
-    const formActions = document.getElementById('formActions');
-
-    viewElements.forEach(el => el.style.display = 'none');
-    editElements.forEach(el => el.style.display = 'block');
-    if (formActions) formActions.style.display = 'flex';
+    // Enable inputs
+    document.querySelectorAll('.profile-input').forEach(input => {
+        input.style.display = 'block';
+    });
+    
+    // Hide static text
+    document.getElementById('view-username').style.display = 'none';
+    document.getElementById('view-email').style.display = 'none';
+    document.getElementById('view-phone').style.display = 'none';
+    document.getElementById('view-birthday').style.display = 'none';
+    document.getElementById('view-address').style.display = 'none';
+    document.getElementById('view-city').style.display = 'none';
+    document.getElementById('view-country').style.display = 'none';
+    document.getElementById('view-postal').style.display = 'none';
+    
+    // Show buttons
+    document.getElementById('formActions').style.display = 'flex';
+    
+    // Hide edit button
+    document.querySelector('.btn-edit').style.display = 'none';
 }
 
 function cancelEdit() {
-    const viewElements = document.querySelectorAll('[id^="view-"]');
-    const editElements = document.querySelectorAll('[id^="edit-"]');
-    const formActions = document.getElementById('formActions');
-
-    viewElements.forEach(el => el.style.display = 'block');
-    editElements.forEach(el => el.style.display = 'none');
-    if (formActions) formActions.style.display = 'none';
+    // Hide inputs
+    document.querySelectorAll('.profile-input').forEach(input => {
+        input.style.display = 'none';
+    });
+    
+    // Show static text
+    document.getElementById('view-username').style.display = 'inline';
+    document.getElementById('view-email').style.display = 'inline';
+    document.getElementById('view-phone').style.display = 'inline';
+    document.getElementById('view-birthday').style.display = 'inline';
+    document.getElementById('view-address').style.display = 'inline';
+    document.getElementById('view-city').style.display = 'inline';
+    document.getElementById('view-country').style.display = 'inline';
+    document.getElementById('view-postal').style.display = 'inline';
+    
+    // Hide buttons
+    document.getElementById('formActions').style.display = 'none';
+    
+    // Show edit button
+    document.querySelector('.btn-edit').style.display = 'block';
 }
 
-// My Stays Tab functionality (if present on page)
+function toggleAddCard() {
+    const form = document.getElementById('add-card-form');
+    const btn = document.getElementById('add-card-btn');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+        btn.style.display = 'none';
+    } else {
+        form.style.display = 'none';
+        btn.style.display = 'block';
+    }
+}
+
+function cancelAddCard() {
+    document.getElementById('add-card-form').style.display = 'none';
+    document.getElementById('add-card-btn').style.display = 'block';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    if (tabButtons.length > 0) {
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.dataset.tab;
-
-                // Update active button
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Update active content
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                const targetContent = document.getElementById(tabName);
-                if (targetContent) {
-                    targetContent.classList.add('active');
+    // Check URL parameters for tab selection
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+        switchTab(tab);
+    }
+    
+    // Setup tab click listeners if not using inline onclick
+    const navTabs = document.querySelectorAll('.nav-tab');
+    if (navTabs.length > 0) {
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                // If using data-tab attribute
+                const tabName = this.getAttribute('data-tab');
+                if (tabName) {
+                    // switchTab is called via onclick in HTML, so we don't need to duplicate here
+                    // unless we remove onclick from HTML
                 }
             });
         });
@@ -150,9 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-select tab if URL hash exists
     const hash = window.location.hash.substring(1);
     if (hash) {
-        const tabLink = document.querySelector(`.nav-tab[data-tab="${hash}"]`);
-        if (tabLink) {
-            switchTab(hash);
-        }
+        switchTab(hash);
     }
 });
