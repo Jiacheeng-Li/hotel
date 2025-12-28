@@ -1,48 +1,54 @@
 """
 Database migration script to add Milestone Rewards and Breakfast/Points Payment features
-Run this script to update your database schema.
+Uses SQLAlchemy methods to update database schema.
 """
 
 from hotelweb.app import create_app
 from hotelweb.extensions import db
-from hotelweb.models import User, Booking, PointsTransaction
+from hotelweb.models import Booking, MilestoneReward
+from sqlalchemy import inspect, text
 
 def migrate():
     app = create_app()
     with app.app_context():
-        from sqlalchemy import text
+        inspector = inspect(db.engine)
         
-        # Add new columns to Booking table
+        # Check existing columns in Booking table
         try:
-            with db.engine.connect() as conn:
-                conn.execute(text("ALTER TABLE booking ADD COLUMN IF NOT EXISTS breakfast_included BOOLEAN DEFAULT FALSE"))
-                conn.execute(text("ALTER TABLE booking ADD COLUMN IF NOT EXISTS breakfast_price_per_room NUMERIC(10, 2) DEFAULT 0"))
-                conn.execute(text("ALTER TABLE booking ADD COLUMN IF NOT EXISTS points_used INTEGER DEFAULT 0"))
-                conn.execute(text("ALTER TABLE booking ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20) DEFAULT 'pay_now'"))
-                conn.commit()
-            print("✓ Added columns to Booking table")
-        except Exception as e:
-            print(f"Note: Some columns may already exist: {e}")
+            booking_columns = [col['name'] for col in inspector.get_columns('booking')]
+        except Exception:
+            booking_columns = []
         
-        # Create MilestoneReward table
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(text("""
-                    CREATE TABLE IF NOT EXISTS milestone_reward (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        user_id INTEGER NOT NULL,
-                        milestone_nights INTEGER NOT NULL,
-                        reward_type VARCHAR(20) NOT NULL,
-                        reward_value INTEGER,
-                        claimed_at DATETIME,
-                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (user_id) REFERENCES user (id)
-                    )
-                """))
-                conn.commit()
+        # Add new columns to Booking table using SQLAlchemy
+        columns_added = []
+        with db.engine.connect() as conn:
+            if 'breakfast_included' not in booking_columns:
+                conn.execute(text("ALTER TABLE booking ADD COLUMN breakfast_included BOOLEAN DEFAULT FALSE"))
+                columns_added.append('breakfast_included')
+            if 'breakfast_price_per_room' not in booking_columns:
+                conn.execute(text("ALTER TABLE booking ADD COLUMN breakfast_price_per_room NUMERIC(10, 2) DEFAULT 0"))
+                columns_added.append('breakfast_price_per_room')
+            if 'points_used' not in booking_columns:
+                conn.execute(text("ALTER TABLE booking ADD COLUMN points_used INTEGER DEFAULT 0"))
+                columns_added.append('points_used')
+            if 'payment_method' not in booking_columns:
+                conn.execute(text("ALTER TABLE booking ADD COLUMN payment_method VARCHAR(20) DEFAULT 'pay_now'"))
+                columns_added.append('payment_method')
+            conn.commit()
+        
+        if columns_added:
+            print(f"✓ Added columns to Booking table: {', '.join(columns_added)}")
+        else:
+            print("✓ Booking table already has all required columns")
+        
+        # Create MilestoneReward table using SQLAlchemy
+        milestone_table_exists = db.engine.dialect.has_table(db.engine.connect(), 'milestone_reward')
+        if not milestone_table_exists:
+            # Use SQLAlchemy to create the table from the model
+            MilestoneReward.__table__.create(db.engine, checkfirst=True)
             print("✓ Created MilestoneReward table")
-        except Exception as e:
-            print(f"Note: Table may already exist: {e}")
+        else:
+            print("✓ MilestoneReward table already exists")
         
         print("\n✓ Migration completed successfully!")
 
