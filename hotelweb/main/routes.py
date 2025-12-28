@@ -832,12 +832,54 @@ def cancel_booking(booking_id):
     booking = Booking.query.get_or_404(booking_id)
     if booking.user_id != current_user.id:
         abort(403)
+    
+    # Check if booking is already cancelled
+    if booking.status == 'CANCELLED':
+        flash('This booking has already been cancelled.', 'info')
+        return redirect(url_for('main.my_stays'))
+    
+    points_to_refund = 0
+    breakfasts_to_refund = 0
+    
+    # Refund points if booking was paid with points
+    if booking.points_used > 0:
+        points_to_refund = booking.points_used
+        current_user.points += points_to_refund
         
+        # Create points transaction record for refund
+        refund_transaction = PointsTransaction(
+            user_id=current_user.id,
+            booking_id=booking.id,
+            points=points_to_refund,
+            transaction_type='REFUNDED',
+            description=f'Refund for cancelled booking at {booking.room_type.hotel.name}'
+        )
+        db.session.add(refund_transaction)
+    
+    # Refund breakfast voucher if one was used
+    if booking.breakfast_voucher_used:
+        voucher = MilestoneReward.query.get(booking.breakfast_voucher_used)
+        if voucher and voucher.breakfasts_used > 0:
+            # Refund the breakfasts used (one breakfast per room)
+            breakfasts_to_refund = booking.rooms_count
+            voucher.breakfasts_used = max(0, voucher.breakfasts_used - breakfasts_to_refund)
+    
+    # Mark booking as cancelled
     booking.status = 'CANCELLED'
-    # TODO: Deduct points if we want strict logic, but for now keep it simple to avoid negative balance issues.
     db.session.commit()
     
-    flash('Booking cancelled.', 'info')
+    # Show appropriate flash message
+    refund_parts = []
+    if points_to_refund > 0:
+        refund_parts.append(f'{points_to_refund:,} points')
+    if breakfasts_to_refund > 0:
+        refund_parts.append(f'{breakfasts_to_refund} breakfast voucher(s)')
+    
+    if refund_parts:
+        flash(f'Booking cancelled. {", ".join(refund_parts)} have been refunded to your account.', 'success')
+    else:
+        flash('Booking cancelled.', 'info')
+    
     return redirect(url_for('main.my_stays'))
 
 @bp.route('/booking/<int:booking_id>/bill')
