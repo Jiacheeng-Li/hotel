@@ -83,23 +83,27 @@
         {% if brand.hotels %}
         {% for hotel in brand.hotels %}
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm hover-lift">
+            <div class="card hotel-card">
                 <div class="position-relative">
-                    <img src="{{ hotel.image_url }}" class="card-img-top object-fit-cover" alt="{{ hotel.name }}"
-                        style="height: 250px;">
-                    <span class="position-absolute top-0 end-0 badge bg-dark m-3 opacity-75">
-                        {% for _ in range(hotel.stars) %} <i class="text-warning small">★</i> {% endfor %}
-                    </span>
+                    <img src="{{ hotel.image_url }}" class="hotel-card-img" alt="{{ hotel.name }}">
+                    <div class="hotel-card-stars-overlay">
+                        {% for _ in range(hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title fw-bold font-serif mb-1">{{ hotel.name }}</h5>
-                    <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> {{ hotel.city }}</p>
-                    <p class="card-text text-truncate">{{ hotel.description }}</p>
-                </div>
-                <div class="card-footer bg-white border-0 pt-0 pb-4">
-                    <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}?from=brand" class="btn btn-outline-dark w-100">
-                        View Details & Rooms
-                    </a>
+                <div class="hotel-card-body">
+                    <h5 class="hotel-card-title">{{ hotel.name }}</h5>
+                    <p class="hotel-card-location">
+                        <i class="bi bi-geo-alt-fill"></i> {{ hotel.city }}
+                    </p>
+                    <p class="hotel-card-description">{{ hotel.description }}</p>
+                    <div class="hotel-card-footer">
+                        <div class="hotel-card-brand">
+                            <span class="hotel-brand-badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</span>
+                        </div>
+                        <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}?from=brand" class="hotel-card-btn hotel-card-btn-primary">
+                            View Details & Rooms
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,12 +125,5 @@
         letter-spacing: 1px;
     }
 
-    .hover-lift {
-        transition: transform 0.2s;
-    }
-
-    .hover-lift:hover {
-        transform: translateY(-5px);
-    }
 </style>
 {% endblock %}
