@@ -2,7 +2,7 @@ from datetime import datetime, date
 from flask import render_template, request, url_for, redirect, flash, abort
 from flask_login import login_required, current_user
 from ..extensions import db
-from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review
+from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward
 from . import bp
 from .services import search_available_roomtypes, sort_results
 
@@ -12,7 +12,6 @@ def award_points_for_completed_stays(user):
     awards them, and updates user's lifetime points and tier.
     Returns total points awarded and whether a tier upgrade occurred.
     """
-    from ..models import PointsTransaction
     today = date.today()
     points_awarded_total = 0
     tier_upgraded = False
@@ -495,8 +494,6 @@ def booking_confirm(roomtype_id):
 @bp.route('/book/<int:roomtype_id>', methods=['POST'])
 @login_required
 def book_room(roomtype_id):
-    from ..models import PointsTransaction
-    
     rt = RoomType.query.get_or_404(roomtype_id)
     
     check_in_str = request.form.get('check_in')
@@ -706,7 +703,6 @@ def account():
     if tier_upgraded:
         flash(f'🎉 Congratulations! You\'ve been upgraded to {current_user.membership_level} status!', 'success')
     
-    from ..models import PointsTransaction
     from sqlalchemy import func
     import random
     
@@ -771,7 +767,6 @@ def account():
         milestone_progress_percent = min(100, int((progress_in_range / range_size) * 100))
     
     # Check for unclaimed milestone rewards
-    from ..models import MilestoneReward, Booking
     unclaimed_milestones = []
     for threshold in milestone_thresholds:
         if year_nights >= threshold:
@@ -991,7 +986,6 @@ def claim_milestone_reward(milestone_nights):
         if reward_type == 'points':
             # Award points
             current_user.points += reward_value
-            from ..models import PointsTransaction
             transaction = PointsTransaction(
                 user_id=current_user.id,
                 points=reward_value,
