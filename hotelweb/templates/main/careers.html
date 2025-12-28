@@ -6,6 +6,10 @@
 <div class="py-5 text-center bg-light mb-5">
     <h1 class="display-4 fw-bold text-primary">Careers</h1>
     <p class="lead text-muted">Join our team and shape the future of hospitality</p>
+    <div class="mt-4">
+        <img src="{{ url_for('static', filename='img/careers.jpg') }}" alt="Careers" 
+             class="img-fluid rounded shadow w-100" style="height: 300px; object-fit: cover;">
+    </div>
 </div>
 
 <div class="container py-5">
@@ -88,13 +92,6 @@
             <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-lg">
                 <i class="bi bi-envelope me-2"></i>Contact Our HR Team
             </a>
-        </div>
-    </div>
-    
-    <div class="row mt-5">
-        <div class="col-12">
-            <img src="{{ url_for('static', filename='img/careers.jpg') }}" alt="Careers" 
-                 class="img-fluid rounded shadow w-100" style="height: 300px; object-fit: cover;">
         </div>
     </div>
 </div>
