@@ -48,8 +48,8 @@
     }
 
     .tab-button.active {
-        color: #1a1a1a;
-        border-bottom-color: #1a1a1a;
+        color: #1e3a8a;
+        border-bottom-color: #1e3a8a;
     }
 
     .tab-content {
@@ -209,8 +209,8 @@
     .btn-secondary {
         padding: 0.5rem 1.25rem;
         background-color: white;
-        color: #1a1a1a;
-        border: 1px solid #1a1a1a;
+        color: #1e3a8a;
+        border: 1px solid #1e3a8a;
         border-radius: 6px;
         font-weight: 500;
         cursor: pointer;
@@ -220,7 +220,7 @@
     }
 
     .btn-secondary:hover {
-        background-color: #1a1a1a;
+        background-color: #1e3a8a;
         color: white;
         text-decoration: none;
     }
@@ -271,7 +271,7 @@
     .btn-primary {
         display: inline-block;
         padding: 0.75rem 1.5rem;
-        background-color: #1a1a1a;
+        background-color: #1e3a8a;
         color: white;
         text-decoration: none;
         border-radius: 8px;
@@ -280,7 +280,7 @@
     }
 
     .btn-primary:hover {
-        background-color: #2d2d2d;
+        background-color: #1e40af;
         color: white;
         text-decoration: none;
     }
@@ -498,7 +498,7 @@
                         {% if booking.id not in reviewed_booking_ids %}
                         <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary">Write Review</a>
                         {% else %}
-                        <span class="btn-outline" style="opacity: 0.6; cursor: default;">Reviewed</span>
+                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary">Edit Review</a>
                         {% endif %}
                         <a href="{{ url_for('main.stay_again', booking_id=booking.id) }}" class="btn-outline">Stay
                             Again</a>

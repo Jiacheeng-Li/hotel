@@ -673,11 +673,8 @@ def write_review(booking_id):
         flash('You can only review completed stays.', 'warning')
         return redirect(url_for('main.my_stays'))
     
-    # Check if already reviewed
+    # Check if already reviewed (for editing)
     existing_review = Review.query.filter_by(booking_id=booking_id, user_id=current_user.id).first()
-    if existing_review:
-        flash('You have already reviewed this stay.', 'info')
-        return redirect(url_for('main.my_stays'))
     
     hotel = booking.room_type.hotel
     
@@ -688,7 +685,7 @@ def write_review(booking_id):
         # Validation
         if not rating:
             flash('Please select a rating.', 'danger')
-            return render_template('main/write_review.html', booking=booking, hotel=hotel)
+            return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
         
         try:
             rating = int(rating)
@@ -696,23 +693,30 @@ def write_review(booking_id):
                 raise ValueError
         except (ValueError, TypeError):
             flash('Invalid rating. Please select a rating between 1 and 5.', 'danger')
-            return render_template('main/write_review.html', booking=booking, hotel=hotel)
+            return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
         
-        # Create review
-        review = Review(
-            user_id=current_user.id,
-            hotel_id=hotel.id,
-            booking_id=booking_id,
-            rating=rating,
-            comment=comment if comment else None
-        )
-        db.session.add(review)
-        db.session.commit()
+        # Update existing review or create new one
+        if existing_review:
+            existing_review.rating = rating
+            existing_review.comment = comment if comment else None
+            db.session.commit()
+            flash('Your review has been updated!', 'success')
+        else:
+            # Create new review
+            review = Review(
+                user_id=current_user.id,
+                hotel_id=hotel.id,
+                booking_id=booking_id,
+                rating=rating,
+                comment=comment if comment else None
+            )
+            db.session.add(review)
+            db.session.commit()
+            flash('Thank you for your review!', 'success')
         
-        flash('Thank you for your review!', 'success')
         return redirect(url_for('main.hotel_detail', hotel_id=hotel.id))
     
-    return render_template('main/write_review.html', booking=booking, hotel=hotel)
+    return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
 
 @bp.route('/cancel/<int:booking_id>', methods=['POST'])
 @login_required
