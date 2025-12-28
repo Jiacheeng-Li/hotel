@@ -878,7 +878,7 @@ def cancel_booking(booking_id):
     if refund_parts:
         flash(f'Booking cancelled. {", ".join(refund_parts)} have been refunded to your account.', 'success')
     else:
-    flash('Booking cancelled.', 'info')
+        flash('Booking cancelled.', 'info')
     
     return redirect(url_for('main.my_stays'))
 
