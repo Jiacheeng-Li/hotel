@@ -109,11 +109,11 @@ main.container {
                         <div class="col-6">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text" style="font-size: 0.75rem;">People</span>
-                                <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
-                            </div>
+                        <input type="number" name="guests" class="form-control" value="{{ guests }}" min="1">
+                    </div>
                         </div>
                         <div class="col-6">
-                            <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm">
                                 <span class="input-group-text" style="font-size: 0.75rem;">Rooms</span>
                                 <input type="number" name="rooms_needed" class="form-control" value="{{ rooms_needed }}" min="1">
                             </div>
@@ -125,14 +125,14 @@ main.container {
                 <div class="mb-2">
                     <label class="form-label small text-uppercase text-muted fw-bold mb-1">Brands</label>
                     <div class="row g-1" style="max-height: 80px; overflow-y: auto;">
-                        {% for brand in all_brands %}
+                    {% for brand in all_brands %}
                         <div class="col-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
-                                    id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="brands" value="{{ brand.id }}"
+                            id="f_br_{{ brand.id }}" {% if brand.id|string in selected_brands %}checked{% endif %}>
                                 <label class="form-check-label small" style="font-size: 0.75rem;" for="f_br_{{ brand.id }}">
-                                    {{ brand.name }}
-                                </label>
+                            {{ brand.name }}
+                        </label>
                             </div>
                         </div>
                         {% endfor %}
@@ -179,30 +179,30 @@ main.container {
             <!-- LIST VIEW -->
             <div class="tab-pane fade show active" id="list-view">
                 {% if results|length > 0 %}
-                    {% for item in results %}
-                    {% set hotel = item.hotel %}
-                    <div class="card mb-4 shadow-sm border-0">
-                        <div class="row g-0">
-                            <div class="col-md-4 position-relative">
+                {% for item in results %}
+                {% set hotel = item.hotel %}
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="row g-0">
+                        <div class="col-md-4 position-relative">
                                 <img src="{{ hotel.image_url }}" class="img-fluid rounded-start"
                                     style="width: 100%; height: 300px; object-fit: cover; display: block;" alt="{{ hotel.name }}">
                                 <a href="{{ url_for('main.brand_detail', brand_id=item.brand.id) }}" class="brand-badge position-absolute top-0 start-0 m-2" style="background-color: {{ item.brand.logo_color }};">
-                                    {{ item.brand.name }}
+                                {{ item.brand.name }}
                                 </a>
-                            </div>
-                            <div class="col-md-8">
+                        </div>
+                        <div class="col-md-8">
                                 <div class="card-body h-100" style="min-height: 300px;">
-                                    <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between">
                                         <h5 class="fw-bold mb-2">
                                             <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
-                                                class="text-decoration-none text-dark">
-                                                {{ hotel.name }}
-                                            </a>
-                                        </h5>
-                                        <div>
-                                            {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
-                                        </div>
+                                            class="text-decoration-none text-dark">
+                                            {{ hotel.name }}
+                                        </a>
+                                    </h5>
+                                    <div>
+                                        {% for _ in range(hotel.stars) %}<i class="text-warning">★</i>{% endfor %}
                                     </div>
+                                </div>
 
                                     <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> {{ hotel.address }}, {{ hotel.city }}</p>
 
@@ -226,26 +226,26 @@ main.container {
                                             <span class="text-muted">({{ hotel.reviews|length }} review{{ 's' if hotel.reviews|length != 1 else '' }})</span>
                                         </div>
                                         {% endif %}
-                                    </div>
+                                </div>
 
-                                    <p class="text-truncate">{{ hotel.description }}</p>
+                                <p class="text-truncate">{{ hotel.description }}</p>
 
                                     <div class="d-flex justify-content-between align-items-end mt-3">
-                                        <small class="text-muted">
-                                            {% if item.total_required > 0 %}
-                                            Matched {{ item.match_count }}/{{ item.total_required }} amenities
-                                            {% else %}
-                                            Amenities matched: {{ item.match_count }}
-                                            {% endif %}
-                                        </small>
+                                    <small class="text-muted">
+                                        {% if item.total_required > 0 %}
+                                        Matched {{ item.match_count }}/{{ item.total_required }} amenities
+                                        {% else %}
+                                        Amenities matched: {{ item.match_count }}
+                                        {% endif %}
+                                    </small>
 
                                         <div class="text-end d-flex flex-column gap-2">
                                             <div>
-                                                <small class="text-muted">From</small>
+                                        <small class="text-muted">From</small>
                                                 <h4 class="text-success fw-bold mb-0">${{ item.min_price }}</h4>
                                             </div>
                                             <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id, from='search', check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d')) }}"
-                                                class="btn btn-primary btn-sm">View</a>
+                                            class="btn btn-primary btn-sm">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -276,15 +276,15 @@ main.container {
                                 <li><i class="bi bi-check-circle me-2"></i>Modify your filters</li>
                                 <li><i class="bi bi-check-circle me-2"></i>Search for a different city</li>
                             </ul>
-                        </div>
                     </div>
+                </div>
                 {% endif %}
             </div>
 
             <!-- MAP VIEW -->
             <div class="tab-pane fade" id="map-view">
                 {% if results|length > 0 %}
-                    <div id="map" style="height: 600px; border-radius: 8px;"></div>
+                <div id="map" style="height: 600px; border-radius: 8px;"></div>
                 {% else %}
                     <div class="empty-state">
                         <div class="mb-4">

@@ -18,7 +18,7 @@ def create_app(config_class=Config):
 
     from .main import bp as main_bp
     app.register_blueprint(main_bp)
-    
+
     # Context processor to make brands available in all templates
     @app.context_processor
     def inject_brands():

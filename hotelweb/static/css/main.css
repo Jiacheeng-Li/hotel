@@ -784,6 +784,8 @@ a {
     --tier-hover: #2d1f33;
     --tier-gradient-start: #37283F;
     --tier-gradient-end: #091d3d;
+    background: transparent;
+    width: 100%;
 }
 
 .account-page-wrapper.tier-club-member {

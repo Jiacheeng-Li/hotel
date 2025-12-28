@@ -41,7 +41,7 @@
     <div class="col-md-6">
         <img src="{{ hotel.image_url }}" class="img-fluid rounded shadow w-100" style="object-fit: cover; display: block;"
             alt="{{ hotel.name }}" id="hotel-main-image">
-    </div>
+</div>
 
     <div class="col-md-6 d-flex flex-column" id="hotel-info-column" style="min-height: 450px;">
         <div class="flex-grow-1">
@@ -52,10 +52,10 @@
                     <a href="{{ url_for('main.brand_detail', brand_id=hotel.brand.id) }}" class="brand-badge" style="background-color: {{ hotel.brand.logo_color }};">{{ hotel.brand.name }}</a>
                     <span class="hotel-brand-stars">
                         {% for _ in range(hotel.stars) %}<i class="bi bi-star-fill"></i>{% endfor %}
-                    </span>
-                </div>
-            </div>
-            
+            </span>
+        </div>
+    </div>
+
             {% if hotel.reviews %}
             {% set avg_rating = (hotel.reviews|sum(attribute='rating') / hotel.reviews|length) %}
             <div class="mb-3">
@@ -85,7 +85,7 @@
             </div>
             {% endif %}
         </div>
-        
+
         <div class="mt-auto">
             {% if hotel.latitude and hotel.longitude %}
             <div class="card border-0 shadow-sm" style="height: 200px; overflow: hidden; border-radius: 12px;">
@@ -170,7 +170,7 @@
             {% for review in reviews_list %}
             <div class="col-md-6 col-lg-4 review-item {% if loop.index > max_visible %}review-hidden{% endif %}">
                 <div class="card h-100 shadow-sm border-0" style="background-color: white;">
-                    <div class="card-body">
+            <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="fw-bold mb-0">{{ review.author.username }}</h6>
                             <div class="text-danger">
@@ -278,7 +278,7 @@
             </div>
         </div>
         {% endfor %}
-    </div>
+</div>
 </section>
 {% endif %}
 

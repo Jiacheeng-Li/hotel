@@ -65,7 +65,7 @@ def register():
         if User.query.filter_by(username=username).first():
             flash('Username already taken.', 'warning')
             return render_template('auth/register.html', username=username, email=email)
-        
+            
         # Create user
         user = User(username=username, email=email)
         user.set_password(password)
