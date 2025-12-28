@@ -3,9 +3,14 @@
 {% block title %}Careers - Lumina Hospitality{% endblock %}
 
 {% block content %}
-<div class="py-5 text-center bg-light mb-5">
-    <h1 class="display-4 fw-bold text-primary">Careers</h1>
-    <p class="lead text-muted">Join our team and shape the future of hospitality</p>
+<div class="position-relative text-center text-white mb-5" style="height: 400px; overflow: hidden;">
+    <img src="{{ url_for('static', filename='img/careers.jpg') }}" alt="Careers" 
+         class="w-100 h-100" style="object-fit: cover;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" 
+         style="background: rgba(0, 0, 0, 0.4);">
+        <h1 class="display-4 fw-bold mb-3">Careers</h1>
+        <p class="lead">Join our team and shape the future of hospitality</p>
+    </div>
 </div>
 
 <div class="container py-5">
