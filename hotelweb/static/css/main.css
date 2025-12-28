@@ -378,9 +378,9 @@ a {
 /* Unified Brand Badge Style */
 .brand-badge {
     display: inline-block;
-    padding: 0.375rem 0.625rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 6px;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: white;
     text-transform: none;
@@ -397,9 +397,9 @@ a {
 
 .hotel-brand-badge {
     display: inline-block;
-    padding: 0.375rem 0.625rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 6px;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: white;
     text-transform: none;
