@@ -775,5 +775,44 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/account.js') }}?v=2"></script>
+<script>
+    // Inline fallback for critical tab switching functionality
+    function switchTab(tabName, event) {
+        console.log("SwitchTab called for:", tabName);
+        if (event) event.preventDefault();
+        
+        // 1. Hide all tab contents
+        var contents = document.getElementsByClassName('tab-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].style.display = 'none';
+            contents[i].classList.remove('active');
+        }
+        
+        // 2. Remove active from all tabs
+        var tabs = document.getElementsByClassName('nav-tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+        
+        // 3. Show target content
+        var target = document.getElementById(tabName);
+        if (target) {
+            target.style.display = 'block';
+            target.classList.add('active');
+        } else {
+            console.error("Target tab not found:", tabName);
+        }
+        
+        // 4. Set active tab
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        } else if (event && event.target) {
+             // Fallback if currentTarget is not available
+             event.target.classList.add('active');
+        }
+        
+        return false;
+    }
+</script>
+<script src="{{ url_for('static', filename='js/account.js') }}?v=3"></script>
 {% endblock %}
