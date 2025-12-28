@@ -668,7 +668,7 @@ def book_room(roomtype_id):
         # Use per-night rate with taxes/fees equivalent
         per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
         base_points_per_night = int(per_night_total * 10)  # 10 points per $1
-        multiplier = current_user.get_points_multiplier()
+    multiplier = current_user.get_points_multiplier()
         points_per_night = int(base_points_per_night * multiplier)
         points_earned = points_per_night * nights * rooms_needed
     else:
@@ -878,7 +878,7 @@ def cancel_booking(booking_id):
     if refund_parts:
         flash(f'Booking cancelled. {", ".join(refund_parts)} have been refunded to your account.', 'success')
     else:
-        flash('Booking cancelled.', 'info')
+    flash('Booking cancelled.', 'info')
     
     return redirect(url_for('main.my_stays'))
 
@@ -1262,8 +1262,24 @@ def milestone_progress():
     
     # Build milestone progress list
     milestone_progress_list = []
-    # Find the current milestone (next unclaimed or first upcoming)
-    current_milestone = None
+    
+    # Determine the current milestone (the one the user is working towards or needs to claim)
+    # Priority: 1. First reached but unclaimed milestone. 2. First upcoming milestone.
+    target_milestone_nights = None
+    
+    # First pass: check for unclaimed ones
+    for threshold in milestone_thresholds:
+        if year_nights >= threshold and threshold not in rewards_dict:
+            target_milestone_nights = threshold
+            break
+            
+    # If no unclaimed ones, find the first upcoming one
+    if target_milestone_nights is None:
+        for threshold in milestone_thresholds:
+            if year_nights < threshold:
+                target_milestone_nights = threshold
+                break
+    
     for threshold in milestone_thresholds:
         status = 'upcoming'
         if year_nights >= threshold:
@@ -1271,22 +1287,13 @@ def milestone_progress():
                 status = 'claimed'
             else:
                 status = 'unclaimed'
-                if current_milestone is None:
-                    current_milestone = threshold
         
         milestone_progress_list.append({
             'nights': threshold,
             'status': status,
             'reward': rewards_dict.get(threshold),
-            'is_current': (current_milestone is None and status == 'upcoming' and year_nights < threshold) or (current_milestone == threshold)
+            'is_current': (threshold == target_milestone_nights)
         })
-    
-    # If all milestones are claimed, highlight the next one
-    if current_milestone is None and year_nights < milestone_thresholds[-1]:
-        for milestone in milestone_progress_list:
-            if milestone['status'] == 'upcoming':
-                milestone['is_current'] = True
-                break
     
     return render_template('main/milestone_progress.html',
                          current_year=current_year,
