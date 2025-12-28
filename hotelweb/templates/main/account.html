@@ -1605,9 +1605,6 @@
     </div>
 </div>
 
-{% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/account.js') }}"></script>
-{% endblock %}
 
 <!-- Tier Retention Rules Modal -->
 {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
