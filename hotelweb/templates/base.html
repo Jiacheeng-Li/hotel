@@ -98,12 +98,12 @@
     <footer class="bg-dark text-white py-5 mt-auto" style="background: #0f172a !important;">
         <div class="container">
             <div class="row mb-4">
-                <div class="col-md-3 mb-4">
+                <div class="col-md-4 mb-4">
                     <h5 class="font-serif text-warning fw-bold mb-3">Lumina Hospitality</h5>
                     <p class="small text-white-50">Redefining luxury and comfort across the globe. Experience the
                         extraordinary with our collection of distinct brands.</p>
                 </div>
-                <div class="col-md-3 mb-4">
+                <div class="col-md-4 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3">Quick Links</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ url_for('main.about') }}"
@@ -113,19 +113,7 @@
                         <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="text-white-50 text-decoration-none hover-white">Contact Us</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h6 class="text-uppercase fw-bold mb-3">Our Brands</h6>
-                    <ul class="list-unstyled">
-                        {% for brand in brands %}
-                        <li class="mb-2">
-                            <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-white-50 text-decoration-none hover-white" style="color: {{ brand.logo_color }} !important;">
-                                {{ brand.name }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-md-3 mb-4">
+                <div class="col-md-4 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
                     <p class="small text-white-50 mb-2">info@luminahotels.com</p>
                     <p class="small text-white-50">&copy; 2025 Lumina Hospitality. All rights reserved.</p>
@@ -159,7 +147,6 @@
                                      style="height: 50px; opacity: 0.9; transition: opacity 0.2s;"
                                      onmouseover="this.style.opacity='1'" 
                                      onmouseout="this.style.opacity='0.9'">
-                                <p class="small mt-2 mb-0" style="color: {{ brand.logo_color }};">{{ brand.name }}</p>
                             </a>
                         </div>
                         {% endfor %}
