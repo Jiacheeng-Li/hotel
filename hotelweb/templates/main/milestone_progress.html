@@ -118,9 +118,22 @@
         transition: all 0.3s ease;
     }
 
-    .milestone-item:hover {
+    .milestone-item:not(.current) {
+        opacity: 0.6;
+        filter: grayscale(0.5);
+    }
+
+    .milestone-item.current {
+        opacity: 1;
+        filter: grayscale(0);
         border-color: #d97706;
-        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.1);
+        background: #fef3c7;
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
+    }
+
+    .milestone-item.current:hover {
+        border-color: #d97706;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
     }
 
     .milestone-item.claimed {
@@ -131,12 +144,6 @@
     .milestone-item.unclaimed {
         border-color: #fbbf24;
         background: #fffbeb;
-    }
-
-    .milestone-item.current {
-        border-color: #d97706;
-        background: #fef3c7;
-        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
     }
 
     .milestone-header {
