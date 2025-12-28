@@ -467,10 +467,12 @@ class MilestoneReward(db.Model):
     """Track milestone rewards earned by users"""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    milestone_nights = db.Column(db.Integer, nullable=False)  # The milestone threshold (20, 30, 40, etc.)
+    milestone_nights = db.Column(db.Integer, nullable=True)  # The milestone threshold (20, 30, 40, etc.). Nullable for special events.
     reward_type = db.Column(db.String(20), nullable=False)  # 'points' or 'breakfast'
     reward_value = db.Column(db.Integer)  # For points: 5000, For breakfast: 2 (number of breakfasts)
     breakfasts_used = db.Column(db.Integer, default=0)  # Number of breakfasts used from this reward
+    source = db.Column(db.String(50), default='milestone')  # 'milestone', 'birthday', 'new_year'
+    description = db.Column(db.String(200))  # Optional description
     claimed_at = db.Column(db.DateTime)  # When user selected their reward
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -481,3 +483,33 @@ class MilestoneReward(db.Model):
         if self.reward_type == 'breakfast':
             return max(0, self.reward_value - self.breakfasts_used)
         return 0
+
+class UserEvent(db.Model):
+    """Track special user events like birthdays and holidays"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_type = db.Column(db.String(50), nullable=False)  # 'birthday', 'new_year'
+    event_year = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(200))
+    reward_type = db.Column(db.String(20))  # 'points', 'breakfast'
+    reward_amount = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref='events', lazy=True)
+
+class PaymentMethod(db.Model):
+    """Store user payment methods (Cards)"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    card_type = db.Column(db.String(20), nullable=False)  # Visa, Mastercard, Amex, etc.
+    last4 = db.Column(db.String(4), nullable=False)
+    expiry_month = db.Column(db.String(2), nullable=False)
+    expiry_year = db.Column(db.String(4), nullable=False)
+    cardholder_name = db.Column(db.String(100), nullable=False)
+    is_default = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # In a real app, we would store a token from payment processor (Stripe/Stripe), not card details
+    # For this demo, we mock it. DO NOT store full card numbers in production.
+    
+    user = db.relationship('User', backref='payment_methods', lazy=True)

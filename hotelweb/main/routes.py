@@ -1,8 +1,8 @@
 from datetime import datetime, date
-from flask import render_template, request, url_for, redirect, flash, abort
+from flask import render_template, request, url_for, redirect, flash, abort, session
 from flask_login import login_required, current_user
 from ..extensions import db
-from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward
+from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward, UserEvent, PaymentMethod
 from . import bp
 from .services import search_available_roomtypes, sort_results
 
@@ -85,6 +85,93 @@ def award_points_for_completed_stays(user):
 
 @bp.route('/')
 def index():
+    # Check for Special Events (Birthday, New Year)
+    if current_user.is_authenticated:
+        today = date.today()
+        current_year = today.year
+        
+        # 1. Birthday Check
+        if current_user.birthday and current_user.birthday.month == today.month and current_user.birthday.day == today.day:
+            # Check if already awarded this year
+            existing_event = UserEvent.query.filter_by(
+                user_id=current_user.id,
+                event_type='birthday',
+                event_year=current_year
+            ).first()
+            
+            if not existing_event:
+                # Create Event
+                event = UserEvent(
+                    user_id=current_user.id,
+                    event_type='birthday',
+                    event_year=current_year,
+                    description=f"Happy {current_year} Birthday!",
+                    reward_type='points',
+                    reward_amount=1000
+                )
+                db.session.add(event)
+                
+                # Award Points
+                current_user.points += 1000
+                current_user.lifetime_points += 1000
+                
+                # Create Transaction Record
+                transaction = PointsTransaction(
+                    user_id=current_user.id,
+                    points=1000,
+                    transaction_type='BONUS',
+                    description=f"Birthday Bonus {current_year}"
+                )
+                db.session.add(transaction)
+                db.session.commit()
+                
+                # Set Session for Modal
+                session['show_celebration_modal'] = True
+                session['celebration_type'] = 'birthday'
+                session['celebration_message'] = "Wishing you a fantastic birthday filled with joy! Here's a little gift from us."
+                session['celebration_reward_type'] = 'points'
+                session['celebration_reward_amount'] = 1000
+
+        # 2. New Year Check
+        elif today.month == 1 and today.day == 1:
+            existing_event = UserEvent.query.filter_by(
+                user_id=current_user.id,
+                event_type='new_year',
+                event_year=current_year
+            ).first()
+            
+            if not existing_event:
+                # Create Event
+                event = UserEvent(
+                    user_id=current_user.id,
+                    event_type='new_year',
+                    event_year=current_year,
+                    description=f"Happy New Year {current_year}!",
+                    reward_type='breakfast',
+                    reward_amount=1
+                )
+                db.session.add(event)
+                
+                # Award Breakfast Voucher
+                reward = MilestoneReward(
+                    user_id=current_user.id,
+                    milestone_nights=0, # Special event
+                    reward_type='breakfast',
+                    reward_value=1,
+                    source='new_year',
+                    description=f"New Year Gift {current_year}",
+                    claimed_at=datetime.utcnow()
+                )
+                db.session.add(reward)
+                db.session.commit()
+                
+                # Set Session for Modal
+                session['show_celebration_modal'] = True
+                session['celebration_type'] = 'new_year'
+                session['celebration_message'] = "Happy New Year! Start your year with a delicious breakfast on us."
+                session['celebration_reward_type'] = 'breakfast'
+                session['celebration_reward_amount'] = 1
+
     cities = db.session.query(Hotel.city).distinct().all()
     cities = [c[0] for c in cities]
     brands = Brand.query.all()
@@ -94,6 +181,15 @@ def index():
     from datetime import timedelta
     tomorrow = date.today() + timedelta(days=1)
     return render_template('main/home.html', cities=cities, brands=brands, amenities=amenities, featured_hotels=featured_hotels, today=date.today(), tomorrow=tomorrow)
+
+@bp.route('/clear-celebration', methods=['POST'])
+def clear_celebration():
+    session.pop('show_celebration_modal', None)
+    session.pop('celebration_type', None)
+    session.pop('celebration_message', None)
+    session.pop('celebration_reward_type', None)
+    session.pop('celebration_reward_amount', None)
+    return '', 204
 
 @bp.route('/brands')
 def brands():
@@ -687,7 +783,26 @@ def book_room(roomtype_id):
     # Handle points payment
     points_used = 0
     points_transaction = None
-    if payment_method == 'points':
+    
+    # Handle saved card payment
+    if payment_method.startswith('card_'):
+        try:
+            card_id = int(payment_method.split('_')[1])
+            # Verify card belongs to user
+            card = PaymentMethod.query.filter_by(id=card_id, user_id=current_user.id).first()
+            if not card:
+                flash('Invalid payment method selected.', 'danger')
+                return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
+                                      check_in=check_in_str, check_out=check_out_str, 
+                                      rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
+            # In a real app, process payment with stored token here
+            payment_method = f"Card ending in {card.last4}"
+        except (ValueError, IndexError):
+            flash('Invalid payment method.', 'danger')
+            return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
+                                  check_in=check_in_str, check_out=check_out_str, 
+                                  rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
+    elif payment_method == 'points':
         points_needed = int(final_total * 100)  # 100 points = $1
         if current_user.points < points_needed:
             flash(f'Insufficient points. You have {current_user.points:,} points but need {points_needed:,} points.', 'danger')

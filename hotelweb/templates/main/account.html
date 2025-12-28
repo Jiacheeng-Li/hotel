@@ -508,6 +508,99 @@
             </div>
         </form>
     </div>
+
+    <!-- Payment Methods Section -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title">Payment Methods</h3>
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleAddCard()">
+                <i class="bi bi-plus-lg"></i> Add Card
+            </button>
+        </div>
+        <div class="card-body">
+            {% if payment_methods %}
+            <div class="payment-methods-list">
+                {% for card in payment_methods %}
+                <div class="payment-card-item d-flex justify-content-between align-items-center p-3 mb-3 border rounded">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="card-icon">
+                            {% if card.card_type == 'Visa' %}
+                            <i class="bi bi-credit-card-2-front text-primary fs-3"></i>
+                            {% elif card.card_type == 'Mastercard' %}
+                            <i class="bi bi-credit-card-2-back text-danger fs-3"></i>
+                            {% else %}
+                            <i class="bi bi-credit-card text-secondary fs-3"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{ card.card_type }} ending in {{ card.last4 }}</h6>
+                            <small class="text-muted">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</small>
+                            {% if card.is_default %}
+                            <span class="badge bg-primary ms-2">Default</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% if not card.is_default %}
+                        <form action="{{ url_for('main.set_default_card', card_id=card.id) }}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-link text-decoration-none">Set Default</button>
+                        </form>
+                        {% endif %}
+                        <form action="{{ url_for('main.delete_card', card_id=card.id) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this card?');">
+                            <button type="submit" class="btn btn-sm btn-link text-danger text-decoration-none">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-3">No payment methods saved.</p>
+            {% endif %}
+
+            <!-- Add Card Form (Hidden by default) -->
+            <div id="add-card-form" class="mt-4" style="display: none;">
+                <h5 class="mb-3">Add New Card</h5>
+                <form action="{{ url_for('main.add_card') }}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Cardholder Name</label>
+                            <input type="text" name="cardholder_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" name="card_number" class="form-control" placeholder="**** **** **** ****" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Expiration Month</label>
+                            <select name="expiry_month" class="form-select" required>
+                                {% for i in range(1, 13) %}
+                                <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Expiration Year</label>
+                            <select name="expiry_year" class="form-select" required>
+                                {% for i in range(2025, 2036) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">CVV</label>
+                            <input type="text" name="cvv" class="form-control" placeholder="***" required>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-primary">Save Card</button>
+                            <button type="button" class="btn btn-secondary ms-2" onclick="toggleAddCard()">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
     <!-- Club Member Benefits Tab -->
