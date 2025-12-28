@@ -128,9 +128,9 @@
                     {% if available_rooms is defined %}
                     <div class="mt-2">
                         {% if available_rooms == 0 %}
-                        <span class="badge bg-secondary text-white" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Sold Out</span>
+                        <span class="availability-badge sold-out">Sold Out</span>
                         {% elif available_rooms < 5 %}
-                        <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Only {{ available_rooms }} left</span>
+                        <span class="availability-badge low-stock">Only {{ available_rooms }} left</span>
                         {% endif %}
                     </div>
                     {% endif %}

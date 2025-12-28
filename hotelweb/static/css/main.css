@@ -1617,6 +1617,39 @@ a {
     text-decoration: none;
 }
 
+/* Room Availability Badges */
+.availability-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+}
+
+.availability-badge.sold-out {
+    background-color: #6c757d;
+    color: white;
+}
+
+.availability-badge.low-stock {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.availability-badge-small {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    display: inline-block;
+}
+
+.availability-badge-small.sold-out {
+    background-color: #6c757d;
+    color: white;
+}
+
+.availability-badge-small.low-stock {
+    background-color: #ffc107;
+    color: #000;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;
