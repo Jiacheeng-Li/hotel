@@ -16,6 +16,22 @@
 {% block content %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+/* Override nav-link color for nav-tabs (not navbar) */
+.nav-tabs .nav-link {
+    color: #6c757d !important;
+    border: none;
+}
+.nav-tabs .nav-link:hover {
+    color: #495057 !important;
+    border-color: transparent;
+}
+.nav-tabs .nav-link.active {
+    color: #0f172a !important;
+    background-color: transparent;
+    border-bottom: 2px solid #d97706;
+}
+</style>
 
 <!-- Search Summary -->
 <div class="mb-1">
