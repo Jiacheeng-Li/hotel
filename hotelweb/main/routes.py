@@ -471,9 +471,11 @@ def booking_confirm(roomtype_id):
     total_cost = subtotal + taxes + fees
     final_total = total_cost + breakfast_total
     
-    # Calculate points
-    per_night_total = base_rate * 1.15
-    base_points_per_night = int(per_night_total * 10)
+    # Calculate estimated points (for display only, actual points calculated after payment)
+    # Formula: 1 dollar = 10 base points, then multiply by tier multiplier
+    # Points are calculated based on actual payment amount (excluding points payment)
+    per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
+    base_points_per_night = int(per_night_total * 10)  # 10 points per $1
     multiplier = current_user.get_points_multiplier()
     points_per_night = int(base_points_per_night * multiplier)
     points_earned = points_per_night * nights * rooms_needed
@@ -557,14 +559,21 @@ def book_room(roomtype_id):
         db.session.add(points_transaction)
         final_total = 0  # Fully paid with points
     
-    # Calculate points with tier multiplier
-    # Formula: Base Points = (Room Rate × 1.15) × 10 per night
-    # Then multiply by tier multiplier
-    per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
-    base_points_per_night = int(per_night_total * 10)
-    multiplier = current_user.get_points_multiplier()
-    points_per_night = int(base_points_per_night * multiplier)
-    points_earned = points_per_night * nights * rooms_needed
+    # Calculate points earned based on ACTUAL PAYMENT AMOUNT
+    # Formula: 1 dollar = 10 base points, then multiply by tier multiplier
+    # Important: Points are NOT earned on amounts paid with points
+    # If fully paid with points (final_total = 0), no points are earned
+    if final_total > 0:
+        # Calculate based on actual payment amount (excluding points payment)
+        # Use per-night rate with taxes/fees equivalent
+        per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
+        base_points_per_night = int(per_night_total * 10)  # 10 points per $1
+        multiplier = current_user.get_points_multiplier()
+        points_per_night = int(base_points_per_night * multiplier)
+        points_earned = points_per_night * nights * rooms_needed
+    else:
+        # Fully paid with points - no points earned
+        points_earned = 0
     
     # Create booking
     booking = Booking(

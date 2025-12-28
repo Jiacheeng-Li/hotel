@@ -481,6 +481,18 @@
         <h3>Loyalty Points Earned</h3>
         <div class="points-amount">{{ "{:,}".format(booking.points_earned) }} Points</div>
         <p>Thank you for being a {{ current_user.membership_level }} member!</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.9;">
+            Calculation: 1 dollar = 10 base points × {{ current_user.get_points_multiplier() }}x multiplier
+            {% if booking.points_used > 0 %}
+            <br>Note: Points earned on actual payment only (excludes amounts paid with points).
+            {% endif %}
+        </p>
+    </div>
+    {% elif booking.points_used > 0 and booking.points_used >= booking.total_cost * 100 %}
+    <div class="points-section">
+        <h3>Points Payment</h3>
+        <div class="points-amount" style="font-size: 1.5rem;">Fully Paid with Points</div>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.9;">No points earned as booking was fully paid with points.</p>
     </div>
     {% endif %}
 

@@ -1293,6 +1293,14 @@
                         <div>
                             <strong>{{ transaction.description }}</strong>
                             <div class="text-muted small">{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                            {% if transaction.transaction_type == 'EARNED' and transaction.booking_id %}
+                            {% set booking = all_bookings|selectattr('id', 'equalto', transaction.booking_id)|first %}
+                            {% if booking and booking.points_used > 0 %}
+                            <div class="text-muted small" style="font-size: 0.75rem; margin-top: 0.25rem;">
+                                <i class="bi bi-info-circle"></i> Points earned on actual payment (excludes points payment)
+                            </div>
+                            {% endif %}
+                            {% endif %}
         </div>
                         <div class="text-{% if transaction.transaction_type in ['EARNED', 'BONUS'] %}success{% else %}danger{% endif %} fw-bold">
                             {% if transaction.transaction_type in ['EARNED', 'BONUS'] %}+{% else %}-{% endif %}{{ "{:,}".format(transaction.points|abs) }} points
