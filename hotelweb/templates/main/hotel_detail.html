@@ -7,6 +7,11 @@
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            {% if from_search %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.search', **search_params) }}">Search Results</a>
+            </li>
+            {% endif %}
             <li class="breadcrumb-item active">{{ hotel.name }}</li>
         </ol>
     </nav>

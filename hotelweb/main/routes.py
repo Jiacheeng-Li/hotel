@@ -192,6 +192,19 @@ def search():
 def hotel_detail(hotel_id):
     hotel = Hotel.query.get_or_404(hotel_id)
     
+    # Check if user came from search page
+    referrer = request.referrer
+    from_search = referrer and '/search' in referrer
+    
+    # Get search parameters if available (for breadcrumb link)
+    search_params = {}
+    if from_search and referrer:
+        from urllib.parse import urlparse, parse_qs
+        parsed = urlparse(referrer)
+        search_params = parse_qs(parsed.query)
+        # Convert to simple dict format
+        search_params = {k: v[0] if v else '' for k, v in search_params.items()}
+    
     # Get recommended hotels (same city, same brand, or same stars, excluding current hotel)
     recommended_hotels = []
     
@@ -236,7 +249,9 @@ def hotel_detail(hotel_id):
     
     return render_template('main/hotel_detail.html', 
                           hotel=hotel, 
-                          recommended_hotels=recommended_hotels)
+                          recommended_hotels=recommended_hotels,
+                          from_search=from_search,
+                          search_params=search_params)
 
 @bp.route('/roomtype/<int:roomtype_id>')
 def roomtype_detail(roomtype_id):
