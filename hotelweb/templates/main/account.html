@@ -1291,7 +1291,7 @@
             {% if all_transactions %}
             <div>
                 {% for transaction in all_transactions %}
-                <div class="activity-item" {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.booking_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
+                <div class="activity-item" {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ transaction.description }}</strong>
