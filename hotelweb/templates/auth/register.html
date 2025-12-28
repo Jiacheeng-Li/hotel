@@ -262,6 +262,10 @@
                         </div>
                     </div>
                     
+                    {% if recaptcha_site_key %}
+                    <div class="g-recaptcha mb-3" data-sitekey="{{ recaptcha_site_key }}"></div>
+                    {% endif %}
+                    
                     <div class="d-grid gap-2 mb-3" style="margin-top: 1.5rem;">
                         <button type="submit" class="btn btn-primary btn-lg fw-bold py-2" style="border-radius: 10px; background-color: var(--primary-color); border: none;">
                             <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Create Account
@@ -281,5 +285,9 @@
         </div>
     </div>
 </div>
+
+{% if recaptcha_site_key %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endif %}
 
 {% endblock %}

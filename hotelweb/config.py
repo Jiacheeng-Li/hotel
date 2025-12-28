@@ -9,3 +9,7 @@ class Config:
         'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'instance', 'hotel.db')
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # reCAPTCHA Configuration
+    RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY') or ''
+    RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY') or ''
