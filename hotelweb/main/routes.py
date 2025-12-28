@@ -949,6 +949,12 @@ def account():
         payment_method='points'
     ).order_by(Booking.created_at.desc()).all()
     
+    # Bookings with breakfast vouchers
+    breakfast_voucher_bookings = Booking.query.filter(
+        Booking.user_id == current_user.id,
+        Booking.breakfast_voucher_used.isnot(None)
+    ).order_by(Booking.created_at.desc()).all()
+    
     # Milestone rewards
     milestone_rewards = MilestoneReward.query.filter_by(
         user_id=current_user.id
@@ -1129,6 +1135,7 @@ def account():
                          all_bookings=all_bookings,
                          redeemed_transactions=redeemed_transactions,
                          points_bookings=points_bookings,
+                         breakfast_voucher_bookings=breakfast_voucher_bookings,
                          milestone_rewards=milestone_rewards,
                          points_to_next=points_to_next,
                          next_tier=next_tier,
