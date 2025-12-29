@@ -426,25 +426,31 @@ def seed():
             
             # Some users may write reviews for their bookings
             user_bookings = Booking.query.filter_by(user_id=user.id).all()
-            for booking in random.sample(user_bookings, min(len(user_bookings), random.randint(2, len(user_bookings) // 2))):
-                # 50% chance to write a review for each selected booking
-                if random.random() > 0.5:
-                    rev = Review(
-                        user_id=user.id,
-                        hotel_id=booking.room_type.hotel.id,
-                        booking_id=booking.id,
-                        rating=random.randint(3, 5),
-                        comment=random.choice([
-                            "Great stay! Highly recommend.",
-                            "Excellent service and comfortable rooms.",
-                            "Beautiful hotel with amazing amenities.",
-                            "Perfect location and friendly staff.",
-                            "Wonderful experience, will come back!",
-                            "Nice hotel, good value for money.",
-                            "Impressive facilities and great breakfast."
-                        ])
-                    )
-                    db.session.add(rev)
+            if len(user_bookings) > 0:
+                # Select 30-70% of bookings for potential reviews
+                num_reviews = max(1, int(len(user_bookings) * random.uniform(0.3, 0.7)))
+                num_reviews = min(num_reviews, len(user_bookings))
+                
+                selected_bookings = random.sample(user_bookings, num_reviews)
+                for booking in selected_bookings:
+                    # 60% chance to write a review for each selected booking
+                    if random.random() > 0.4:
+                        rev = Review(
+                            user_id=user.id,
+                            hotel_id=booking.room_type.hotel.id,
+                            booking_id=booking.id,
+                            rating=random.randint(3, 5),
+                            comment=random.choice([
+                                "Great stay! Highly recommend.",
+                                "Excellent service and comfortable rooms.",
+                                "Beautiful hotel with amazing amenities.",
+                                "Perfect location and friendly staff.",
+                                "Wonderful experience, will come back!",
+                                "Nice hotel, good value for money.",
+                                "Impressive facilities and great breakfast."
+                            ])
+                        )
+                        db.session.add(rev)
         
         db.session.commit()
         print(f"  Created {len(created_users)} test users with booking history")
