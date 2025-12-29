@@ -1,7 +1,7 @@
 import sys
 import os
 import random
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from werkzeug.security import generate_password_hash
 
 # Add project root to path
@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from hotelweb.app import create_app
 from hotelweb.extensions import db
-from hotelweb.models import User, Hotel, RoomType, Amenity, Booking, Brand, Review
+from hotelweb.models import User, Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction
 
 app = create_app()
 
@@ -293,130 +293,167 @@ def seed():
 
         print("Seeding Test Users (covering all 5 membership tiers)...")
         
-        # Create test users for each membership tier
-        test_users = [
+        # Test user configurations with target stats (will be achieved through bookings)
+        test_users_config = [
             # Club Member (0-49,999 lifetime points)
-            {
-                'username': 'club_member_01',
-                'email': 'club01@test.com',
-                'password': 'password',
-                'membership_level': 'Club Member',
-                'lifetime_points': 25000,
-                'points': 5000,
-                'nights_stayed': 5
-            },
-            {
-                'username': 'club_member_02',
-                'email': 'club02@test.com',
-                'password': 'password',
-                'membership_level': 'Club Member',
-                'lifetime_points': 40000,
-                'points': 8000,
-                'nights_stayed': 8
-            },
-            
+            {'username': 'club_member_01', 'email': 'club01@test.com', 'password': 'testuser123', 'target_nights': 5, 'target_lifetime_points': 25000},
+            {'username': 'club_member_02', 'email': 'club02@test.com', 'password': 'testuser123', 'target_nights': 8, 'target_lifetime_points': 40000},
             # Silver Elite (50,000-99,999 lifetime points)
-            {
-                'username': 'silver_elite_01',
-                'email': 'silver01@test.com',
-                'password': 'password',
-                'membership_level': 'Silver Elite',
-                'lifetime_points': 60000,
-                'points': 12000,
-                'nights_stayed': 12
-            },
-            {
-                'username': 'silver_elite_02',
-                'email': 'silver02@test.com',
-                'password': 'password',
-                'membership_level': 'Silver Elite',
-                'lifetime_points': 85000,
-                'points': 15000,
-                'nights_stayed': 15
-            },
-            
+            {'username': 'silver_elite_01', 'email': 'silver01@test.com', 'password': 'testuser123', 'target_nights': 12, 'target_lifetime_points': 60000},
+            {'username': 'silver_elite_02', 'email': 'silver02@test.com', 'password': 'testuser123', 'target_nights': 15, 'target_lifetime_points': 85000},
             # Gold Elite (100,000-499,999 lifetime points)
-            {
-                'username': 'gold_elite_01',
-                'email': 'gold01@test.com',
-                'password': 'password',
-                'membership_level': 'Gold Elite',
-                'lifetime_points': 150000,
-                'points': 30000,
-                'nights_stayed': 25
-            },
-            {
-                'username': 'gold_elite_02',
-                'email': 'gold02@test.com',
-                'password': 'password',
-                'membership_level': 'Gold Elite',
-                'lifetime_points': 350000,
-                'points': 60000,
-                'nights_stayed': 35
-            },
-            
+            {'username': 'gold_elite_01', 'email': 'gold01@test.com', 'password': 'testuser123', 'target_nights': 25, 'target_lifetime_points': 150000},
+            {'username': 'gold_elite_02', 'email': 'gold02@test.com', 'password': 'testuser123', 'target_nights': 35, 'target_lifetime_points': 350000},
             # Diamond Elite (500,000-999,999 lifetime points)
-            {
-                'username': 'diamond_elite_01',
-                'email': 'diamond01@test.com',
-                'password': 'password',
-                'membership_level': 'Diamond Elite',
-                'lifetime_points': 650000,
-                'points': 100000,
-                'nights_stayed': 75
-            },
-            {
-                'username': 'diamond_elite_02',
-                'email': 'diamond02@test.com',
-                'password': 'password',
-                'membership_level': 'Diamond Elite',
-                'lifetime_points': 850000,
-                'points': 150000,
-                'nights_stayed': 85
-            },
-            
+            {'username': 'diamond_elite_01', 'email': 'diamond01@test.com', 'password': 'testuser123', 'target_nights': 75, 'target_lifetime_points': 650000},
+            {'username': 'diamond_elite_02', 'email': 'diamond02@test.com', 'password': 'testuser123', 'target_nights': 85, 'target_lifetime_points': 850000},
             # Platinum Elite (1,000,000+ lifetime points)
-            {
-                'username': 'platinum_elite_01',
-                'email': 'platinum01@test.com',
-                'password': 'password',
-                'membership_level': 'Platinum Elite',
-                'lifetime_points': 1200000,
-                'points': 200000,
-                'nights_stayed': 220
-            },
-            {
-                'username': 'platinum_elite_02',
-                'email': 'platinum02@test.com',
-                'password': 'password',
-                'membership_level': 'Platinum Elite',
-                'lifetime_points': 2500000,
-                'points': 400000,
-                'nights_stayed': 300
-            },
+            {'username': 'platinum_elite_01', 'email': 'platinum01@test.com', 'password': 'testuser123', 'target_nights': 220, 'target_lifetime_points': 1200000},
+            {'username': 'platinum_elite_02', 'email': 'platinum02@test.com', 'password': 'testuser123', 'target_nights': 300, 'target_lifetime_points': 2500000},
         ]
         
         created_users = []
-        for user_data in test_users:
+        today = date.today()
+        
+        # Helper function to create a completed booking
+        def create_completed_booking(user, room_type, check_in, check_out, rooms_count=1):
+            """Create a completed booking with proper billing and points calculation"""
+            nights = (check_out - check_in).days
+            if nights <= 0:
+                nights = 1  # Ensure at least 1 night
+            
+            # Calculate billing
+            base_rate = float(room_type.price_per_night)
+            subtotal = base_rate * nights * rooms_count
+            taxes = subtotal * 0.10
+            fees = subtotal * 0.05
+            total_cost = subtotal + taxes + fees
+            
+            # Calculate points based on user's tier multiplier
+            # Formula: 1 dollar = 10 base points, then multiply by tier multiplier
+            per_night_total = base_rate * 1.15  # Room rate with taxes/fees equivalent
+            base_points_per_night = int(per_night_total * 10)  # 10 points per $1
+            multiplier = user.get_points_multiplier()
+            points_per_night = int(base_points_per_night * multiplier)
+            points_earned = points_per_night * nights * rooms_count
+            
+            # Create booking (completed stay)
+            booking = Booking(
+                user_id=user.id,
+                roomtype_id=room_type.id,
+                check_in=check_in,
+                check_out=check_out,
+                rooms_count=rooms_count,
+                status='CONFIRMED',
+                base_rate=base_rate,
+                subtotal=subtotal,
+                taxes=taxes,
+                fees=fees,
+                total_cost=total_cost,
+                points_earned=points_earned,
+                payment_method='pay_now',
+                created_at=datetime.combine(check_in, datetime.min.time()) - timedelta(days=random.randint(1, 7))
+            )
+            db.session.add(booking)
+            db.session.flush()
+            
+            # Update user stats (points and nights)
+            user.points += points_earned
+            user.lifetime_points += points_earned
+            user.nights_stayed += nights * rooms_count  # Count nights for all rooms
+            
+            # Create points transaction
+            transaction = PointsTransaction(
+                user_id=user.id,
+                booking_id=booking.id,
+                points=points_earned,
+                transaction_type='EARNED',
+                description=f'Stay at {room_type.hotel.name} - {nights} night(s)',
+                created_at=booking.created_at
+            )
+            db.session.add(transaction)
+            
+            return booking
+        
+        # Create users and their booking history
+        for user_config in test_users_config:
+            # Create user with initial Club Member status
             user = User(
-                username=user_data['username'],
-                email=user_data['email'],
-                password_hash=generate_password_hash(user_data['password']),
-                membership_level=user_data['membership_level'],
-                lifetime_points=user_data['lifetime_points'],
-                points=user_data['points'],
-                nights_stayed=user_data['nights_stayed']
+                username=user_config['username'],
+                email=user_config['email'],
+                password_hash=generate_password_hash(user_config['password']),
+                membership_level='Club Member'  # Will be upgraded based on points/nights
             )
             db.session.add(user)
+            db.session.flush()
             created_users.append(user)
+            
+            # Create booking history to reach target stats
+            target_nights = user_config['target_nights']
+            target_points = user_config['target_lifetime_points']
+            current_nights = 0
+            current_points = 0
+            
+            # Get available room types (prefer mid-range to high-end for better points)
+            all_room_types = RoomType.query.join(Hotel).all()
+            
+            while current_nights < target_nights or current_points < target_points:
+                # Select a random room type
+                room_type = random.choice(all_room_types)
+                
+                # Random stay duration (1-7 nights, occasionally longer)
+                nights = random.randint(1, 7) if random.random() > 0.1 else random.randint(8, 14)
+                
+                # Create past booking dates
+                # Spread bookings over the past 2 years
+                days_ago = random.randint(30, 730)  # 1 month to 2 years ago
+                check_out = today - timedelta(days=random.randint(1, days_ago))
+                check_in = check_out - timedelta(days=nights)
+                
+                # Random number of rooms (1-2)
+                rooms_count = random.randint(1, 2)
+                
+                # Create booking
+                booking = create_completed_booking(user, room_type, check_in, check_out, rooms_count)
+                
+                # Update current stats
+                nights_this_booking = nights * rooms_count
+                current_nights += nights_this_booking
+                current_points += booking.points_earned
+                
+                # Recalculate tier after each booking
+                user.calculate_tier()
+            
+            # Some users may write reviews for their bookings
+            user_bookings = Booking.query.filter_by(user_id=user.id).all()
+            for booking in random.sample(user_bookings, min(len(user_bookings), random.randint(2, len(user_bookings) // 2))):
+                # 50% chance to write a review for each selected booking
+                if random.random() > 0.5:
+                    rev = Review(
+                        user_id=user.id,
+                        hotel_id=booking.room_type.hotel.id,
+                        booking_id=booking.id,
+                        rating=random.randint(3, 5),
+                        comment=random.choice([
+                            "Great stay! Highly recommend.",
+                            "Excellent service and comfortable rooms.",
+                            "Beautiful hotel with amazing amenities.",
+                            "Perfect location and friendly staff.",
+                            "Wonderful experience, will come back!",
+                            "Nice hotel, good value for money.",
+                            "Impressive facilities and great breakfast."
+                        ])
+                    )
+                    db.session.add(rev)
         
         db.session.commit()
-        print(f"  Created {len(created_users)} test users covering all 5 membership tiers")
-        print("  Club Member: club01@test.com, club02@test.com (password: password)")
-        print("  Silver Elite: silver01@test.com, silver02@test.com (password: password)")
-        print("  Gold Elite: gold01@test.com, gold02@test.com (password: password)")
-        print("  Diamond Elite: diamond01@test.com, diamond02@test.com (password: password)")
-        print("  Platinum Elite: platinum01@test.com, platinum02@test.com (password: password)")
+        print(f"  Created {len(created_users)} test users with booking history")
+        print("  Club Member: club01@test.com, club02@test.com (password: testuser123)")
+        print("  Silver Elite: silver01@test.com, silver02@test.com (password: testuser123)")
+        print("  Gold Elite: gold01@test.com, gold02@test.com (password: testuser123)")
+        print("  Diamond Elite: diamond01@test.com, diamond02@test.com (password: testuser123)")
+        print("  Platinum Elite: platinum01@test.com, platinum02@test.com (password: testuser123)")
+        print("  All users have completed booking history with automatically calculated points and nights")
         
         # Add multiple reviews for each hotel (without booking_id for seed data)
         print("Adding sample reviews...")
