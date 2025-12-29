@@ -166,6 +166,16 @@
         color: var(--accent-color);
         font-size: 1.2rem;
     }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
 </style>
 
 <div class="auth-page">
@@ -200,7 +210,9 @@
                     <p class="text-muted small">Access your account to continue</p>
                 </div>
                 
-                <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+                <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm" novalidate>
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="mb-2 position-relative">
                         <label for="email" class="form-label fw-bold small text-uppercase text-muted mb-1">Email Address</label>
                         <i class="bi bi-envelope form-icon" aria-hidden="true"></i>
@@ -210,6 +222,7 @@
                                name="email" 
                                placeholder="Enter your email"
                                required
+                               maxlength="255"
                                autocomplete="email"
                                value="{{ email or '' }}"
                                style="border-radius: 10px;">
@@ -224,6 +237,7 @@
                                name="password" 
                                placeholder="Enter your password"
                                required
+                               maxlength="128"
                                autocomplete="current-password"
                                style="border-radius: 10px;">
                     </div>
@@ -248,5 +262,37 @@
     </div>
 </div>
 
+{% endblock %}
 
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    
+    // Setup field validation
+    setupFieldValidation(emailInput, validateEmail, 'Email');
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const emailResult = validateEmail(emailInput.value);
+        
+        if (!emailResult.valid) {
+            e.preventDefault();
+            showValidationError(emailInput, emailResult.message);
+            emailInput.focus();
+            return false;
+        }
+        
+        if (!passwordInput.value || passwordInput.value.trim() === '') {
+            e.preventDefault();
+            showValidationError(passwordInput, 'Password is required');
+            passwordInput.focus();
+            return false;
+        }
+    });
+});
+</script>
 {% endblock %}

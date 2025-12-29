@@ -13,6 +13,12 @@ roomtype_amenity = db.Table('roomtype_amenity',
     db.Column('amenity_id', db.Integer, db.ForeignKey('amenity.id'), primary_key=True)
 )
 
+# Association Table for Many-to-Many: Staff User <-> Hotel
+staff_hotel = db.Table('staff_hotel',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('hotel_id', db.Integer, db.ForeignKey('hotel.id'), primary_key=True)
+)
+
 class Brand(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
@@ -27,6 +33,12 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Role: customer (default), staff, admin
+    role = db.Column(db.String(20), default='customer', nullable=False)
+    
+    # Staff-Hotel relationship (many-to-many)
+    assigned_hotels = db.relationship('Hotel', secondary=staff_hotel, backref='staff_members', lazy='dynamic')
     
     # Loyalty System
     points = db.Column(db.Integer, default=0)  # Current redeemable points
@@ -497,6 +509,20 @@ class UserEvent(db.Model):
     
     user = db.relationship('User', backref='events', lazy=True)
 
+class FavoriteHotel(db.Model):
+    """Track user's favorite hotels"""
+    __tablename__ = 'favorite_hotel'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Ensure unique combination of user and hotel
+    __table_args__ = (db.UniqueConstraint('user_id', 'hotel_id', name='unique_user_hotel_favorite'),)
+    
+    user = db.relationship('User', backref='favorite_hotels', lazy=True)
+    hotel = db.relationship('Hotel', backref='favorited_by', lazy=True)
+
 class PaymentMethod(db.Model):
     """Store user payment methods (Cards)"""
     id = db.Column(db.Integer, primary_key=True)
@@ -513,3 +539,17 @@ class PaymentMethod(db.Model):
     # For this demo, we mock it. DO NOT store full card numbers in production.
     
     user = db.relationship('User', backref='payment_methods', lazy=True)
+
+class ContactMessage(db.Model):
+    """Store contact form messages from customers"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    subject = db.Column(db.String(50), nullable=False)  # reservation, service, feedback, other
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
+    
+    # Optional: link to user if they're logged in
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user = db.relationship('User', backref='contact_messages', lazy=True)

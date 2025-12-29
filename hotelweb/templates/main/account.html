@@ -38,11 +38,11 @@
 </div>
 
 <div class="account-nav">
-    <a href="#" class="nav-tab active" data-tab="overview" onclick="return switchTab('overview', event);">Overview</a>
-    <a href="#" class="nav-tab" data-tab="rewards" onclick="return switchTab('rewards', event);">Rewards Wallet</a>
-    <a href="#" class="nav-tab" data-tab="activity" onclick="return switchTab('activity', event);">Account Activity</a>
-    <a href="#" class="nav-tab" data-tab="settings" onclick="return switchTab('settings', event);">Settings</a>
-    <a href="#" class="nav-tab" data-tab="benefits" onclick="return switchTab('benefits', event);">Member Benefits</a>
+    <a href="#overview" class="nav-tab active" data-tab="overview" onclick="return switchTab('overview', event);">Overview</a>
+    <a href="#rewards" class="nav-tab" data-tab="rewards" onclick="return switchTab('rewards', event);">Rewards Wallet</a>
+    <a href="#activity" class="nav-tab" data-tab="activity" onclick="return switchTab('activity', event);">Account Activity</a>
+    <a href="#settings" class="nav-tab" data-tab="settings" onclick="return switchTab('settings', event);">Settings</a>
+    <a href="#benefits" class="nav-tab" data-tab="benefits" onclick="return switchTab('benefits', event);">Member Benefits</a>
 </div>
 
 <div class="account-container">
@@ -69,12 +69,14 @@
                         </div>
                         {% endif %}
                     </div>
-                    <p class="mb-3" style="color: #6b7280; font-size: 0.9rem;">
-                        Here's your status tracker
-                    </p>
-                    <div class="status-tracker-toggle">
-                        <button class="toggle-btn active" id="nights-toggle" onclick="switchTracker('nights')">By nights</button>
-                        <button class="toggle-btn" id="points-toggle" onclick="switchTracker('points')">By points</button>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p class="mb-0" style="color: #6b7280; font-size: 0.9rem;">
+                            Here's your status tracker
+                        </p>
+                        <div class="status-tracker-toggle">
+                            <button class="toggle-btn active" id="nights-toggle" onclick="switchTracker('nights')">By nights</button>
+                            <button class="toggle-btn" id="points-toggle" onclick="switchTracker('points')">By points</button>
+                        </div>
             </div>
 
                     <!-- Nights Tracker (Default) -->
@@ -93,23 +95,23 @@
                             <div class="progress-marker {% if current_user.nights_stayed >= 0 %}active{% endif %}" style="left: {{ nights_marker_0_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ nights_marker_10_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
                                 <div class="progress-marker-label">10</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ nights_marker_20_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #A07A0D; border-color: #A07A0D;"></div>
+                                <div class="progress-marker-dot" style="background: #705200; border-color: #705200;"></div>
                                 <div class="progress-marker-label">20</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: {{ nights_marker_70_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
                                 <div class="progress-marker-label">70</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: {{ nights_marker_200_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
                                 <div class="progress-marker-label">200</div>
-                </div>
+                    </div>
                     </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: {{ nights_progress_pct }}%; background: {{ nights_bar_color }};"></div>
@@ -159,23 +161,23 @@
                             <div class="progress-marker {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: {{ points_marker_0_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
                                 <div class="progress-marker-label">0</div>
-                            </div>
+                </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: {{ points_marker_50k_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
                                 <div class="progress-marker-label">50K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: {{ points_marker_100k_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #A07A0D; border-color: #A07A0D;"></div>
+                                <div class="progress-marker-dot" style="background: #705200; border-color: #705200;"></div>
                                 <div class="progress-marker-label">100K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: {{ points_marker_500k_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
                                 <div class="progress-marker-label">500K</div>
-                            </div>
+                    </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: {{ points_marker_1m_pct }}%;">
                                 <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
                                 <div class="progress-marker-label">1M</div>
-                            </div>
+                    </div>
                     </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: {{ points_total_progress_pct }}%; background: {{ points_bar_color }};"></div>
@@ -255,9 +257,9 @@
             <div class="card-header">
                 <h3 class="card-title">Milestone Rewards</h3>
             </div>
-            <div class="rewards-list">
+            <div class="rewards-list collapsible-list" data-default-show="5">
                 {% for reward in milestone_rewards %}
-                <div class="reward-item">
+                <div class="reward-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
@@ -299,6 +301,14 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if milestone_rewards|length > 5 %}
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="milestone-rewards-list">
+                    <span class="show-more-text">Show More ({{ milestone_rewards|length - 5 }} more)</span>
+                    <span class="show-less-text" style="display: none;">Show Less</span>
+                </button>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 
@@ -308,10 +318,11 @@
                 <h3 class="card-title">Free Nights and Booking Rewards</h3>
                 </div>
             {% if points_bookings or breakfast_voucher_bookings %}
-            <div class="rewards-list">
+            {% set total_bookings_count = (points_bookings|length + breakfast_voucher_bookings|length) %}
+            <div class="rewards-list collapsible-list" data-default-show="5">
                 <!-- Bookings Paid with Points -->
                 {% for booking in points_bookings %}
-                <div class="reward-item">
+                <div class="reward-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
@@ -337,7 +348,8 @@
                 
                 <!-- Bookings with Breakfast Voucher -->
                 {% for booking in breakfast_voucher_bookings %}
-                <div class="reward-item">
+                {% set display_index = points_bookings|length + loop.index %}
+                <div class="reward-item collapsible-item" {% if display_index > 5 %}style="display: none;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
@@ -364,6 +376,14 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if total_bookings_count > 5 %}
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="free-nights-list">
+                    <span class="show-more-text">Show More ({{ total_bookings_count - 5 }} more)</span>
+                    <span class="show-less-text" style="display: none;">Show Less</span>
+                </button>
+            </div>
+            {% endif %}
             {% else %}
             <div class="text-center py-5">
                 <i class="bi bi-wallet2" style="font-size: 3rem; color: #d1d5db;"></i>
@@ -412,9 +432,9 @@
                 </div>
         </div>
             {% if all_transactions %}
-            <div>
+            <div class="collapsible-list" data-default-show="5">
                 {% for transaction in all_transactions %}
-                <div class="activity-item" {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
+                <div class="activity-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %} {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ transaction.description }}</strong>
@@ -435,10 +455,18 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if all_transactions|length > 5 %}
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="points-history-list">
+                    <span class="show-more-text">Show More ({{ all_transactions|length - 5 }} more)</span>
+                    <span class="show-less-text" style="display: none;">Show Less</span>
+                </button>
+            </div>
+            {% endif %}
             {% else %}
             <p class="text-muted text-center py-4">No points transactions yet.</p>
             {% endif %}
-    </div>
+        </div>
 
     </div>
 
@@ -447,58 +475,58 @@
         <div class="card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3 class="card-title mb-0">Profile Information</h3>
-            <button class="btn-edit" onclick="toggleEdit()">Edit Profile</button>
+            <button class="btn-edit" onclick="toggleEdit()" aria-label="Edit profile information">Edit Profile</button>
         </div>
 
-        <form id="profileForm" action="{{ url_for('main.update_profile') }}" method="POST">
+        <form id="profileForm" action="{{ url_for('main.update_profile') }}" method="POST" onsubmit="event.preventDefault(); updateProfile();">
             <div class="profile-grid">
                 <div class="profile-field">
-                    <label class="profile-label">Username</label>
+                    <label for="edit-username" class="profile-label">Username</label>
                     <span class="profile-value" id="view-username">{{ current_user.username }}</span>
                     <input type="text" class="profile-input" id="edit-username" name="username"
-                        value="{{ current_user.username }}" style="display: none;">
+                        value="{{ current_user.username }}" style="display: none;" aria-label="Username">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Email</label>
+                    <label for="edit-email" class="profile-label">Email</label>
                     <span class="profile-value" id="view-email">{{ current_user.email }}</span>
                     <input type="email" class="profile-input" id="edit-email" name="email"
-                        value="{{ current_user.email }}" style="display: none;">
+                        value="{{ current_user.email }}" style="display: none;" aria-label="Email address">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Phone</label>
+                    <label for="edit-phone" class="profile-label">Phone</label>
                     <span class="profile-value" id="view-phone">{{ current_user.phone or 'Not provided' }}</span>
                     <input type="tel" class="profile-input" id="edit-phone" name="phone"
-                        value="{{ current_user.phone or '' }}" style="display: none;">
+                        value="{{ current_user.phone or '' }}" style="display: none;" aria-label="Phone number">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Birthday</label>
+                    <label for="edit-birthday" class="profile-label">Birthday</label>
                         <span class="profile-value" id="view-birthday">{{ current_user.birthday.strftime('%B %d, %Y') if current_user.birthday else 'Not provided' }}</span>
                     <input type="date" class="profile-input" id="edit-birthday" name="birthday"
-                            value="{{ current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '' }}" style="display: none;">
+                            value="{{ current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '' }}" style="display: none;" aria-label="Birthday">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Address</label>
+                    <label for="edit-address" class="profile-label">Address</label>
                     <span class="profile-value" id="view-address">{{ current_user.address or 'Not provided' }}</span>
                     <input type="text" class="profile-input" id="edit-address" name="address"
-                        value="{{ current_user.address or '' }}" style="display: none;">
+                        value="{{ current_user.address or '' }}" style="display: none;" aria-label="Street address">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">City</label>
+                    <label for="edit-city" class="profile-label">City</label>
                     <span class="profile-value" id="view-city">{{ current_user.city or 'Not provided' }}</span>
                     <input type="text" class="profile-input" id="edit-city" name="city"
-                        value="{{ current_user.city or '' }}" style="display: none;">
+                        value="{{ current_user.city or '' }}" style="display: none;" aria-label="City">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Country</label>
+                    <label for="edit-country" class="profile-label">Country</label>
                     <span class="profile-value" id="view-country">{{ current_user.country or 'Not provided' }}</span>
                     <input type="text" class="profile-input" id="edit-country" name="country"
-                        value="{{ current_user.country or '' }}" style="display: none;">
+                        value="{{ current_user.country or '' }}" style="display: none;" aria-label="Country">
                 </div>
                 <div class="profile-field">
-                    <label class="profile-label">Postal Code</label>
+                    <label for="edit-postal" class="profile-label">Postal Code</label>
                     <span class="profile-value" id="view-postal">{{ current_user.postal_code or 'Not provided' }}</span>
                     <input type="text" class="profile-input" id="edit-postal" name="postal_code"
-                        value="{{ current_user.postal_code or '' }}" style="display: none;">
+                        value="{{ current_user.postal_code or '' }}" style="display: none;" aria-label="Postal code">
                 </div>
             </div>
 
@@ -511,94 +539,118 @@
 
     <!-- Payment Methods Section -->
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Payment Methods</h3>
-            <button id="add-card-btn" class="btn-edit" onclick="toggleAddCard()">
-                <i class="bi bi-plus-lg"></i> Add Card
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="card-title mb-0">Payment Methods</h3>
+            <button id="add-card-btn" class="btn-edit" onclick="toggleAddCard()" aria-label="Add new payment card">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Card
             </button>
-        </div>
-        <div class="card-body">
-            {% if payment_methods %}
-            <div class="payment-methods-list">
-                {% for card in payment_methods %}
-                <div class="payment-card-item d-flex justify-content-between align-items-center p-3 mb-3 border rounded">
+</div>
+
+        {% if payment_methods %}
+        <div class="payment-methods-list">
+            {% for card in payment_methods %}
+            <div class="profile-field mb-3 pb-3" style="border-bottom: 1px solid #e5e7eb;">
+                <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-3">
                         <div class="card-icon">
                             {% if card.card_type == 'Visa' %}
-                            <i class="bi bi-credit-card-2-front text-primary fs-3"></i>
+                            <i class="bi bi-credit-card-2-front text-primary fs-4"></i>
                             {% elif card.card_type == 'Mastercard' %}
-                            <i class="bi bi-credit-card-2-back text-danger fs-3"></i>
+                            <i class="bi bi-credit-card-2-back text-danger fs-4"></i>
+                            {% elif card.card_type == 'Amex' %}
+                            <i class="bi bi-credit-card text-info fs-4"></i>
+                            {% elif card.card_type == 'Discover' %}
+                            <i class="bi bi-credit-card text-warning fs-4"></i>
                             {% else %}
-                            <i class="bi bi-credit-card text-secondary fs-3"></i>
+                            <i class="bi bi-credit-card text-secondary fs-4"></i>
                             {% endif %}
                         </div>
                         <div>
-                            <h6 class="mb-0">{{ card.card_type }} ending in {{ card.last4 }}</h6>
-                            <small class="text-muted">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</small>
-                            {% if card.is_default %}
-                            <span class="badge bg-primary ms-2">Default</span>
-                            {% endif %}
+                            <div class="profile-value mb-1 d-flex align-items-center gap-2">
+                                <span>**** {{ card.last4 }}</span>
+                                {% if card.card_type == 'Visa' %}
+                                <span class="badge" style="background-color: #1a1f71; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">VISA</span>
+                                {% elif card.card_type == 'Mastercard' %}
+                                <span class="badge" style="background-color: #eb001b; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">MASTERCARD</span>
+                                {% elif card.card_type == 'Amex' %}
+                                <span class="badge" style="background-color: #006fcf; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">AMEX</span>
+                                {% elif card.card_type == 'Discover' %}
+                                <span class="badge" style="background-color: #ff6000; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">DISCOVER</span>
+                                {% else %}
+                                <span class="badge" style="background-color: #6b7280; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">{{ card.card_type }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="profile-label mb-0">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</div>
                         </div>
                     </div>
-                    <div>
-                        {% if not card.is_default %}
-                        <form action="{{ url_for('main.set_default_card', card_id=card.id) }}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-link text-decoration-none">Set Default</button>
-                        </form>
+                    <div class="d-flex gap-2 align-items-center">
+                        {% if card.is_default %}
+                        <span class="badge default-badge" data-card-id="{{ card.id }}" data-csrf-token="{{ csrf_token() }}" style="background-color: #1e3a8a; color: white; padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 600;">Default</span>
+                        {% else %}
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 set-default-btn" 
+                                data-card-id="{{ card.id }}" 
+                                data-csrf-token="{{ csrf_token() }}"
+                                style="color: #1e3a8a; font-weight: 500;"
+                                aria-label="Set {{ card.card_type }} card ending in {{ card.last4 }} as default">Set Default</button>
                         {% endif %}
-                        <form action="{{ url_for('main.delete_card', card_id=card.id) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this card?');">
-                            <button type="submit" class="btn btn-sm btn-link text-danger text-decoration-none">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 delete-card-btn" 
+                                data-card-id="{{ card.id }}" 
+                                data-csrf-token="{{ csrf_token() }}"
+                                data-card-type="{{ card.card_type }}"
+                                data-card-last4="{{ card.last4 }}"
+                                style="color: #dc2626;"
+                                aria-label="Delete {{ card.card_type }} card ending in {{ card.last4 }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-            {% else %}
-            <p class="text-muted text-center py-3">No payment methods saved.</p>
-            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No payment methods saved.</p>
+        {% endif %}
 
-            <!-- Add Card Form (Hidden by default) -->
-            <div id="add-card-form" class="mt-4" style="display: none;">
-                <h5 class="mb-3">Add New Card</h5>
-                <form action="{{ url_for('main.add_card') }}" method="post">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Cardholder Name</label>
-                            <input type="text" name="cardholder_name" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Card Number</label>
-                            <input type="text" name="card_number" class="form-control" placeholder="**** **** **** ****" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Expiration Month</label>
-                            <select name="expiry_month" class="form-select" required>
-                                {% for i in range(1, 13) %}
-                                <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Expiration Year</label>
-                            <select name="expiry_year" class="form-select" required>
-                                {% for i in range(2025, 2036) %}
-                                <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">CVV</label>
-                            <input type="text" name="cvv" class="form-control" placeholder="***" required>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <button type="submit" class="btn btn-primary">Save Card</button>
-                            <button type="button" class="btn btn-secondary ms-2" onclick="cancelAddCard()">Cancel</button>
-                        </div>
+        <!-- Add Card Form (Hidden by default) -->
+        <div id="add-card-form" style="display: none;">
+            <form action="{{ url_for('main.add_card') }}" method="post" id="addCardForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label for="cardholder_name" class="profile-label">Cardholder Name</label>
+                        <input type="text" name="cardholder_name" id="cardholder_name" class="profile-input" required maxlength="100" autocomplete="cc-name" aria-label="Cardholder name">
                     </div>
-                </form>
-            </div>
+                    <div class="profile-field">
+                        <label for="card_number" class="profile-label">Card Number</label>
+                        <input type="text" name="card_number" id="card_number" class="profile-input" placeholder="**** **** **** ****" required maxlength="19" autocomplete="cc-number" inputmode="numeric" aria-label="Card number">
+                    </div>
+                    <div class="profile-field">
+                        <label for="expiry_month" class="profile-label">Expiration Month</label>
+                        <select name="expiry_month" id="expiry_month" class="profile-input" required autocomplete="cc-exp-month" aria-label="Expiration month">
+                            {% for i in range(1, 13) %}
+                            <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="profile-field">
+                        <label for="expiry_year" class="profile-label">Expiration Year</label>
+                        <select name="expiry_year" id="expiry_year" class="profile-input" required autocomplete="cc-exp-year" aria-label="Expiration year">
+                            {% for i in range(2025, 2036) %}
+                            <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="profile-field">
+                        <label for="cvv" class="profile-label">CVV <span class="text-muted small">(not stored)</span></label>
+                        <input type="text" name="cvv" id="cvv" class="profile-input" placeholder="***" required maxlength="4" autocomplete="cc-csc" inputmode="numeric" aria-label="CVV security code">
+                        <small class="text-muted">CVV is not stored for security</small>
+                    </div>
+                </div>
+                <div class="form-actions mt-3">
+                    <button type="submit" class="btn-edit">Save Card</button>
+                    <button type="button" class="btn-secondary" onclick="cancelAddCard()">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -659,7 +711,7 @@
                             <th style="color: white;">Benefit</th>
                             <th class="tier-header tier-club-member" style="background: #0B254E; color: white;">Club Member</th>
                             <th class="tier-header tier-silver-elite" style="background: #606060; color: white;">Silver Elite</th>
-                            <th class="tier-header tier-gold-elite" style="background: #A07A0D; color: white;">Gold Elite</th>
+                            <th class="tier-header tier-gold-elite" style="background: #705200; color: white;">Gold Elite</th>
                             <th class="tier-header tier-diamond-elite" style="background: #37283F; color: white;">Diamond Elite</th>
                             <th class="tier-header tier-platinum-elite" style="background: #253639; color: white;">Platinum Elite</th>
                         </tr>
@@ -675,27 +727,27 @@
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Earn Points on Stays</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Club Member-only Rates</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Mobile Check-in</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Late Checkout</td>
@@ -708,26 +760,26 @@
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Welcome Amenity</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Support</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Check-in</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Room Upgrade</td>
@@ -741,25 +793,25 @@
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Breakfast</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Executive Lounge Access</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Dedicated Concierge</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Personal Travel Advisor</td>
@@ -767,7 +819,7 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Exclusive Events Access</td>
@@ -775,7 +827,7 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Spa Services</td>
@@ -783,7 +835,7 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
                             <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Airport Transfers</td>
@@ -791,7 +843,7 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>✓</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -833,9 +885,9 @@
             <div style="background: {% if tier_retention.meets_requirement %}#d1fae5{% else %}#fee2e2{% endif %}; padding: 1rem; border-radius: 8px; border-left: 4px solid {% if tier_retention.meets_requirement %}#10b981{% else %}#ef4444{% endif %}; margin-bottom: 1rem;">
                 <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
                     {% if tier_retention.meets_requirement %}
-                    ✓ Retention Requirement Met
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> Retention Requirement Met
                     {% else %}
-                    ⚠ Retention Requirement Not Met
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Retention Requirement Not Met
                     {% endif %}
                 </p>
                 <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">
@@ -883,6 +935,26 @@
         console.log("SwitchTab called for:", tabName);
         if (event) event.preventDefault();
         
+        // Update URL hash to maintain tab state on refresh (without scrolling)
+        if (tabName && tabName !== 'overview') {
+            // Use history API to update hash without scrolling
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState(null, null, '#' + tabName);
+            } else {
+                // Fallback for older browsers
+                var scrollY = window.scrollY;
+                window.location.hash = tabName;
+                window.scrollTo(0, scrollY);
+            }
+        } else {
+            // Remove hash for overview (default tab)
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.pathname + window.location.search);
+            } else {
+                window.location.hash = '';
+            }
+        }
+        
         // 1. Hide all tab contents
         var contents = document.getElementsByClassName('tab-content');
         for (var i = 0; i < contents.length; i++) {
@@ -911,10 +983,24 @@
         } else if (event && event.target) {
              // Fallback if currentTarget is not available
              event.target.classList.add('active');
+        } else {
+            // Find tab by data-tab attribute
+            var navTab = document.querySelector('.nav-tab[data-tab="' + tabName + '"]');
+            if (navTab) {
+                navTab.classList.add('active');
+            }
         }
         
         return false;
     }
+    
+    // On page load, check hash and switch to appropriate tab
+    document.addEventListener('DOMContentLoaded', function() {
+        var hash = window.location.hash.substring(1);
+        if (hash && ['overview', 'rewards', 'activity', 'settings', 'benefits'].includes(hash)) {
+            switchTab(hash);
+        }
+    });
 </script>
 <script src="{{ url_for('static', filename='js/account.js') }}?v=3"></script>
 {% endblock %}

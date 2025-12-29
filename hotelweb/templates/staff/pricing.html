@@ -1,0 +1,68 @@
+{% extends "staff/base.html" %}
+{% from "staff/_search_pagination.html" import render_search_pagination %}
+
+{% block title %}Pricing - Staff Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Pricing & Inventory Management</h1>
+
+{% set hotel_options = [] %}
+{% for h in hotels %}
+    {% set _ = hotel_options.append((h.id|string, h.name)) %}
+{% endfor %}
+{% set filters = {
+    'hotel': {
+        'label': 'Hotel',
+        'options': hotel_options
+    }
+} %}
+{{ render_search_pagination(search, filters, pagination, 'staff.pricing') }}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Hotel</th>
+                <th>Room Type</th>
+                <th>Price/Night</th>
+                <th>Inventory</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in room_types %}
+            <tr>
+                <td>{{ room.hotel.name }}</td>
+                <td>{{ room.name }}</td>
+                <td>
+                    <input type="number" class="form-control form-control-sm price-input" 
+                           data-room-id="{{ room.id }}" 
+                           value="{{ "%.2f"|format(room.price_per_night) }}" 
+                           step="0.01" min="0.01" style="width: 120px;">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm inventory-input" 
+                           data-room-id="{{ room.id }}" 
+                           value="{{ room.inventory }}" 
+                           min="1" style="width: 100px;">
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary update-pricing-btn" data-room-id="{{ room.id }}">Update</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not room_types %}
+<div class="alert alert-info">
+    <p>No room types found.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/staff_pricing.js') }}"></script>
+{% endblock %}
+

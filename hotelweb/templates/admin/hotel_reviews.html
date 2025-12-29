@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+{% from "admin/_search_pagination.html" import render_search_box, render_pagination %}
+
+{% block title %}Hotel Reviews - Admin Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Reviews for {{ hotel.name }}</h1>
+
+<a href="{{ url_for('admin.hotels') }}" class="btn btn-secondary mb-3">Back to Hotels</a>
+
+{% set filters = {
+    'rating': {
+        'label': 'Rating',
+        'options': [(1, '1 Star'), (2, '2 Stars'), (3, '3 Stars'), (4, '4 Stars'), (5, '5 Stars')]
+    }
+} %}
+{{ render_search_box(search, filters, 'admin.hotel_reviews', hotel_id=hotel.id) }}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td>{{ review.id }}</td>
+                <td>{{ review.author.username }}</td>
+                <td>
+                    {% for i in range(5) %}
+                        <i class="bi bi-star{{ '-fill' if i < review.rating else '' }}" style="color: {% if i < review.rating %}gold{% else %}#ddd{% endif %};"></i>
+                    {% endfor %}
+                </td>
+                <td>{{ review.comment[:100] }}{% if review.comment|length > 100 %}...{% endif %}</td>
+                <td>{{ review.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger delete-review-btn" data-review-id="{{ review.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{{ render_pagination(search, filters, pagination, 'admin.hotel_reviews', hotel_id=hotel.id) }}
+
+{% if not reviews %}
+<div class="alert alert-info">
+    <p>No reviews found.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin_reviews.js') }}"></script>
+{% endblock %}
+

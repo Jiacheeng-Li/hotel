@@ -89,10 +89,10 @@
             </div>
 
             <!-- Points Earned -->
-            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px; background: #fef3c7;" id="points-earned-card">
+            <div class="card points-display-card mb-4" id="points-earned-card">
                 <div class="card-body p-4 text-center">
                     <div class="text-muted mb-1">You will earn</div>
-                    <div class="fw-bold" style="font-size: 1.5rem; color: #d97706;" id="points-earned-display">{{ "{:,}".format(points_earned) }} points</div>
+                    <div class="points-display-number-large" id="points-earned-display">{{ "{:,}".format(points_earned) }} points</div>
                     <div class="text-muted small">after your stay</div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold mb-3">Use Breakfast Voucher</label>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="no_voucher" value="" checked onchange="updateBreakfastPrice()">
+                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="no_voucher" value="" checked>
                                 <label class="form-check-label" for="no_voucher">
                                     <strong>Pay for Breakfast</strong>
                                     <div class="small text-muted">${{ "{:,.2f}".format(breakfast_price_per_room * rooms_needed) }} total</div>
@@ -125,7 +125,7 @@
                             {% for voucher in available_breakfast_vouchers %}
                             {% if voucher.available >= rooms_needed %}
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="voucher_{{ voucher.id }}" value="{{ voucher.id }}" onchange="updateBreakfastPrice()">
+                                <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="voucher_{{ voucher.id }}" value="{{ voucher.id }}">
                                 <label class="form-check-label" for="voucher_{{ voucher.id }}">
                                     <strong>Use Breakfast Voucher</strong>
                                     <div class="small text-muted">
@@ -142,42 +142,73 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold mb-3">Payment Method</label>
                             
-                            <!-- Saved Cards -->
-                            {% if payment_methods %}
-                            <div class="mb-3">
-                                <h6 class="text-muted small text-uppercase fw-bold mb-2">Saved Cards</h6>
-                                {% for card in payment_methods %}
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="card_{{ card.id }}" value="card_{{ card.id }}" {% if card.is_default %}checked{% endif %} onchange="updatePaymentMethod()">
-                                    <label class="form-check-label d-flex align-items-center" for="card_{{ card.id }}">
-                                        <span class="me-2">
-                                            {% if card.card_type == 'Visa' %}
-                                            <i class="bi bi-credit-card-2-front text-primary"></i>
-                                            {% elif card.card_type == 'Mastercard' %}
-                                            <i class="bi bi-credit-card-2-back text-danger"></i>
-                                            {% else %}
-                                            <i class="bi bi-credit-card text-secondary"></i>
-                                            {% endif %}
-                                        </span>
-                                        <strong>{{ card.card_type }} ending in {{ card.last4 }}</strong>
-                                        <small class="text-muted ms-2">(Expires {{ card.expiry_month }}/{{ card.expiry_year }})</small>
-                                    </label>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <hr class="my-3">
-                            {% endif %}
-                            
-                            <!-- Standard Options -->
+                            <!-- Pay by Card Option -->
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="payment_method" id="pay_now" value="pay_now" {% if not payment_methods %}checked{% endif %} onchange="updatePaymentMethod()">
-                                <label class="form-check-label" for="pay_now">
-                                    <strong>New Card</strong>
-                                    <div class="small text-muted">Enter card details</div>
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay_by_card" value="pay_by_card" {% if payment_methods and payment_methods|selectattr('is_default')|list %}checked{% elif not payment_methods %}checked{% endif %} onchange="toggleCardOptions()">
+                                <label class="form-check-label" for="pay_by_card">
+                                    <strong>Pay by Card</strong>
+                                    <div class="small text-muted">Credit or debit card</div>
                                 </label>
                             </div>
+                            
+                            <!-- Card Options (Hidden by default, shown when Pay by Card is selected) -->
+                            <div id="card_options_container" class="ms-4 mt-3 mb-3" style="display: {% if payment_methods and payment_methods|selectattr('is_default')|list %}block{% elif not payment_methods %}block{% else %}none{% endif %};">
+                                {% if payment_methods %}
+                                <div class="payment-methods-list">
+                                    {% for card in payment_methods %}
+                                    <div class="payment-card-option {% if card.is_default %}selected{% endif %}" onclick="selectCard('card_{{ card.id }}')" role="button" tabindex="0" aria-label="Select {{ card.card_type }} card ending in {{ card.last4 }}" onkeypress="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCard('card_{{ card.id }}');}">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="card-icon">
+                                                {% if card.card_type == 'Visa' %}
+                                                <i class="bi bi-credit-card-2-front text-primary" aria-hidden="true"></i>
+                                                {% elif card.card_type == 'Mastercard' %}
+                                                <i class="bi bi-credit-card-2-back text-danger" aria-hidden="true"></i>
+                                                {% elif card.card_type == 'Amex' %}
+                                                <i class="bi bi-credit-card text-info" aria-hidden="true"></i>
+                                                {% elif card.card_type == 'Discover' %}
+                                                <i class="bi bi-credit-card text-warning" aria-hidden="true"></i>
+                                                {% else %}
+                                                <i class="bi bi-credit-card text-secondary" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <div class="profile-value mb-0 d-flex align-items-center gap-2">
+                                                    <span>**** {{ card.last4 }}</span>
+                                                    {% if card.card_type == 'Visa' %}
+                                                    <span class="card-brand-badge">VISA</span>
+                                                    {% elif card.card_type == 'Mastercard' %}
+                                                    <span class="card-brand-badge card-brand-mastercard">MASTERCARD</span>
+                                                    {% elif card.card_type == 'Amex' %}
+                                                    <span class="card-brand-badge card-brand-amex">AMEX</span>
+                                                    {% elif card.card_type == 'Discover' %}
+                                                    <span class="card-brand-badge card-brand-discover">DISCOVER</span>
+                                                    {% else %}
+                                                    <span class="card-brand-badge card-brand-other">{{ card.card_type }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="profile-label mb-0" style="font-size: 0.75rem;">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</div>
+                                            </div>
+                                        </div>
+                                        <label for="card_{{ card.id }}" class="visually-hidden">Select {{ card.card_type }} card ending in {{ card.last4 }}</label>
+                                        <input class="payment-card-radio-hidden" type="radio" name="card_selection" id="card_{{ card.id }}" value="card_{{ card.id }}" {% if card.is_default %}checked{% endif %} onchange="updatePaymentMethod()" aria-label="Select {{ card.card_type }} card ending in {{ card.last4 }}">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <p class="text-muted mb-2">No saved payment methods.</p>
+                                    <a href="{{ url_for('main.account') }}#settings" class="text-decoration-none" style="color: #1e3a8a;">Add a card in Settings</a>
+                                </div>
+                                {% endif %}
+                                <!-- Warning message when no card is selected -->
+                                <div id="no_card_selected_warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
+                                    <small>Please select a payment card or choose another payment method.</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Other Payment Options -->
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="payment_method" id="pay_at_hotel" value="pay_at_hotel" onchange="updatePaymentMethod()">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay_at_hotel" value="pay_at_hotel" onchange="toggleCardOptions()">
                                 <label class="form-check-label" for="pay_at_hotel">
                                     <strong>Pay at Hotel</strong>
                                     <div class="small text-muted">Pay upon arrival</div>
@@ -185,7 +216,7 @@
                             </div>
                             {% if current_user.is_authenticated and current_user.points >= 100 %}
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="payment_method" id="pay_with_points" value="points" onchange="updatePaymentMethod()">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay_with_points" value="points" onchange="toggleCardOptions()">
                                 <label class="form-check-label" for="pay_with_points">
                                     <strong>Pay with Points</strong>
                                     <div class="small text-muted">100 points = $1.00</div>
@@ -209,6 +240,10 @@
                                     <strong id="remaining_balance">$0.00</strong>
                                 </div>
                             </div>
+                            <!-- Warning message when points are insufficient -->
+                            <div id="insufficient_points_warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
+                                <small>Insufficient points. Please choose another payment method or add more points.</small>
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -219,7 +254,7 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-lg fw-bold text-white" style="background: #1e3a8a; border: none;">
+                            <button type="submit" id="complete_booking_btn" class="btn btn-lg fw-bold text-white" style="background: #1e3a8a; border: none;">
                                 Complete Booking
                             </button>
                             <a href="{{ url_for('main.roomtype_detail', roomtype_id=roomtype.id, check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d'), rooms_needed=rooms_needed) }}" class="btn btn-outline-secondary">

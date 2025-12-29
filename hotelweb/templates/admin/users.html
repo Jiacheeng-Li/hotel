@@ -1,0 +1,67 @@
+{% extends "admin/base.html" %}
+{% from "admin/_search_pagination.html" import render_search_box, render_pagination %}
+
+{% block title %}Users - Admin Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">User Management</h1>
+
+<a href="{{ url_for('admin.create_user') }}" class="btn btn-primary mb-3">Create Staff/Admin</a>
+
+{% set filters = {
+    'role': {
+        'label': 'Role',
+        'options': [('customer', 'Customer'), ('staff', 'Staff'), ('admin', 'Admin')]
+    }
+} %}
+{{ render_search_box(search, filters, 'admin.users') }}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <span class="badge bg-{{ 'primary' if user.role == 'customer' else 'warning' if user.role == 'staff' else 'danger' }}">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    {% if user.role == 'customer' %}
+                    <button class="btn btn-sm btn-success grant-points-btn" data-user-id="{{ user.id }}" data-username="{{ user.username }}">Grant Points</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{{ render_pagination(search, filters, pagination, 'admin.users') }}
+
+{% if not users %}
+<div class="alert alert-info">
+    <p>No users found.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
+{% endblock %}
+

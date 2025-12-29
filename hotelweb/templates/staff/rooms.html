@@ -1,0 +1,67 @@
+{% extends "staff/base.html" %}
+{% from "staff/_search_pagination.html" import render_search_pagination %}
+
+{% block title %}Rooms - Staff Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Room Management</h1>
+
+<a href="{{ url_for('staff.add_room') }}" class="btn btn-primary mb-3">Add New Room</a>
+
+{% set hotel_options = [] %}
+{% for h in hotels %}
+    {% set _ = hotel_options.append((h.id|string, h.name)) %}
+{% endfor %}
+{% set filters = {
+    'hotel': {
+        'label': 'Hotel',
+        'options': hotel_options
+    }
+} %}
+{{ render_search_pagination(search, filters, pagination, 'staff.rooms') }}
+
+{% if rooms_by_hotel %}
+{% for hotel in hotels %}
+{% if rooms_by_hotel.get(hotel.id) %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>{{ hotel.name }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Capacity</th>
+                        <th>Price/Night</th>
+                        <th>Inventory</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms_by_hotel[hotel.id] %}
+                    <tr>
+                        <td>{{ room.name }}</td>
+                        <td>{{ room.capacity }}</td>
+                        <td>${{ "%.2f"|format(room.price_per_night) }}</td>
+                        <td>{{ room.inventory }}</td>
+                        <td>
+                            <a href="{{ url_for('staff.edit_room', room_id=room.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% else %}
+<div class="alert alert-info">
+    <p>No rooms found.</p>
+</div>
+{% endif %}
+{% endblock %}
+

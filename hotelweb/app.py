@@ -18,6 +18,12 @@ def create_app(config_class=Config):
 
     from .main import bp as main_bp
     app.register_blueprint(main_bp)
+    
+    from .staff import bp as staff_bp
+    app.register_blueprint(staff_bp)
+    
+    from .admin import bp as admin_bp
+    app.register_blueprint(admin_bp)
 
     # Context processor to make brands available in all templates
     @app.context_processor
@@ -25,6 +31,12 @@ def create_app(config_class=Config):
         from .models import Brand
         brands = Brand.query.all()
         return dict(brands=brands)
+    
+    # Context processor to make CSRF token function available in all templates
+    @app.context_processor
+    def inject_csrf():
+        from .utils.security import generate_csrf_token
+        return dict(csrf_token=generate_csrf_token)
 
     # Setup Logging
     configure_logging(app)

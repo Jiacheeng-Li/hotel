@@ -1,10 +1,17 @@
 from datetime import datetime, date
-from flask import render_template, request, url_for, redirect, flash, abort, session
+from flask import render_template, request, url_for, redirect, flash, abort, session, jsonify
 from flask_login import login_required, current_user
 from ..extensions import db
-from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward, UserEvent, PaymentMethod
+from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward, UserEvent, PaymentMethod, FavoriteHotel, User, ContactMessage
 from . import bp
 from .services import search_available_roomtypes, sort_results
+
+def get_favorite_hotel_ids():
+    """Helper function to get list of favorited hotel IDs for current user"""
+    if not current_user.is_authenticated:
+        return []
+    favorites = FavoriteHotel.query.filter_by(user_id=current_user.id).all()
+    return [f.hotel_id for f in favorites]
 
 def award_points_for_completed_stays(user):
     """
@@ -199,7 +206,8 @@ def brands():
 @bp.route('/brand/<int:brand_id>')
 def brand_detail(brand_id):
     brand = Brand.query.get_or_404(brand_id)
-    return render_template('main/brand_detail.html', brand=brand)
+    favorite_hotel_ids = get_favorite_hotel_ids()
+    return render_template('main/brand_detail.html', brand=brand, favorite_hotel_ids=favorite_hotel_ids)
 
 @bp.route('/destinations')
 def destinations():
@@ -214,7 +222,8 @@ def destinations():
             'hotels': hotels,
             'image': hotels[0].image_url if hotels else ''
         })
-    return render_template('main/destinations.html', destinations=destinations_data)
+    favorite_hotel_ids = get_favorite_hotel_ids()
+    return render_template('main/destinations.html', destinations=destinations_data, favorite_hotel_ids=favorite_hotel_ids)
 
 @bp.route('/city/<city_name>')
 def city_hotels(city_name):
@@ -224,7 +233,8 @@ def city_hotels(city_name):
         flash(f'No hotels found in {city_name}.', 'warning')
         return redirect(url_for('main.destinations'))
     
-    return render_template('main/city_hotels.html', city=city_name, hotels=hotels)
+    favorite_hotel_ids = get_favorite_hotel_ids()
+    return render_template('main/city_hotels.html', city=city_name, hotels=hotels, favorite_hotel_ids=favorite_hotel_ids)
 
 @bp.route('/about')
 def about():
@@ -238,8 +248,41 @@ def sustainability():
 def careers():
     return render_template('main/careers.html')
 
-@bp.route('/contact')
+@bp.route('/contact', methods=['GET', 'POST'])
 def contact():
+    """Contact us page with form submission"""
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        subject = request.form.get('subject', '').strip()
+        message = request.form.get('message', '').strip()
+        
+        # Validation
+        if not name or not email or not subject or not message:
+            flash('All fields are required.', 'danger')
+            return render_template('main/contact.html')
+        
+        if subject not in ['reservation', 'service', 'feedback', 'other']:
+            flash('Invalid subject selected.', 'danger')
+            return render_template('main/contact.html')
+        
+        # Get user_id if logged in
+        user_id = current_user.id if current_user.is_authenticated else None
+        
+        # Create contact message
+        contact_msg = ContactMessage(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message,
+            user_id=user_id
+        )
+        db.session.add(contact_msg)
+        db.session.commit()
+        
+        flash('Thank you for your message! We will get back to you soon.', 'success')
+        return redirect(url_for('main.contact'))
+    
     return render_template('main/contact.html')
 
 @bp.route('/search')
@@ -327,6 +370,8 @@ def search():
     all_amenities = Amenity.query.all()
     all_brands = Brand.query.all()
     
+    favorite_hotel_ids = get_favorite_hotel_ids()
+    
     return render_template('main/search.html', 
                            results=final_results, 
                            city=city, 
@@ -340,6 +385,7 @@ def search():
                            all_brands=all_brands,
                            sort_by=sort_by,
                            today=date.today(),
+                           favorite_hotel_ids=favorite_hotel_ids,
                            cities=[c[0] for c in db.session.query(Hotel.city).distinct().order_by(Hotel.city).all()])
 
 @bp.route('/hotel/<int:hotel_id>')
@@ -460,11 +506,18 @@ def hotel_detail(hotel_id):
         for rt in hotel.room_types:
             room_availability[rt.id] = rt.get_available_rooms(check_in_date, check_out_date)
     
+    # Check if hotel is favorited by current user
+    is_favorited = False
+    if current_user.is_authenticated:
+        favorite = FavoriteHotel.query.filter_by(user_id=current_user.id, hotel_id=hotel_id).first()
+        is_favorited = favorite is not None
+    
     return render_template('main/hotel_detail.html', 
                           hotel=hotel, 
                           recommended_hotels=recommended_hotels,
                           breadcrumb=breadcrumb_context,
-                          room_availability=room_availability)
+                          room_availability=room_availability,
+                          is_favorited=is_favorited)
 
 @bp.route('/roomtype/<int:roomtype_id>')
 def roomtype_detail(roomtype_id):
@@ -610,16 +663,16 @@ def booking_confirm(roomtype_id):
     except (ValueError, TypeError):
         flash('Invalid date format.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
-    
+
     # Validation
     if check_in < date.today():
         flash('Cannot book dates in the past.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
-    
+
     if check_out <= check_in:
         flash('Check-out date must be after check-in date.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
-    
+
     # Calculate billing
     nights = (check_out - check_in).days
     base_rate = float(rt.price_per_night)
@@ -681,6 +734,9 @@ def booking_confirm(roomtype_id):
     points_per_night = int(base_points_per_night * multiplier)
     points_earned = points_per_night * nights * rooms_needed
     
+    # Query user's saved payment methods
+    payment_methods = PaymentMethod.query.filter_by(user_id=current_user.id).order_by(PaymentMethod.is_default.desc(), PaymentMethod.created_at.desc()).all()
+    
     return render_template('main/booking_confirm.html',
                          roomtype=rt,
                          check_in=check_in,
@@ -698,34 +754,44 @@ def booking_confirm(roomtype_id):
                          breakfast_voucher_used=breakfast_voucher_used,
                          final_total=final_total,
                          points_earned=points_earned,
-                         available_breakfast_vouchers=available_breakfast_vouchers)
+                         available_breakfast_vouchers=available_breakfast_vouchers,
+                         payment_methods=payment_methods)
 
 @bp.route('/book/<int:roomtype_id>', methods=['POST'])
 @login_required
 def book_room(roomtype_id):
     rt = RoomType.query.get_or_404(roomtype_id)
+    from ..utils.security import validate_date, validate_integer
+    from datetime import date
     
-    check_in_str = request.form.get('check_in')
-    check_out_str = request.form.get('check_out')
-    rooms_needed = int(request.form.get('rooms_needed', 1))
-    payment_method = request.form.get('payment_method', 'pay_now')
+    check_in_str = request.form.get('check_in', '').strip()
+    check_out_str = request.form.get('check_out', '').strip()
+    rooms_needed_raw = request.form.get('rooms_needed', '1')
+    payment_method = request.form.get('payment_method', 'pay_by_card')
+    card_selection = request.form.get('card_selection', 'new_card')  # For Pay by Card option
     breakfast_included = request.form.get('breakfast_included') == '1'
     breakfast_voucher_id = request.form.get('breakfast_voucher_id')  # ID of breakfast voucher to use
     
-    try:
-        check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
-        check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
-    except (ValueError, TypeError):
-        flash('Invalid date.', 'danger')
-        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
-
-    # Strict Validation
-    if check_in < date.today():
-        flash('Cannot book dates in the past.', 'danger')
+    # Validate dates
+    is_valid, error_msg, check_in = validate_date(check_in_str, 'Check-in date', min_date=date.today())
+    if not is_valid:
+        flash(error_msg or 'Invalid check-in date.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
     
+    is_valid, error_msg, check_out = validate_date(check_out_str, 'Check-out date', min_date=date.today())
+    if not is_valid:
+        flash(error_msg or 'Invalid check-out date.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    # Validate check-out is after check-in
     if check_out <= check_in:
         flash('Check-out date must be after check-in date.', 'danger')
+        return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
+    
+    # Validate rooms_needed
+    is_valid, error_msg, rooms_needed = validate_integer(rooms_needed_raw, 'Number of rooms', min_value=1, max_value=10, required=True)
+    if not is_valid:
+        flash(error_msg or 'Invalid number of rooms.', 'danger')
         return redirect(url_for('main.roomtype_detail', roomtype_id=roomtype_id))
     
     # Check room availability
@@ -784,24 +850,34 @@ def book_room(roomtype_id):
     points_used = 0
     points_transaction = None
     
-    # Handle saved card payment
-    if payment_method.startswith('card_'):
-        try:
-            card_id = int(payment_method.split('_')[1])
-            # Verify card belongs to user
-            card = PaymentMethod.query.filter_by(id=card_id, user_id=current_user.id).first()
-            if not card:
-                flash('Invalid payment method selected.', 'danger')
+    # Handle payment method
+    payment_method_display = 'Pay at Hotel'
+    payment_method_id = None
+    
+    if payment_method == 'pay_by_card':
+        # User selected Pay by Card, check card_selection
+        if card_selection and card_selection.startswith('card_'):
+            # Using saved card
+            try:
+                card_id = int(card_selection.split('_')[1])
+                # Verify card belongs to user
+                card = PaymentMethod.query.filter_by(id=card_id, user_id=current_user.id).first()
+                if not card:
+                    flash('Invalid payment method selected.', 'danger')
+                    return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
+                                          check_in=check_in_str, check_out=check_out_str, 
+                                          rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
+                # In a real app, process payment with stored token here
+                payment_method_display = f"Card ending in {card.last4}"
+                payment_method_id = card_id
+            except (ValueError, IndexError):
+                flash('Invalid payment method.', 'danger')
                 return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
                                       check_in=check_in_str, check_out=check_out_str, 
                                       rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
-            # In a real app, process payment with stored token here
-            payment_method = f"Card ending in {card.last4}"
-        except (ValueError, IndexError):
-            flash('Invalid payment method.', 'danger')
-            return redirect(url_for('main.booking_confirm', roomtype_id=roomtype_id, 
-                                  check_in=check_in_str, check_out=check_out_str, 
-                                  rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
+        else:
+            # New card (pay_now)
+            payment_method_display = 'New Card'
     elif payment_method == 'points':
         points_needed = int(final_total * 100)  # 100 points = $1
         if current_user.points < points_needed:
@@ -811,6 +887,7 @@ def book_room(roomtype_id):
                                   rooms_needed=rooms_needed, breakfast_included='1' if breakfast_included else '0'))
         points_used = points_needed
         current_user.points -= points_used
+        payment_method_display = f'Points ({points_used:,} points)'
         # Record points transaction (will add booking_id after booking is created)
         points_transaction = PointsTransaction(
             user_id=current_user.id,
@@ -844,7 +921,7 @@ def book_room(roomtype_id):
         breakfast_price_per_room=breakfast_price_per_room if breakfast_included and not breakfast_voucher_used_id else 0,
         breakfast_voucher_used=breakfast_voucher_used_id,
         points_used=points_used,
-        payment_method=payment_method,
+        payment_method=payment_method_display if payment_method != 'points' else 'points',
         user_id=current_user.id,
         roomtype_id=rt.id,
         check_in=check_in,
@@ -921,13 +998,20 @@ def my_stays():
         if existing_review:
             reviewed_booking_ids.add(booking.id)
     
+    # Get user's favorite hotels
+    favorite_hotels = []
+    if current_user.is_authenticated:
+        favorites = FavoriteHotel.query.filter_by(user_id=current_user.id).order_by(FavoriteHotel.created_at.desc()).all()
+        favorite_hotels = [fav.hotel for fav in favorites]
+    
     return render_template('main/my_stays.html', 
                          upcoming=upcoming,
                          current=current,
                          past=past,
                          cancelled=cancelled,
                          today=today,
-                         reviewed_booking_ids=reviewed_booking_ids)
+                         reviewed_booking_ids=reviewed_booking_ids,
+                         favorite_hotels=favorite_hotels)
 
 @bp.route('/booking/<int:booking_id>/review', methods=['GET', 'POST'])
 @login_required
@@ -950,26 +1034,30 @@ def write_review(booking_id):
     hotel = booking.room_type.hotel
     
     if request.method == 'POST':
-        rating = request.form.get('rating')
-        comment = request.form.get('comment', '').strip()
+        from ..utils.security import validate_rating, validate_comment
         
-        # Validation
-        if not rating:
-            flash('Please select a rating.', 'danger')
+        rating_raw = request.form.get('rating')
+        comment_raw = request.form.get('comment', '').strip()
+        
+        # Validate rating
+        is_valid, error_msg, rating = validate_rating(rating_raw)
+        if not is_valid:
+            flash(error_msg or 'Please select a valid rating.', 'danger')
             return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
         
-        try:
-            rating = int(rating)
-            if rating < 1 or rating > 5:
-                raise ValueError
-        except (ValueError, TypeError):
-            flash('Invalid rating. Please select a rating between 1 and 5.', 'danger')
-            return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
+        # Validate comment (optional but sanitize if provided)
+        comment = None
+        if comment_raw:
+            is_valid, error_msg, comment_clean = validate_comment(comment_raw, max_length=5000)
+            if not is_valid:
+                flash(error_msg or 'Invalid comment.', 'danger')
+                return render_template('main/write_review.html', booking=booking, hotel=hotel, existing_review=existing_review)
+            comment = comment_clean if comment_clean else None
         
         # Update existing review or create new one
         if existing_review:
             existing_review.rating = rating
-            existing_review.comment = comment if comment else None
+            existing_review.comment = comment
             db.session.commit()
             flash('Your review has been updated!', 'success')
         else:
@@ -979,7 +1067,7 @@ def write_review(booking_id):
                 hotel_id=hotel.id,
                 booking_id=booking_id,
                 rating=rating,
-                comment=comment if comment else None
+                comment=comment
             )
             db.session.add(review)
             db.session.commit()
@@ -1071,6 +1159,10 @@ def stay_again(booking_id):
 @login_required
 def account():
     """Enhanced account page with tier info and statistics"""
+    from datetime import datetime, date
+    from sqlalchemy import func
+    import random
+    
     # Check and process tier expiry (this will handle retention and downgrades)
     retention_status = current_user.check_tier_retention_status()
     db.session.commit()  # Commit any changes from retention check
@@ -1082,17 +1174,24 @@ def account():
     if tier_upgraded:
         flash(f'🎉 Congratulations! You\'ve been upgraded to {current_user.membership_level} status!', 'success')
     
-    from sqlalchemy import func
-    import random
-    
     # Generate member number if not exists
     if not current_user.member_number:
         current_user.member_number = f"{random.randint(10000000, 99999999)}"
         db.session.commit()
     
     # Calculate statistics
-    total_bookings = Booking.query.filter_by(user_id=current_user.id, status='CONFIRMED').count()
-    total_spent = db.session.query(func.sum(Booking.total_cost)).filter_by(user_id=current_user.id, status='CONFIRMED').scalar() or 0
+    # Only count completed bookings (check_out <= today) for stays and spending
+    today = date.today()
+    total_bookings = Booking.query.filter(
+        Booking.user_id == current_user.id,
+        Booking.status == 'CONFIRMED',
+        Booking.check_out <= today
+    ).count()
+    total_spent = db.session.query(func.sum(Booking.total_cost)).filter(
+        Booking.user_id == current_user.id,
+        Booking.status == 'CONFIRMED',
+        Booking.check_out <= today
+    ).scalar() or 0
     
     # All points transactions for Account Activity tab
     all_transactions = PointsTransaction.query.filter_by(user_id=current_user.id).order_by(PointsTransaction.created_at.desc()).all()
@@ -1124,13 +1223,15 @@ def account():
     ).order_by(MilestoneReward.created_at.desc()).all()
     
     # Calculate milestone progress for current year
-    from datetime import datetime
+    # Only count completed bookings (check_out <= today)
     current_year = datetime.now().year
     year_start = datetime(current_year, 1, 1).date()
-    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    today = date.today()
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED' and b.check_out <= today]
     year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
     
     # Milestone thresholds: 20, 30, 40, 50, 60, 70, 80, 90, 100
+    # First milestone is at 20 nights
     milestone_thresholds = [20, 30, 40, 50, 60, 70, 80, 90, 100]
     next_milestone_year = None
     for threshold in milestone_thresholds:
@@ -1142,14 +1243,15 @@ def account():
         nights_to_milestone_year = 0
         milestone_progress_percent = 100
     else:
+        # Find previous milestone (0 for first milestone at 20)
         prev_milestone = 0
         for threshold in milestone_thresholds:
             if threshold < next_milestone_year:
                 prev_milestone = threshold
         nights_to_milestone_year = next_milestone_year - year_nights
         range_size = next_milestone_year - prev_milestone
-        progress_in_range = year_nights - prev_milestone
-        milestone_progress_percent = min(100, int((progress_in_range / range_size) * 100))
+        progress_in_range = max(0, year_nights - prev_milestone)  # Ensure non-negative
+        milestone_progress_percent = min(100, int((progress_in_range / range_size) * 100)) if range_size > 0 else 0
     
     # Check for unclaimed milestone rewards
     unclaimed_milestones = []
@@ -1245,7 +1347,7 @@ def account():
     elif nights_stayed >= 70:
         nights_bar_color = '#37283F'  # Diamond
     elif nights_stayed >= 20:
-        nights_bar_color = '#A07A0D'  # Gold
+        nights_bar_color = '#705200'  # Gold
     elif nights_stayed >= 10:
         nights_bar_color = '#606060'  # Silver
     else:
@@ -1269,7 +1371,7 @@ def account():
     elif lifetime_points >= 500000:
         points_bar_color = '#37283F'  # Diamond
     elif lifetime_points >= 100000:
-        points_bar_color = '#A07A0D'  # Gold
+        points_bar_color = '#705200'  # Gold
     elif lifetime_points >= 50000:
         points_bar_color = '#606060'  # Silver
     else:
@@ -1290,6 +1392,12 @@ def account():
         range_size = current_threshold[1] - current_threshold[0]
         progress_in_range = current_user.lifetime_points - current_threshold[0]
         progress_percent = min(100, int((progress_in_range / range_size) * 100))
+    
+    # Payment methods - query user's saved payment methods
+    payment_methods = PaymentMethod.query.filter_by(user_id=current_user.id).order_by(PaymentMethod.is_default.desc(), PaymentMethod.created_at.desc()).all()
+    
+    # User events (Birthday, New Year)
+    user_events = UserEvent.query.filter_by(user_id=current_user.id).order_by(UserEvent.created_at.desc()).all()
     
     return render_template('main/account.html',
                          total_bookings=total_bookings,
@@ -1329,14 +1437,16 @@ def account():
                          nights_to_milestone_year=nights_to_milestone_year,
                          milestone_progress_percent=milestone_progress_percent,
                          current_year=current_year,
-                         unclaimed_milestones=unclaimed_milestones)
+                         unclaimed_milestones=unclaimed_milestones,
+                         payment_methods=payment_methods,
+                         user_events=user_events)
 
 @bp.route('/milestone-rewards/<int:milestone_nights>', methods=['GET', 'POST'])
 @login_required
 def claim_milestone_reward(milestone_nights):
     """Display milestone reward selection page or process reward claim"""
     from ..models import MilestoneReward
-    from datetime import datetime
+    from datetime import datetime, date
     
     # Validate milestone threshold
     valid_milestones = [20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -1345,10 +1455,12 @@ def claim_milestone_reward(milestone_nights):
         return redirect(url_for('main.account'))
     
     # Check if user has reached this milestone
+    # Only count completed bookings (check_out <= today)
     current_year = datetime.now().year
     year_start = datetime(current_year, 1, 1).date()
+    today = date.today()
     all_bookings = current_user.bookings
-    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED' and b.check_out <= today]
     year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
     
     if year_nights < milestone_nights:
@@ -1404,12 +1516,14 @@ def claim_milestone_reward(milestone_nights):
 @login_required
 def milestone_progress():
     """Display milestone rewards progress page with rules and claimed rewards"""
-    from datetime import datetime
+    from datetime import datetime, date
     
     current_year = datetime.now().year
     year_start = datetime(current_year, 1, 1).date()
+    today = date.today()
     all_bookings = current_user.bookings
-    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED']
+    # Only count completed bookings (check_out <= today)
+    year_bookings = [b for b in all_bookings if b.check_in >= year_start and b.status == 'CONFIRMED' and b.check_out <= today]
     year_nights = sum((b.check_out - b.check_in).days for b in year_bookings)
     
     # Milestone thresholds: 20, 30, 40, 50, 60, 70, 80, 90, 100
@@ -1468,23 +1582,131 @@ def milestone_progress():
 def update_profile():
     """Update user profile information"""
     from datetime import datetime
+    from ..utils.security import (
+        validate_username, validate_email, validate_phone,
+        validate_text_field, validate_postal_code, validate_date
+    )
     
-    current_user.username = request.form.get('username', current_user.username)
-    current_user.email = request.form.get('email', current_user.email)
-    current_user.phone = request.form.get('phone')
-    current_user.address = request.form.get('address')
-    current_user.city = request.form.get('city')
-    current_user.country = request.form.get('country')
-    current_user.postal_code = request.form.get('postal_code')
+    # Validate username
+    username_raw = request.form.get('username', '').strip()
+    if username_raw:
+        is_valid, error_msg = validate_username(username_raw)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid username.'}), 400
+            flash(error_msg or 'Invalid username.', 'danger')
+            return redirect(url_for('main.account'))
+        # Check if username is already taken by another user
+        existing_user = User.query.filter_by(username=username_raw).first()
+        if existing_user and existing_user.id != current_user.id:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': 'Username already taken.'}), 400
+            flash('Username already taken.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.username = username_raw
     
-    birthday_str = request.form.get('birthday')
+    # Validate email
+    email_raw = request.form.get('email', '').strip()
+    if email_raw:
+        is_valid, error_msg = validate_email(email_raw)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid email.'}), 400
+            flash(error_msg or 'Invalid email.', 'danger')
+            return redirect(url_for('main.account'))
+        # Check if email is already taken by another user
+        existing_user = User.query.filter_by(email=email_raw.lower()).first()
+        if existing_user and existing_user.id != current_user.id:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': 'Email already registered.'}), 400
+            flash('Email already registered.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.email = email_raw.lower()
+    
+    # Validate phone (optional)
+    phone_raw = request.form.get('phone', '').strip()
+    if phone_raw:
+        is_valid, error_msg, phone_clean = validate_phone(phone_raw)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid phone number.'}), 400
+            flash(error_msg or 'Invalid phone number.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.phone = phone_clean
+    
+    # Validate address fields (optional)
+    address_raw = request.form.get('address', '').strip()
+    if address_raw:
+        is_valid, error_msg, address_clean = validate_text_field(address_raw, 'Address', max_length=200)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid address.'}), 400
+            flash(error_msg or 'Invalid address.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.address = address_clean
+    
+    city_raw = request.form.get('city', '').strip()
+    if city_raw:
+        is_valid, error_msg, city_clean = validate_text_field(city_raw, 'City', max_length=100)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid city.'}), 400
+            flash(error_msg or 'Invalid city.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.city = city_clean
+    
+    country_raw = request.form.get('country', '').strip()
+    if country_raw:
+        is_valid, error_msg, country_clean = validate_text_field(country_raw, 'Country', max_length=100)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid country.'}), 400
+            flash(error_msg or 'Invalid country.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.country = country_clean
+    
+    # Validate postal code (optional)
+    postal_code_raw = request.form.get('postal_code', '').strip()
+    if postal_code_raw:
+        is_valid, error_msg, postal_clean = validate_postal_code(postal_code_raw)
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid postal code.'}), 400
+            flash(error_msg or 'Invalid postal code.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.postal_code = postal_clean
+    
+    # Validate birthday (optional)
+    birthday_str = request.form.get('birthday', '').strip()
     if birthday_str:
-        try:
-            current_user.birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date()
-        except ValueError:
-            pass
+        from datetime import date
+        is_valid, error_msg, birthday_date = validate_date(birthday_str, 'Birthday', max_date=date.today())
+        if not is_valid:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg or 'Invalid birthday.'}), 400
+            flash(error_msg or 'Invalid birthday.', 'danger')
+            return redirect(url_for('main.account'))
+        current_user.birthday = birthday_date
     
     db.session.commit()
+    
+    # Check if this is an AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True,
+            'message': 'Profile updated successfully!',
+            'user': {
+                'username': current_user.username,
+                'email': current_user.email,
+                'phone': current_user.phone or '',
+                'birthday': current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '',
+                'address': current_user.address or '',
+                'city': current_user.city or '',
+                'country': current_user.country or '',
+                'postal_code': current_user.postal_code or ''
+            }
+        })
+    
     flash('Profile updated successfully!', 'success')
     return redirect(url_for('main.account'))
 
@@ -1493,38 +1715,88 @@ def update_profile():
 @bp.route('/account/payment-method/add', methods=['POST'])
 @login_required
 def add_card():
-    cardholder_name = request.form.get('cardholder_name')
-    card_number = request.form.get('card_number')
-    expiry_month = request.form.get('expiry_month')
-    expiry_year = request.form.get('expiry_year')
-    cvv = request.form.get('cvv')
+    from ..utils.security import (
+        validate_csrf_token, validate_card_number, 
+        validate_expiry_date, validate_cvv, sanitize_card_input
+    )
     
+    # Check if this is an AJAX request
+    is_ajax = request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    
+    # CSRF Protection
+    csrf_token = request.form.get('csrf_token')
+    if not validate_csrf_token(csrf_token):
+        if is_ajax:
+            return jsonify({'success': False, 'message': 'Security validation failed. Please try again.'}), 400
+        flash('Security validation failed. Please try again.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Get form data
+    cardholder_name = request.form.get('cardholder_name', '').strip()
+    card_number = request.form.get('card_number', '').strip()
+    expiry_month = request.form.get('expiry_month', '').strip()
+    expiry_year = request.form.get('expiry_year', '').strip()
+    cvv = request.form.get('cvv', '').strip()
+    
+    # Validate all fields are present
     if not all([cardholder_name, card_number, expiry_month, expiry_year, cvv]):
+        if is_ajax:
+            return jsonify({'success': False, 'message': 'Please fill in all fields.'}), 400
         flash('Please fill in all fields.', 'danger')
         return redirect(url_for('main.account'))
     
-    # Simple validation (Mock)
-    if len(card_number) < 13:
-        flash('Invalid card number.', 'danger')
+    # Validate cardholder name
+    if len(cardholder_name) < 2 or len(cardholder_name) > 100:
+        if is_ajax:
+            return jsonify({'success': False, 'message': 'Cardholder name must be between 2 and 100 characters.'}), 400
+        flash('Cardholder name must be between 2 and 100 characters.', 'danger')
         return redirect(url_for('main.account'))
-        
-    # Determine card type (Mock)
-    if card_number.startswith('4'):
+    
+    # Sanitize and validate card number
+    card_number_clean = sanitize_card_input(card_number)
+    is_valid, error_msg = validate_card_number(card_number_clean)
+    if not is_valid:
+        if is_ajax:
+            return jsonify({'success': False, 'message': error_msg or 'Invalid card number.'}), 400
+        flash(error_msg or 'Invalid card number.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Validate expiry date
+    is_valid, error_msg = validate_expiry_date(expiry_month, expiry_year)
+    if not is_valid:
+        if is_ajax:
+            return jsonify({'success': False, 'message': error_msg or 'Invalid expiration date.'}), 400
+        flash(error_msg or 'Invalid expiration date.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Validate CVV (we don't store it, but validate format)
+    is_valid, error_msg = validate_cvv(cvv)
+    if not is_valid:
+        if is_ajax:
+            return jsonify({'success': False, 'message': error_msg or 'Invalid CVV.'}), 400
+        flash(error_msg or 'Invalid CVV.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Determine card type based on first digit (BIN - Bank Identification Number)
+    if card_number_clean.startswith('4'):
         card_type = 'Visa'
-    elif card_number.startswith('5'):
+    elif card_number_clean.startswith('5'):
         card_type = 'Mastercard'
-    elif card_number.startswith('3'):
+    elif card_number_clean.startswith('3'):
         card_type = 'Amex'
+    elif card_number_clean.startswith('6'):
+        card_type = 'Discover'
     else:
         card_type = 'Card'
-        
+    
     # Check if first card (make default)
     is_default = PaymentMethod.query.filter_by(user_id=current_user.id).count() == 0
     
+    # IMPORTANT: Only store last 4 digits, never full card number or CVV
     card = PaymentMethod(
         user_id=current_user.id,
         card_type=card_type,
-        last4=card_number[-4:],
+        last4=card_number_clean[-4:],  # Only store last 4 digits
         expiry_month=expiry_month,
         expiry_year=expiry_year,
         cardholder_name=cardholder_name,
@@ -1534,19 +1806,50 @@ def add_card():
     db.session.add(card)
     db.session.commit()
     
+    if is_ajax:
+        return jsonify({
+            'success': True,
+            'message': 'Payment method added successfully.',
+            'card': {
+                'id': card.id,
+                'card_type': card.card_type,
+                'last4': card.last4,
+                'expiry_month': card.expiry_month,
+                'expiry_year': card.expiry_year,
+                'is_default': card.is_default
+            }
+        })
+    
     flash('Payment method added successfully.', 'success')
     return redirect(url_for('main.account'))
 
 @bp.route('/account/payment-method/delete/<int:card_id>', methods=['POST'])
 @login_required
 def delete_card(card_id):
+    from ..utils.security import validate_csrf_token
+    
+    # CSRF Protection
+    csrf_token = request.form.get('csrf_token') or request.headers.get('X-CSRF-Token')
+    if not validate_csrf_token(csrf_token):
+        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Security validation failed. Please try again.'}), 400
+        flash('Security validation failed. Please try again.', 'danger')
+        return redirect(url_for('main.account'))
+    
     card = PaymentMethod.query.get_or_404(card_id)
     
+    # Ensure user owns this card
     if card.user_id != current_user.id:
+        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Unauthorized access.'}), 403
         abort(403)
         
     db.session.delete(card)
     db.session.commit()
+    
+    # Return JSON response for AJAX requests
+    if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': True, 'message': 'Payment method deleted successfully.'})
     
     flash('Payment method deleted.', 'success')
     return redirect(url_for('main.account'))
@@ -1554,9 +1857,22 @@ def delete_card(card_id):
 @bp.route('/account/payment-method/default/<int:card_id>', methods=['POST'])
 @login_required
 def set_default_card(card_id):
+    from ..utils.security import validate_csrf_token
+    
+    # CSRF Protection
+    csrf_token = request.form.get('csrf_token') or request.headers.get('X-CSRF-Token')
+    if not validate_csrf_token(csrf_token):
+        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Security validation failed. Please try again.'}), 400
+        flash('Security validation failed. Please try again.', 'danger')
+        return redirect(url_for('main.account'))
+    
     card = PaymentMethod.query.get_or_404(card_id)
     
+    # Ensure user owns this card
     if card.user_id != current_user.id:
+        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Unauthorized access.'}), 403
         abort(403)
         
     # Unset current default
@@ -1567,6 +1883,48 @@ def set_default_card(card_id):
     card.is_default = True
     db.session.commit()
     
+    # Return JSON response for AJAX requests
+    if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True, 
+            'message': 'Default payment method updated successfully.',
+            'card_id': card_id
+        })
+    
     flash('Default payment method updated.', 'success')
     return redirect(url_for('main.account'))
+
+@bp.route('/favorite/hotel/<int:hotel_id>', methods=['POST'])
+@login_required
+def toggle_favorite_hotel(hotel_id):
+    """Add or remove hotel from user's favorites"""
+    hotel = Hotel.query.get_or_404(hotel_id)
+    
+    # Check if already favorited
+    favorite = FavoriteHotel.query.filter_by(user_id=current_user.id, hotel_id=hotel_id).first()
+    
+    if favorite:
+        # Remove from favorites
+        db.session.delete(favorite)
+        db.session.commit()
+        is_favorited = False
+        message = f'{hotel.name} removed from favorites'
+    else:
+        # Add to favorites
+        favorite = FavoriteHotel(user_id=current_user.id, hotel_id=hotel_id)
+        db.session.add(favorite)
+        db.session.commit()
+        is_favorited = True
+        message = f'{hotel.name} added to favorites'
+    
+    # Return JSON response for AJAX requests
+    if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True,
+            'is_favorited': is_favorited,
+            'message': message
+        })
+    
+    flash(message, 'success')
+    return redirect(request.referrer or url_for('main.hotel_detail', hotel_id=hotel_id))
 

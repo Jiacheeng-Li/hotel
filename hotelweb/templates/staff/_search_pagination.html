@@ -1,0 +1,80 @@
+{% macro render_search_pagination(search, filters, pagination, endpoint) %}
+<div class="search-box mb-4">
+    <form method="GET" action="{{ url_for(endpoint) }}" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label for="search" class="form-label">Search</label>
+            <input type="text" class="form-control" id="search" name="search" 
+                   value="{{ search }}" placeholder="Search...">
+        </div>
+        {% if filters %}
+        {% for filter_name, filter_options in filters.items() %}
+        <div class="col-md-2">
+            <label for="{{ filter_name }}" class="form-label">{{ filter_options.label }}</label>
+            <select class="form-select" id="{{ filter_name }}" name="{{ filter_name }}">
+                <option value="">All</option>
+                {% for option_value, option_label in filter_options.options %}
+                <option value="{{ option_value }}" {% if request.args.get(filter_name) == option_value|string %}selected{% endif %}>
+                    {{ option_label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="col-md-auto">
+            <label class="form-label d-block" style="visibility: hidden;">Actions</label>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="{{ url_for(endpoint) }}" class="btn btn-secondary">Clear</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if pagination.pages > 1 %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for(endpoint, page=pagination.prev_num, search=search, city=request.args.get('city'), brand=request.args.get('brand'), hotel=request.args.get('hotel'), status=request.args.get('status')) }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for(endpoint, page=page_num, search=search, city=request.args.get('city'), brand=request.args.get('brand'), hotel=request.args.get('hotel'), status=request.args.get('status')) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for(endpoint, page=pagination.next_num, search=search, city=request.args.get('city'), brand=request.args.get('brand'), hotel=request.args.get('hotel'), status=request.args.get('status')) }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+<div class="text-center text-muted mt-2">
+    Showing {{ (pagination.page - 1) * pagination.per_page + 1 }} to {{ pagination.page * pagination.per_page if pagination.page * pagination.per_page < pagination.total else pagination.total }} of {{ pagination.total }} results
+</div>
+{% endif %}
+{% endmacro %}

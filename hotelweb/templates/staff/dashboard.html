@@ -1,0 +1,102 @@
+{% extends "staff/base.html" %}
+
+{% block title %}Dashboard - Staff Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Staff Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Assigned Hotels</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ hotels|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Pending Bookings</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ pending_bookings|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Recent Activity</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ recent_bookings|length }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Assigned Hotels</h5>
+                <a href="{{ url_for('staff.hotels') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if hotels %}
+                    <ul class="list-group list-group-flush">
+                        {% for hotel in hotels[:5] %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <a href="{{ url_for('staff.edit_hotel', hotel_id=hotel.id) }}" class="text-decoration-none" style="color: #1e293b;">
+                                {{ hotel.name }}
+                            </a>
+                            <span class="badge" style="background-color: #64748b; color: white;">{{ hotel.city }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if hotels|length > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('staff.hotels') }}" class="text-decoration-none">View all {{ hotels|length }} hotels →</a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted mb-0">No hotels assigned.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pending Bookings</h5>
+                <a href="{{ url_for('staff.bookings') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if pending_bookings %}
+                    <ul class="list-group list-group-flush">
+                        {% for booking in pending_bookings[:5] %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong style="color: #1e293b;">{{ booking.user.username }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ booking.room_type.hotel.name }}</small>
+                                    <br>
+                                    <small class="text-muted">Check-in: {{ booking.check_in.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <span class="badge bg-success">{{ booking.status }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if pending_bookings|length > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('staff.bookings') }}" class="text-decoration-none">View all {{ pending_bookings|length }} bookings →</a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted mb-0">No pending bookings.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "staff/base.html" %}
+{% from "staff/_search_pagination.html" import render_search_pagination %}
+
+{% block title %}Bookings - Staff Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Bookings</h1>
+
+{% set filters = {
+    'status': {
+        'label': 'Status',
+        'options': [('CONFIRMED', 'Confirmed'), ('CANCELLED', 'Cancelled')]
+    }
+} %}
+
+<div class="search-box mb-4">
+    <form method="GET" action="{{ url_for('staff.bookings') }}" class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label for="search" class="form-label">Search</label>
+            <input type="text" class="form-control" id="search" name="search" 
+                   value="{{ search }}" placeholder="Search...">
+        </div>
+        {% if filters %}
+        {% for filter_name, filter_options in filters.items() %}
+        <div class="col-md-3">
+            <label for="{{ filter_name }}" class="form-label">{{ filter_options.label }}</label>
+            <select class="form-select" id="{{ filter_name }}" name="{{ filter_name }}">
+                <option value="">All</option>
+                {% for option_value, option_label in filter_options.options %}
+                <option value="{{ option_value }}" {% if request.args.get(filter_name) == option_value|string %}selected{% endif %}>
+                    {{ option_label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('staff.bookings') }}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Guest</th>
+                <th>Hotel</th>
+                <th>Room Type</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>#{{ booking.id }}</td>
+                <td>{{ booking.user.username }}</td>
+                <td>{{ booking.room_type.hotel.name }}</td>
+                <td>{{ booking.room_type.name }}</td>
+                <td>{{ booking.check_in }}</td>
+                <td>{{ booking.check_out }}</td>
+                <td>
+                    <span class="badge bg-{{ 'success' if booking.status == 'CONFIRMED' else 'secondary' }}">
+                        {{ booking.status }}
+                    </span>
+                </td>
+                <td>${{ "%.2f"|format(booking.total_cost) }}</td>
+                <td>
+                    {% if booking.status == 'CONFIRMED' %}
+                    <button class="btn btn-sm btn-danger cancel-booking-btn" data-booking-id="{{ booking.id }}">Cancel</button>
+                    {% elif booking.status != 'CANCELLED' %}
+                    <button class="btn btn-sm btn-success confirm-booking-btn" data-booking-id="{{ booking.id }}">Confirm</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if pagination.pages > 1 %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('staff.bookings', page=pagination.prev_num, search=search, hotel=request.args.get('hotel'), status=request.args.get('status')) }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('staff.bookings', page=page_num, search=search, hotel=request.args.get('hotel'), status=request.args.get('status')) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('staff.bookings', page=pagination.next_num, search=search, hotel=request.args.get('hotel'), status=request.args.get('status')) }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+<div class="text-center text-muted mt-2">
+    Showing {{ (pagination.page - 1) * pagination.per_page + 1 }} to {{ pagination.page * pagination.per_page if pagination.page * pagination.per_page < pagination.total else pagination.total }} of {{ pagination.total }} results
+</div>
+{% endif %}
+
+{% if not bookings %}
+<div class="alert alert-info">
+    <p>No bookings found.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/staff_bookings.js') }}"></script>
+{% endblock %}
+

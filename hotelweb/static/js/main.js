@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Update flash messages container position based on navbar height
+    function updateFlashMessagesPosition() {
+        const navbar = document.querySelector('nav.navbar');
+        const flashContainer = document.getElementById('flash-messages-container');
+        if (navbar && flashContainer) {
+            const navbarHeight = navbar.offsetHeight;
+            flashContainer.style.top = navbarHeight + 'px';
+        }
+    }
+    
+    // Update position on load
+    updateFlashMessagesPosition();
+    
+    // Update position on window resize (in case navbar height changes)
+    window.addEventListener('resize', updateFlashMessagesPosition);
+    
     // Auto-dismiss alerts after 2 seconds
     const alerts = document.querySelectorAll('.alert.auto-dismiss');
     alerts.forEach(function(alert) {

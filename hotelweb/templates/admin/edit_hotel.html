@@ -1,0 +1,269 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Hotel: {{ hotel.name }} - Admin Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('admin.hotels') }}" class="btn btn-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Back to Hotels
+    </a>
+    <h1>Manage Hotel: {{ hotel.name }}</h1>
+</div>
+
+<!-- Hotel Information Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0">Hotel Information</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" id="hotelForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="update_hotel">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Hotel Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ hotel.name }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="breakfast_price" class="form-label">Breakfast Price (per room per stay)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="breakfast_price" name="breakfast_price" 
+                               value="{{ hotel.breakfast_price }}" step="0.01" min="0" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5">{{ hotel.description or '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="image_url" class="form-label">Image URL</label>
+                <input type="url" class="form-control" id="image_url" name="image_url" value="{{ hotel.image_url or '' }}">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Hotel Information</button>
+        </form>
+    </div>
+</div>
+
+<!-- Rooms Section -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Room Types</h3>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addRoomForm">
+            <i class="bi bi-plus-circle"></i> Add New Room
+        </button>
+    </div>
+    <div class="card-body">
+        <!-- Add Room Form (Collapsed by default) -->
+        <div class="collapse mb-4" id="addRoomForm">
+            <div class="card card-body bg-light">
+                <h5>Add New Room Type</h5>
+                <form method="POST" id="addRoomForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="action" value="add_room">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="room_name" class="form-label">Room Name</label>
+                            <input type="text" class="form-control" id="room_name" name="room_name" required>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <label for="capacity" class="form-label">Capacity</label>
+                            <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <label for="inventory" class="form-label">Inventory</label>
+                            <input type="number" class="form-control" id="inventory" name="inventory" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="price_per_night" class="form-label">Price per Night</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="price_per_night" name="price_per_night" 
+                                       step="0.01" min="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="room_image_url" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="room_image_url" name="room_image_url">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="room_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="room_description" name="room_description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Amenities</label>
+                        <div class="row">
+                            {% for amenity in all_amenities %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="amenities" 
+                                           value="{{ amenity.id }}" id="amenity_add_{{ amenity.id }}">
+                                    <label class="form-check-label" for="amenity_add_{{ amenity.id }}">
+                                        {{ amenity.name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Add Room</button>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#addRoomForm">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Rooms List -->
+        {% if room_types %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Room Name</th>
+                        <th>Capacity</th>
+                        <th>Price/Night</th>
+                        <th>Inventory</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in room_types %}
+                    <tr>
+                        <td>
+                            <strong>{{ room.name }}</strong>
+                            {% if room.description %}
+                            <br><small class="text-muted">{{ room.description[:50] }}{% if room.description|length > 50 %}...{% endif %}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ room.capacity }}</td>
+                        <td>${{ "%.2f"|format(room.price_per_night) }}</td>
+                        <td>{{ room.inventory }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#editRoom_{{ room.id }}"
+                                    onclick="loadRoomData({{ room.id }}, '{{ room.name|e }}', {{ room.capacity }}, {{ room.price_per_night }}, {{ room.inventory }}, '{{ room.description|e }}', '{{ room.image_url|e }}', [{% for amenity in room.amenities %}{{ amenity.id }}{% if not loop.last %},{% endif %}{% endfor %}])">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-room-btn" 
+                                    data-room-id="{{ room.id }}" 
+                                    data-room-name="{{ room.name|e }}">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" id="editRoom_{{ room.id }}">
+                        <td colspan="5">
+                            <div class="card card-body bg-light">
+                                <h6>Edit Room: {{ room.name }}</h6>
+                                <form method="POST" id="editRoomForm_{{ room.id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="action" value="update_room">
+                                    <input type="hidden" name="room_id" value="{{ room.id }}">
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="room_name_{{ room.id }}" class="form-label">Room Name</label>
+                                            <input type="text" class="form-control" id="room_name_{{ room.id }}" 
+                                                   name="room_name" required>
+                                        </div>
+                                        
+                                        <div class="col-md-3 mb-3">
+                                            <label for="capacity_{{ room.id }}" class="form-label">Capacity</label>
+                                            <input type="number" class="form-control" id="capacity_{{ room.id }}" 
+                                                   name="capacity" min="1" required>
+                                        </div>
+                                        
+                                        <div class="col-md-3 mb-3">
+                                            <label for="inventory_{{ room.id }}" class="form-label">Inventory</label>
+                                            <input type="number" class="form-control" id="inventory_{{ room.id }}" 
+                                                   name="inventory" min="1" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="price_per_night_{{ room.id }}" class="form-label">Price per Night</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" id="price_per_night_{{ room.id }}" 
+                                                       name="price_per_night" step="0.01" min="0.01" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label for="room_image_url_{{ room.id }}" class="form-label">Image URL</label>
+                                            <input type="url" class="form-control" id="room_image_url_{{ room.id }}" 
+                                                   name="room_image_url">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="room_description_{{ room.id }}" class="form-label">Description</label>
+                                        <textarea class="form-control" id="room_description_{{ room.id }}" 
+                                                  name="room_description" rows="3"></textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Amenities</label>
+                                        <div class="row">
+                                            {% for amenity in all_amenities %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="amenities" 
+                                                           value="{{ amenity.id }}" 
+                                                           id="amenity_{{ room.id }}_{{ amenity.id }}">
+                                                    <label class="form-check-label" for="amenity_{{ room.id }}_{{ amenity.id }}">
+                                                        {{ amenity.name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="button" class="btn btn-secondary" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#editRoom_{{ room.id }}">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <p>No room types found. Add your first room type above.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin_edit_hotel.js') }}"></script>
+{% endblock %}
+

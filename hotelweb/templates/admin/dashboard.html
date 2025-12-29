@@ -1,0 +1,112 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard - Admin Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Total Users</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Customers</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ total_customers }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Staff</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ total_staff }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3">Hotels</h5>
+                <h2 class="mb-0" style="color: #1e293b;">{{ total_hotels }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Users</h5>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_users %}
+                    <ul class="list-group list-group-flush">
+                        {% for user in recent_users[:5] %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <strong style="color: #1e293b;">{{ user.username }}</strong>
+                                <br>
+                                <small class="text-muted">{{ user.email }}</small>
+                            </div>
+                            <span class="badge" style="background-color: {% if user.role == 'customer' %}#0f172a{% elif user.role == 'staff' %}#d97706{% else %}#8b0000{% endif %}; color: white;">
+                                {{ user.role }}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if recent_users|length > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('admin.users') }}" class="text-decoration-none">View all {{ recent_users|length }} users →</a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted mb-0">No users found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Bookings</h5>
+                <span class="badge bg-secondary">{{ total_bookings }} total</span>
+            </div>
+            <div class="card-body">
+                {% if recent_bookings %}
+                    <ul class="list-group list-group-flush">
+                        {% for booking in recent_bookings[:5] %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <strong style="color: #1e293b;">#{{ booking.id }}</strong>
+                                <br>
+                                <small class="text-muted">{{ booking.user.username }}</small>
+                                <br>
+                                <small class="text-muted">{{ booking.room_type.hotel.name }}</small>
+                            </div>
+                            <strong style="color: #1e293b;">${{ "%.2f"|format(booking.total_cost) }}</strong>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if recent_bookings|length > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('admin.hotels') }}" class="text-decoration-none">View more bookings →</a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted mb-0">No bookings found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

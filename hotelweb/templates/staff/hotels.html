@@ -1,0 +1,55 @@
+{% extends "staff/base.html" %}
+{% from "staff/_search_pagination.html" import render_search_pagination %}
+
+{% block title %}Hotels - Staff Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Hotels</h1>
+
+{% set city_options = [] %}
+{% for c in cities %}
+    {% set _ = city_options.append((c, c)) %}
+{% endfor %}
+{% set brand_options = [] %}
+{% for b in brands %}
+    {% set _ = brand_options.append((b.id|string, b.name)) %}
+{% endfor %}
+{% set filters = {
+    'city': {
+        'label': 'City',
+        'options': city_options
+    },
+    'brand': {
+        'label': 'Brand',
+        'options': brand_options
+    }
+} if cities or brands else None %}
+{{ render_search_pagination(search, filters, pagination, 'staff.hotels') }}
+
+<div class="row">
+    {% for hotel in hotels %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            {% if hotel.image_url %}
+            <img src="{{ hotel.image_url }}" class="card-img-top" alt="{{ hotel.name }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ hotel.name }}</h5>
+                <p class="card-text text-muted">{{ hotel.city }}</p>
+                <p class="card-text"><small class="text-muted">Breakfast: ${{ "%.2f"|format(hotel.breakfast_price) }}</small></p>
+                <a href="{{ url_for('staff.edit_hotel', hotel_id=hotel.id) }}" class="btn btn-primary">
+                    <i class="bi bi-gear"></i> Manage Hotel
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not hotels %}
+<div class="alert alert-info">
+    <p>No hotels found.</p>
+</div>
+{% endif %}
+{% endblock %}
+

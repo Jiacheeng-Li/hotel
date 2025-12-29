@@ -1,0 +1,67 @@
+{% extends "admin/base.html" %}
+{% from "admin/_search_pagination.html" import render_search_box, render_pagination %}
+
+{% block title %}Hotels - Admin Portal{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">All Hotels</h1>
+
+{% set city_options = [] %}
+{% for c in cities %}
+    {% set _ = city_options.append((c, c)) %}
+{% endfor %}
+{% set brand_options = [] %}
+{% for b in brands %}
+    {% set _ = brand_options.append((b.id|string, b.name)) %}
+{% endfor %}
+{% set filters = {
+    'city': {
+        'label': 'City',
+        'options': city_options
+    },
+    'brand': {
+        'label': 'Brand',
+        'options': brand_options
+    }
+} %}
+{{ render_search_box(search, filters, 'admin.hotels') }}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>Brand</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hotel in hotels %}
+            <tr>
+                <td>{{ hotel.id }}</td>
+                <td>{{ hotel.name }}</td>
+                <td>{{ hotel.city }}</td>
+                <td>{{ hotel.brand.name if hotel.brand else 'N/A' }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_hotel', hotel_id=hotel.id) }}" class="btn btn-sm btn-primary me-2">
+                        <i class="bi bi-gear"></i> Manage
+                    </a>
+                    <a href="{{ url_for('admin.hotel_reviews', hotel_id=hotel.id) }}" class="btn btn-sm btn-secondary">Reviews</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{{ render_pagination(search, filters, pagination, 'admin.hotels') }}
+
+{% if not hotels %}
+<div class="alert alert-info">
+    <p>No hotels found.</p>
+</div>
+{% endif %}
+{% endblock %}
+

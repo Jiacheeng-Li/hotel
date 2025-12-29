@@ -12,3 +12,11 @@ function toggleRules() {
     }
 }
 
+// Initialize event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const rulesHeader = document.getElementById('rules-header');
+    if (rulesHeader) {
+        rulesHeader.addEventListener('click', toggleRules);
+    }
+});
+

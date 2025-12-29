@@ -428,7 +428,7 @@
                         {{ "{:,}".format(booking.points_used) }} points (${{ "%.2f"|format(booking.points_used / 100) }})
                     </div>
                 </td>
-                <td class="amount" style="color: #059669;">-${{ "%.2f"|format(booking.points_used / 100) }}</td>
+                <td class="amount cash-amount">-${{ "%.2f"|format(booking.points_used / 100) }}</td>
             </tr>
             {% endif %}
             <tr class="subtotal-row">

@@ -20,12 +20,14 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Premium Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
         <div class="container">
-            <a class="navbar-brand fs-3 fw-bold font-serif" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Logo"
+            <a class="navbar-brand fs-3 fw-bold font-serif" href="{{ url_for('main.index') }}" aria-label="Lumina Hospitality Home">
+                <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Lumina Hospitality Logo"
                     style="height: 40px; margin-right: 10px;">
                 <span class="text-warning">Lumina</span>
             </a>
@@ -47,8 +49,8 @@
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle btn btn-outline-light rounded-pill px-4 text-white" href="#"
-                            id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                            id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User account menu">
+                            <i class="bi bi-person-circle" aria-hidden="true"></i> {{ current_user.username }}
                             <span class="badge bg-warning text-dark ms-1">{{ current_user.points }} pts</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
@@ -72,25 +74,27 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
-    <div class="container mt-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0 auto-dismiss" role="alert" data-auto-dismiss="2000">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Flash Messages - Fixed below navbar -->
+    <div id="flash-messages-container" class="flash-messages-container">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0 auto-dismiss" role="alert" data-auto-dismiss="2000">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
         </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
     </div>
 
     <!-- Breadcrumb Navigation (if defined) -->
     {% block breadcrumb %}{% endblock %}
 
     <!-- Main Content -->
-    <main class="container py-4 flex-grow-1" role="main">
+    <main id="main-content" class="container py-4 flex-grow-1" role="main" tabindex="-1">
         {% block content %}{% endblock %}
     </main>
 
@@ -129,7 +133,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4 text-center">
-                    <h6 class="text-uppercase fw-bold mb-3">Quick Links</h6>
+                    <h6 class="footer-heading">Quick Links</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ url_for('main.about') }}"
                                 class="text-white-50 text-decoration-none hover-white">About Us</a></li>
@@ -139,7 +143,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4 text-center">
-                    <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
+                    <h6 class="footer-heading">Contact</h6>
                     <p class="small text-white-50 mb-2">info@luminahotels.com</p>
                     <p class="small text-white-50 mb-2">&copy; 2025 Lumina Hospitality.</p>
                     <p class="small text-white-50">All rights reserved.</p>
@@ -149,11 +153,11 @@
     </footer>
 
     {% if session.get('show_celebration_modal') %}
-    <div id="celebrationModal" class="celebration-modal show">
+    <div id="celebrationModal" class="celebration-modal show" data-clear-url="{{ url_for('main.clear_celebration') }}">
         <div class="celebration-content">
-            <button class="celebration-close" onclick="closeCelebrationModal()">&times;</button>
+            <button class="celebration-close" id="celebration-close-btn">&times;</button>
             <div class="celebration-icon">
-                {% if session['celebration_type'] == 'birthday' %}🎂{% else %}🎉{% endif %}
+                {% if session['celebration_type'] == 'birthday' %}<i class="bi bi-cake" aria-hidden="true"></i>{% else %}<i class="bi bi-calendar-event" aria-hidden="true"></i>{% endif %}
             </div>
             <h3 class="celebration-title">
                 {% if session['celebration_type'] == 'birthday' %}Happy Birthday!{% else %}Happy New Year!{% endif %}
@@ -165,13 +169,13 @@
                 <h4>You've received:</h4>
                 <p class="mb-0 fs-5">
                     {% if session['celebration_reward_type'] == 'points' %}
-                    ⭐ {{ session['celebration_reward_amount'] }} Bonus Points
+                    <i class="bi bi-star-fill" aria-hidden="true"></i> {{ session['celebration_reward_amount'] }} Bonus Points
                     {% else %}
-                    ☕ Free Breakfast Voucher
+                    <i class="bi bi-cup-hot-fill" aria-hidden="true"></i> Free Breakfast Voucher
                     {% endif %}
                 </p>
             </div>
-            <button class="celebration-btn" onclick="closeCelebrationModal()">Awesome!</button>
+            <button class="celebration-btn" id="celebration-btn">Awesome!</button>
             
             <!-- Confetti -->
             <div class="confetti" style="left: 10%; animation-delay: 0s; background-color: #f00;"></div>
@@ -185,13 +189,6 @@
             <div class="confetti" style="left: 90%; animation-delay: 2.2s; background-color: #80f;"></div>
         </div>
     </div>
-    <script>
-        function closeCelebrationModal() {
-            document.getElementById('celebrationModal').classList.remove('show');
-            // Use fetch to tell server to clear the session variable
-            fetch("{{ url_for('main.clear_celebration') }}", {method: 'POST'});
-        }
-    </script>
     {% endif %}
 
     <!-- Bootstrap JS -->
@@ -199,6 +196,7 @@
     <!-- Custom JS -->
     <!-- Auto-dismiss alerts and Active Nav Link Highlighter moved to main.js -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/celebration.js') }}"></script>
 
     {% block extra_scripts %}{% endblock %}
 </body>
