@@ -418,31 +418,62 @@ def seed():
         print("  Diamond Elite: diamond01@test.com, diamond02@test.com (password: password)")
         print("  Platinum Elite: platinum01@test.com, platinum02@test.com (password: password)")
         
-        # Add some reviews from different tier users (without booking_id for seed data)
+        # Add multiple reviews for each hotel (without booking_id for seed data)
         print("Adding sample reviews...")
         review_count = 0
+        
+        # Review comments pool with variety
+        review_comments = [
+            "Great stay! Highly recommend.",
+            "Excellent service and comfortable rooms.",
+            "Beautiful hotel with amazing amenities.",
+            "Perfect location and friendly staff.",
+            "Wonderful experience, will come back!",
+            "Nice hotel, good value for money.",
+            "Impressive facilities and great breakfast.",
+            "Clean rooms and professional service.",
+            "The view from my room was spectacular!",
+            "Very satisfied with my stay. Will definitely return.",
+            "Comfortable beds and quiet environment.",
+            "Great location, easy access to attractions.",
+            "The staff was very helpful and accommodating.",
+            "Modern facilities and well-maintained property.",
+            "Excellent breakfast buffet with many options.",
+            "Perfect for business travelers.",
+            "Family-friendly hotel with great amenities for kids.",
+            "The spa services were outstanding.",
+            "Rooms are spacious and well-appointed.",
+            "Outstanding customer service throughout my stay."
+        ]
+        
         for h in created_hotels:
-            if random.random() > 0.4: # 60% chance a hotel has a review
-                reviewer = random.choice(created_users)
+            # Each hotel gets 3-8 reviews from different users
+            num_reviews = random.randint(3, 8)
+            # Select different reviewers for each hotel (avoid duplicates)
+            available_reviewers = created_users.copy()
+            random.shuffle(available_reviewers)
+            
+            for i in range(min(num_reviews, len(available_reviewers))):
+                reviewer = available_reviewers[i]
+                
+                # Rating distribution: mostly positive (3-5), occasional lower ratings
+                if random.random() < 0.1:  # 10% chance of lower rating
+                    rating = random.randint(2, 3)
+                else:
+                    rating = random.randint(4, 5)
+                
                 rev = Review(
                     user_id=reviewer.id, 
                     hotel_id=h.id, 
-                    rating=random.randint(3, 5), 
-                    comment=random.choice([
-                        "Great stay! Highly recommend.",
-                        "Excellent service and comfortable rooms.",
-                        "Beautiful hotel with amazing amenities.",
-                        "Perfect location and friendly staff.",
-                        "Wonderful experience, will come back!",
-                        "Nice hotel, good value for money.",
-                        "Impressive facilities and great breakfast."
-                    ])
+                    rating=rating, 
+                    comment=random.choice(review_comments)
                 )
                 db.session.add(rev)
                 review_count += 1
         
         db.session.commit()
-        print(f"  Added {review_count} reviews from various tier members")
+        print(f"  Added {review_count} reviews across {len(created_hotels)} hotels")
+        print(f"  Average {review_count / len(created_hotels):.1f} reviews per hotel")
         
         # Create Admin Account (if doesn't exist)
         print("Creating Admin Account...")
