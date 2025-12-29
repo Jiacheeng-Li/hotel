@@ -471,12 +471,14 @@ def seed():
                 role='staff'
             )
             db.session.add(staff)
+            db.session.flush()  # Flush to get staff.id before assigning hotels
             # Assign first 3 hotels to staff for testing
             if len(created_hotels) >= 3:
                 staff.assigned_hotels = created_hotels[:3]
             db.session.commit()
             print("  Staff created: staff@lumina.com / staff123")
-            print(f"  Assigned {len(staff.assigned_hotels)} hotels to staff")
+            # For lazy='dynamic' relationships, use .count() instead of len()
+            print(f"  Assigned {staff.assigned_hotels.count()} hotels to staff")
         else:
             print("  Staff already exists")
         
