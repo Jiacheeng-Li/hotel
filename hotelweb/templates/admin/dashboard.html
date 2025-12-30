@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-muted mb-3">Total Users</h5>
-                <h2 class="mb-0" style="color: #1e293b;">{{ total_users }}</h2>
+                <h2 class="mb-0 portal-stat-number">{{ total_users }}</h2>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-muted mb-3">Customers</h5>
-                <h2 class="mb-0" style="color: #1e293b;">{{ total_customers }}</h2>
+                <h2 class="mb-0 portal-stat-number">{{ total_customers }}</h2>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-muted mb-3">Staff</h5>
-                <h2 class="mb-0" style="color: #1e293b;">{{ total_staff }}</h2>
+                <h2 class="mb-0 portal-stat-number">{{ total_staff }}</h2>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-muted mb-3">Hotels</h5>
-                <h2 class="mb-0" style="color: #1e293b;">{{ total_hotels }}</h2>
+                <h2 class="mb-0 portal-stat-number">{{ total_hotels }}</h2>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Recent Users</h5>
-                <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                <span class="badge bg-secondary">{{ total_users }} total</span>
             </div>
             <div class="card-body">
                 {% if recent_users %}
@@ -53,11 +53,11 @@
                         {% for user in recent_users[:5] %}
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                             <div>
-                                <strong style="color: #1e293b;">{{ user.username }}</strong>
+                                <strong class="portal-text-dark">{{ user.username }}</strong>
                                 <br>
                                 <small class="text-muted">{{ user.email }}</small>
                             </div>
-                            <span class="badge" style="background-color: {% if user.role == 'customer' %}#0f172a{% elif user.role == 'staff' %}#d97706{% else %}#8b0000{% endif %}; color: white;">
+                            <span class="badge portal-role-badge portal-role-{{ user.role }}">
                                 {{ user.role }}
                             </span>
                         </li>
@@ -65,7 +65,7 @@
                     </ul>
                     {% if recent_users|length > 5 %}
                     <div class="text-center mt-3">
-                        <a href="{{ url_for('admin.users') }}" class="text-decoration-none">View all {{ recent_users|length }} users →</a>
+                        <a href="{{ url_for('admin.users') }}" class="text-decoration-none portal-link">View all {{ recent_users|length }} users →</a>
                     </div>
                     {% endif %}
                 {% else %}
@@ -87,19 +87,19 @@
                         {% for booking in recent_bookings[:5] %}
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                             <div>
-                                <strong style="color: #1e293b;">#{{ booking.id }}</strong>
+                                <strong class="portal-text-dark">#{{ booking.id }}</strong>
                                 <br>
                                 <small class="text-muted">{{ booking.user.username }}</small>
                                 <br>
                                 <small class="text-muted">{{ booking.room_type.hotel.name }}</small>
                             </div>
-                            <strong style="color: #1e293b;">${{ "%.2f"|format(booking.total_cost) }}</strong>
+                            <strong class="portal-text-dark">${{ "%.2f"|format(booking.total_cost) }}</strong>
                         </li>
                         {% endfor %}
                     </ul>
                     {% if recent_bookings|length > 5 %}
                     <div class="text-center mt-3">
-                        <a href="{{ url_for('admin.hotels') }}" class="text-decoration-none">View more bookings →</a>
+                        <a href="{{ url_for('admin.hotels') }}" class="text-decoration-none portal-link">View more bookings →</a>
                     </div>
                     {% endif %}
                 {% else %}

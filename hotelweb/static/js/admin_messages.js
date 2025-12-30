@@ -46,3 +46,26 @@ function deleteMessage(messageId) {
     });
 }
 
+// Initialize event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Mark as read button handlers
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const messageId = parseInt(this.getAttribute('data-message-id'));
+            if (messageId) {
+                markAsRead(messageId);
+            }
+        });
+    });
+    
+    // Delete message button handlers
+    document.querySelectorAll('.delete-message-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const messageId = parseInt(this.getAttribute('data-message-id'));
+            if (messageId) {
+                deleteMessage(messageId);
+            }
+        });
+    });
+});
+

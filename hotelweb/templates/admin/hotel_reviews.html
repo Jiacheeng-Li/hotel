@@ -35,7 +35,7 @@
                 <td>{{ review.author.username }}</td>
                 <td>
                     {% for i in range(5) %}
-                        <i class="bi bi-star{{ '-fill' if i < review.rating else '' }}" style="color: {% if i < review.rating %}gold{% else %}#ddd{% endif %};"></i>
+                        <i class="bi bi-star{{ '-fill' if i < review.rating else '' }} {% if i < review.rating %}portal-star-filled{% else %}portal-star-empty{% endif %}"></i>
                     {% endfor %}
                 </td>
                 <td>{{ review.comment[:100] }}{% if review.comment|length > 100 %}...{% endif %}</td>

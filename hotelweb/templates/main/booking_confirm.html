@@ -6,10 +6,10 @@
 <div class="container">
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ t('home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ url_for('main.hotel_detail', hotel_id=roomtype.hotel.id) }}">{{ roomtype.hotel.name }}</a></li>
             <li class="breadcrumb-item"><a href="{{ url_for('main.roomtype_detail', roomtype_id=roomtype.id) }}">{{ roomtype.name }}</a></li>
-            <li class="breadcrumb-item active">Confirm Booking</li>
+            <li class="breadcrumb-item active">{{ t('confirm_booking') }}</li>
         </ol>
     </nav>
 </div>
@@ -19,39 +19,39 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8">
-            <h2 class="fw-bold mb-4">Confirm Your Booking</h2>
+            <h2 class="fw-bold mb-4">{{ t('confirm_your_booking') }}</h2>
             
             <!-- Booking Summary -->
-            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
+            <div class="card shadow-sm border-0 mb-4 booking-card">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3">Booking Details</h5>
+                    <h5 class="fw-bold mb-3">{{ t('booking_details') }}</h5>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="mb-2">
-                                <span class="text-muted">Hotel:</span>
+                                <span class="text-muted">{{ t('hotel_label') }}</span>
                                 <strong class="ms-2">{{ roomtype.hotel.name }}</strong>
                             </div>
                             <div class="mb-2">
-                                <span class="text-muted">Room Type:</span>
+                                <span class="text-muted">{{ t('room_type_label') }}</span>
                                 <strong class="ms-2">{{ roomtype.name }}</strong>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-2">
-                                <span class="text-muted">Check-in:</span>
+                                <span class="text-muted">{{ t('check_in') }}:</span>
                                 <strong class="ms-2">{{ check_in.strftime('%B %d, %Y') }}</strong>
                             </div>
                             <div class="mb-2">
-                                <span class="text-muted">Check-out:</span>
+                                <span class="text-muted">{{ t('check_out') }}:</span>
                                 <strong class="ms-2">{{ check_out.strftime('%B %d, %Y') }}</strong>
                             </div>
                             <div class="mb-2">
-                                <span class="text-muted">Nights:</span>
-                                <strong class="ms-2">{{ nights }} night{{ 's' if nights != 1 else '' }}</strong>
+                                <span class="text-muted">{{ t('nights_label') }}</span>
+                                <strong class="ms-2">{{ nights }} {{ t('nights') if nights != 1 else t('night') }}</strong>
                             </div>
                             <div class="mb-2">
-                                <span class="text-muted">Rooms:</span>
-                                <strong class="ms-2">{{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }}</strong>
+                                <span class="text-muted">{{ t('rooms_label_detail') }}</span>
+                                <strong class="ms-2">{{ rooms_needed }} {{ t('rooms') if rooms_needed != 1 else t('room') }}</strong>
                             </div>
                         </div>
                     </div>
@@ -59,30 +59,30 @@
             </div>
 
             <!-- Price Breakdown -->
-            <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
+            <div class="card shadow-sm border-0 mb-4 booking-card">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3">Price Breakdown</h5>
+                    <h5 class="fw-bold mb-3">{{ t('price_breakdown') }}</h5>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Base Rate ({{ nights }} night{{ 's' if nights != 1 else '' }} × {{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }})</span>
+                        <span class="text-muted">{{ t('base_rate') }} ({{ nights }} {{ t('nights') if nights != 1 else t('night') }} × {{ rooms_needed }} {{ t('rooms') if rooms_needed != 1 else t('room') }})</span>
                         <span class="fw-bold">${{ "{:,.2f}".format(subtotal) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Taxes (10%)</span>
+                        <span class="text-muted">{{ t('taxes_percent') }}</span>
                         <span class="fw-bold">${{ "{:,.2f}".format(taxes) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Service Fee (5%)</span>
+                        <span class="text-muted">{{ t('service_fee') }}</span>
                         <span class="fw-bold">${{ "{:,.2f}".format(fees) }}</span>
                     </div>
                     {% if breakfast_included %}
                     <div class="d-flex justify-content-between mb-2 breakfast-row">
-                        <span class="text-muted">Breakfast ({{ rooms_needed }} room{{ 's' if rooms_needed != 1 else '' }})</span>
+                        <span class="text-muted">{{ t('breakfast') }} ({{ rooms_needed }} {{ t('rooms') if rooms_needed != 1 else t('room') }})</span>
                         <span class="fw-bold breakfast-price">${{ "{:,.2f}".format(breakfast_total) }}</span>
                     </div>
                     {% endif %}
                     <hr>
                     <div class="d-flex justify-content-between">
-                        <span class="fs-5 fw-bold">Total</span>
+                        <span class="fs-5 fw-bold">{{ t('total') }}</span>
                         <span class="fs-5 fw-bold text-success" id="price-breakdown-total">${{ "{:,.2f}".format(final_total) }}</span>
                     </div>
                 </div>
@@ -91,18 +91,18 @@
             <!-- Points Earned -->
             <div class="card points-display-card mb-4" id="points-earned-card">
                 <div class="card-body p-4 text-center">
-                    <div class="text-muted mb-1">You will earn</div>
-                    <div class="points-display-number-large" id="points-earned-display">{{ "{:,}".format(points_earned) }} points</div>
-                    <div class="text-muted small">after your stay</div>
+                    <div class="text-muted mb-1">{{ t('you_will_earn') }}</div>
+                    <div class="points-display-number-large" id="points-earned-display">{{ "{:,}".format(points_earned) }} {{ t('points') }}</div>
+                    <div class="text-muted small">{{ t('after_your_stay') }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Payment Section -->
         <div class="col-lg-4">
-            <div class="card shadow-lg border-0 sticky-top" style="top: 90px; z-index: 1010; border-radius: 12px;">
+            <div class="card shadow-lg border-0 sticky-top booking-sticky-card">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-4">Payment</h5>
+                    <h5 class="fw-bold mb-4">{{ t('payment') }}</h5>
                     
                     <form action="{{ url_for('main.book_room', roomtype_id=roomtype.id) }}" method="post">
                         <input type="hidden" name="check_in" value="{{ check_in.strftime('%Y-%m-%d') }}">
@@ -114,12 +114,12 @@
                         <!-- Breakfast Voucher Selection -->
                         {% if breakfast_included and available_breakfast_vouchers %}
                         <div class="mb-4">
-                            <label class="form-label fw-bold mb-3">Use Breakfast Voucher</label>
+                            <label class="form-label fw-bold mb-3">{{ t('use_breakfast_voucher') }}</label>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="no_voucher" value="" checked>
                                 <label class="form-check-label" for="no_voucher">
-                                    <strong>Pay for Breakfast</strong>
-                                    <div class="small text-muted">${{ "{:,.2f}".format(breakfast_price_per_room * rooms_needed) }} total</div>
+                                    <strong>{{ t('pay_for_breakfast') }}</strong>
+                                    <div class="small text-muted">${{ "{:,.2f}".format(breakfast_price_per_room * rooms_needed) }} {{ t('total_text') }}</div>
                                 </label>
                             </div>
                             {% for voucher in available_breakfast_vouchers %}
@@ -127,10 +127,10 @@
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="breakfast_voucher_id" id="voucher_{{ voucher.id }}" value="{{ voucher.id }}">
                                 <label class="form-check-label" for="voucher_{{ voucher.id }}">
-                                    <strong>Use Breakfast Voucher</strong>
+                                    <strong>{{ t('use_breakfast_voucher') }}</strong>
                                     <div class="small text-muted">
-                                        {{ voucher.available }} of {{ voucher.total }} breakfast{{ 's' if voucher.total != 1 else '' }} available
-                                        <span class="badge bg-success ms-1">Free</span>
+                                        {{ voucher.available }} {{ t('of') }} {{ voucher.total }} {{ t('complimentary_breakfast') if voucher.total == 1 else t('complimentary_breakfasts') }} {{ t('breakfast_available') }}
+                                        <span class="badge bg-success ms-1">{{ t('free') }}</span>
                                     </div>
                                 </label>
                             </div>
@@ -140,19 +140,19 @@
                         {% endif %}
                         
                         <div class="mb-4">
-                            <label class="form-label fw-bold mb-3">Payment Method</label>
+                            <label class="form-label fw-bold mb-3">{{ t('payment_method') }}</label>
                             
                             <!-- Pay by Card Option -->
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="payment_method" id="pay_by_card" value="pay_by_card" {% if payment_methods and payment_methods|selectattr('is_default')|list %}checked{% elif not payment_methods %}checked{% endif %} onchange="toggleCardOptions()">
                                 <label class="form-check-label" for="pay_by_card">
-                                    <strong>Pay by Card</strong>
-                                    <div class="small text-muted">Credit or debit card</div>
+                                    <strong>{{ t('pay_by_card') }}</strong>
+                                    <div class="small text-muted">{{ t('credit_or_debit_card') }}</div>
                                 </label>
                             </div>
                             
                             <!-- Card Options (Hidden by default, shown when Pay by Card is selected) -->
-                            <div id="card_options_container" class="ms-4 mt-3 mb-3" style="display: {% if payment_methods and payment_methods|selectattr('is_default')|list %}block{% elif not payment_methods %}block{% else %}none{% endif %};">
+                            <div id="card_options_container" class="ms-4 mt-3 mb-3 card-options-container {% if payment_methods and payment_methods|selectattr('is_default')|list %}show{% elif not payment_methods %}show{% endif %}">
                                 {% if payment_methods %}
                                 <div class="payment-methods-list">
                                     {% for card in payment_methods %}
@@ -186,7 +186,7 @@
                                                     <span class="card-brand-badge card-brand-other">{{ card.card_type }}</span>
                                                     {% endif %}
                                                 </div>
-                                                <div class="profile-label mb-0" style="font-size: 0.75rem;">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</div>
+                                                <div class="profile-label mb-0 card-expiry-label">{{ t('expires') }} {{ card.expiry_month }}/{{ card.expiry_year }}</div>
                                             </div>
                                         </div>
                                         <label for="card_{{ card.id }}" class="visually-hidden">Select {{ card.card_type }} card ending in {{ card.last4 }}</label>
@@ -196,13 +196,13 @@
                                 </div>
                                 {% else %}
                                 <div class="text-center py-3">
-                                    <p class="text-muted mb-2">No saved payment methods.</p>
-                                    <a href="{{ url_for('main.account') }}#settings" class="text-decoration-none" style="color: #1e3a8a;">Add a card in Settings</a>
+                                    <p class="text-muted mb-2">{{ t('no_saved_payment_methods') }}</p>
+                                    <a href="{{ url_for('main.account') }}#settings" class="text-decoration-none add-card-link">{{ t('add_card_in_settings') }}</a>
                                 </div>
                                 {% endif %}
                                 <!-- Warning message when no card is selected -->
-                                <div id="no_card_selected_warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
-                                    <small>Please select a payment card or choose another payment method.</small>
+                                <div id="no_card_selected_warning" class="alert alert-warning mt-3 mb-0 payment-warning">
+                                    <small>{{ t('please_select_payment_card') }}</small>
                                 </div>
                             </div>
                             
@@ -210,55 +210,55 @@
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="payment_method" id="pay_at_hotel" value="pay_at_hotel" onchange="toggleCardOptions()">
                                 <label class="form-check-label" for="pay_at_hotel">
-                                    <strong>Pay at Hotel</strong>
-                                    <div class="small text-muted">Pay upon arrival</div>
+                                    <strong>{{ t('pay_at_hotel') }}</strong>
+                                    <div class="small text-muted">{{ t('pay_upon_arrival') }}</div>
                                 </label>
                             </div>
                             {% if current_user.is_authenticated and current_user.points >= 100 %}
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment_method" id="pay_with_points" value="points" onchange="toggleCardOptions()">
                                 <label class="form-check-label" for="pay_with_points">
-                                    <strong>Pay with Points</strong>
-                                    <div class="small text-muted">100 points = $1.00</div>
+                                    <strong>{{ t('pay_with_points') }}</strong>
+                                    <div class="small text-muted">{{ t('points_equals_dollar') }}</div>
                                 </label>
                             </div>
                             {% endif %}
                         </div>
 
-                        <div class="mb-4" id="points_payment_info" style="display: none;">
+                        <div class="mb-4 points-payment-info" id="points_payment_info">
                             <div class="alert alert-info">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Your Points:</span>
+                                    <span>{{ t('your_points_label') }}</span>
                                     <strong>{{ "{:,}".format(current_user.points) }}</strong>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Points Needed:</span>
+                                    <span>{{ t('points_needed_label') }}</span>
                                     <strong id="points_needed">0</strong>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span>Remaining Balance:</span>
+                                    <span>{{ t('remaining_balance') }}</span>
                                     <strong id="remaining_balance">$0.00</strong>
                                 </div>
                             </div>
                             <!-- Warning message when points are insufficient -->
-                            <div id="insufficient_points_warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
-                                <small>Insufficient points. Please choose another payment method or add more points.</small>
+                            <div id="insufficient_points_warning" class="alert alert-warning mt-3 mb-0 payment-warning">
+                                <small>{{ t('insufficient_points_warning') }}</small>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Total Amount</span>
+                                <span class="text-muted">{{ t('total_amount') }}</span>
                                 <span class="fw-bold fs-5 text-success" id="total_display">${{ "{:,.2f}".format(final_total) }}</span>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" id="complete_booking_btn" class="btn btn-lg fw-bold text-white" style="background: #1e3a8a; border: none;">
-                                Complete Booking
+                            <button type="submit" id="complete_booking_btn" class="btn btn-primary btn-lg fw-bold">
+                                {{ t('complete_booking') }}
                             </button>
                             <a href="{{ url_for('main.roomtype_detail', roomtype_id=roomtype.id, check_in=check_in.strftime('%Y-%m-%d'), check_out=check_out.strftime('%Y-%m-%d'), rooms_needed=rooms_needed) }}" class="btn btn-outline-secondary">
-                                Back to Room Details
+                                {{ t('back_to_room_details') }}
                             </a>
                         </div>
                     </form>
@@ -268,6 +268,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 {% block extra_scripts %}
 <script>

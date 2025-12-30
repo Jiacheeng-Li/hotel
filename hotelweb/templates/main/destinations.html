@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="py-5 text-center bg-light mb-5">
-    <h1 class="display-4 fw-bold text-primary">Explore Our Destinations</h1>
-    <p class="lead text-muted">From iconic cities to breathtaking resorts.</p>
+    <h1 class="display-4 fw-bold text-primary">{{ t('explore_destinations') }}</h1>
+    <p class="lead text-muted">{{ t('from_iconic_cities') }}</p>
 </div>
 
 <div class="container">
@@ -15,7 +15,7 @@
             <a href="{{ url_for('main.city_hotels', city_name=dest.city) }}" class="text-decoration-none">
                 <h3 class="fw-bold mb-0 ps-3 border-start border-4 border-warning text-dark">{{ dest.city }}</h3>
             </a>
-            <a href="{{ url_for('main.city_hotels', city_name=dest.city) }}" class="city-link">See all in {{ dest.city }} <i class="bi bi-arrow-right"></i></a>
+            <a href="{{ url_for('main.city_hotels', city_name=dest.city) }}" class="city-link">{{ t('see_all_in') }} {{ dest.city }} <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for hotel in dest.hotels %}
@@ -26,7 +26,6 @@
                         {% if current_user.is_authenticated %}
                         {% set is_fav = hotel.id in favorite_hotel_ids if favorite_hotel_ids else False %}
                         <button type="button" class="hotel-card-favorite {% if is_fav %}favorited{% endif %}" 
-                                onclick="toggleFavorite({{ hotel.id }})" 
                                 data-hotel-id="{{ hotel.id }}"
                                 aria-label="{% if is_fav %}Remove from favorites{% else %}Add to favorites{% endif %}">
                             <i class="bi {% if is_fav %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>

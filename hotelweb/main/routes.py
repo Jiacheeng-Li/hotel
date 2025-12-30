@@ -5,6 +5,7 @@ from ..extensions import db
 from ..models import Hotel, RoomType, Amenity, Booking, Brand, Review, PointsTransaction, MilestoneReward, UserEvent, PaymentMethod, FavoriteHotel, User, ContactMessage
 from . import bp
 from .services import search_available_roomtypes, sort_results
+from .language import set_language, SUPPORTED_LANGUAGES, get_translation
 
 def get_favorite_hotel_ids():
     """Helper function to get list of favorited hotel IDs for current user"""
@@ -288,7 +289,7 @@ def contact():
 @bp.route('/search')
 def search():
     print(f"DEBUG: Search params: {request.args}")
-    city = request.args.get('city')
+    city_input = request.args.get('city', '').strip()
     check_in_str = request.args.get('check_in')
     check_out_str = request.args.get('check_out')
     guests = int(request.args.get('guests', 1))
@@ -297,9 +298,31 @@ def search():
     required_amenities = request.args.getlist('amenities')
     selected_brands = request.args.getlist('brands')
 
-    if not city or not check_in_str or not check_out_str:
+    if not city_input or not check_in_str or not check_out_str:
         flash('Please provide city and dates.', 'warning')
         return redirect(url_for('main.index'))
+    
+    # Normalize city input: remove spaces and convert to lowercase for matching
+    def normalize_city_name(name):
+        return name.replace(' ', '').lower() if name else ''
+    
+    # Find matching city from database (case-insensitive and space-insensitive)
+    normalized_input = normalize_city_name(city_input)
+    all_cities_query = db.session.query(Hotel.city).distinct().all()
+    all_cities = [city_tuple[0] for city_tuple in all_cities_query]
+    
+    city = None
+    for db_city in all_cities:
+        if normalize_city_name(db_city) == normalized_input:
+            city = db_city
+            break
+    
+    # If no match found, use the original input (will show no results)
+    if not city:
+        city = city_input
+    
+    # Store all_cities for template (to avoid duplicate query)
+    all_cities_for_template = sorted(set(all_cities))
 
     try:
         check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
@@ -386,7 +409,7 @@ def search():
                            sort_by=sort_by,
                            today=date.today(),
                            favorite_hotel_ids=favorite_hotel_ids,
-                           cities=[c[0] for c in db.session.query(Hotel.city).distinct().order_by(Hotel.city).all()])
+                           cities=all_cities_for_template)
 
 @bp.route('/hotel/<int:hotel_id>')
 def hotel_detail(hotel_id):
@@ -1154,6 +1177,21 @@ def stay_again(booking_id):
     
     hotel = booking.room_type.hotel
     return redirect(url_for('main.hotel_detail', hotel_id=hotel.id))
+
+@bp.route('/set_language/<lang_code>')
+def set_language_route(lang_code):
+    """Set language preference"""
+    if set_language(session, lang_code):
+        lang_name = SUPPORTED_LANGUAGES.get(lang_code, lang_code.upper())
+        # Use translation after language is set
+        message = f"{get_translation(session, 'language_changed')} {lang_name}"
+        flash(message, 'success')
+    else:
+        flash(get_translation(session, 'invalid_language_code'), 'error')
+    
+    # Redirect back to the previous page or home
+    referrer = request.referrer or url_for('main.index')
+    return redirect(referrer)
     
 @bp.route('/account')
 @login_required
@@ -1708,6 +1746,71 @@ def update_profile():
         })
     
     flash('Profile updated successfully!', 'success')
+    return redirect(url_for('main.account'))
+
+@bp.route('/account/change-password', methods=['POST'])
+@login_required
+def change_password():
+    """Change user password"""
+    from ..utils.security import validate_password
+    
+    current_password = request.form.get('current_password', '')
+    new_password = request.form.get('new_password', '')
+    confirm_password = request.form.get('confirm_password', '')
+    
+    # Validate current password
+    if not current_password:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Current password is required.'}), 400
+        flash('Current password is required.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    if not current_user.check_password(current_password):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Current password is incorrect.'}), 400
+        flash('Current password is incorrect.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Validate new password
+    if not new_password:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'New password is required.'}), 400
+        flash('New password is required.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    is_valid, error_msg = validate_password(new_password)
+    if not is_valid:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': error_msg or 'Invalid password.'}), 400
+        flash(error_msg or 'Invalid password.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Check if new password matches confirmation
+    if new_password != confirm_password:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'New password and confirmation do not match.'}), 400
+        flash('New password and confirmation do not match.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Check if new password is different from current password
+    if current_user.check_password(new_password):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'New password must be different from current password.'}), 400
+        flash('New password must be different from current password.', 'danger')
+        return redirect(url_for('main.account'))
+    
+    # Update password
+    current_user.set_password(new_password)
+    db.session.commit()
+    
+    # Check if this is an AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True,
+            'message': 'Password changed successfully!'
+        })
+    
+    flash('Password changed successfully!', 'success')
     return redirect(url_for('main.account'))
 
 # Membership summary functionality has been integrated into account.html Member Benefits tab

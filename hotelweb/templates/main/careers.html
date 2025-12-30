@@ -4,21 +4,20 @@
 
 {% block content %}
 <div class="py-5 text-center bg-light mb-5">
-    <h1 class="display-4 fw-bold text-primary">Careers</h1>
-    <p class="lead text-muted">Join our team and shape the future of hospitality</p>
+    <h1 class="display-4 fw-bold text-primary">{{ t('careers') }}</h1>
+    <p class="lead text-muted">{{ t('careers_join_team') }}</p>
     <div class="mt-4 mb-0">
         <img src="{{ url_for('static', filename='img/careers.jpg') }}" alt="Careers" 
-             class="img-fluid rounded shadow w-100" style="height: 300px; object-fit: cover;">
+             class="img-fluid rounded shadow w-100 careers-hero-image">
     </div>
 </div>
 
-<div class="container" style="padding-top: 1rem;">
+<div class="container careers-container">
     <div class="row mb-5">
         <div class="col-lg-8 mx-auto text-center">
-            <h2 class="font-serif display-6 fw-bold mb-4" style="margin-top: 0;">Why Work With Us?</h2>
+            <h2 class="font-serif display-6 fw-bold mb-4 careers-section-title">{{ t('why_work_with_us') }}</h2>
             <p class="lead text-muted">
-                At Lumina Hospitality, we're not just building hotels—we're creating experiences. 
-                Join a team that values innovation, diversity, and excellence.
+                {{ t('careers_intro') }}
             </p>
         </div>
     </div>
@@ -27,22 +26,22 @@
         <div class="col-md-4">
             <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
                 <i class="bi bi-people-fill text-primary fs-1 mb-3"></i>
-                <h4 class="fw-bold mb-3">Inclusive Culture</h4>
-                <p class="text-muted">We celebrate diversity and create an environment where everyone can thrive and grow.</p>
+                <h4 class="fw-bold mb-3">{{ t('inclusive_culture') }}</h4>
+                <p class="text-muted">{{ t('inclusive_culture_desc') }}</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
                 <i class="bi bi-graph-up-arrow text-success fs-1 mb-3"></i>
-                <h4 class="fw-bold mb-3">Career Growth</h4>
-                <p class="text-muted">Comprehensive training programs and clear career paths help you reach your professional goals.</p>
+                <h4 class="fw-bold mb-3">{{ t('career_growth') }}</h4>
+                <p class="text-muted">{{ t('career_growth_desc') }}</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="p-4 border rounded-3 h-100 bg-white shadow-sm text-center">
                 <i class="bi bi-heart-fill text-danger fs-1 mb-3"></i>
-                <h4 class="fw-bold mb-3">Work-Life Balance</h4>
-                <p class="text-muted">We believe in supporting our team members with flexible schedules and comprehensive benefits.</p>
+                <h4 class="fw-bold mb-3">{{ t('work_life_balance') }}</h4>
+                <p class="text-muted">{{ t('work_life_balance_desc') }}</p>
             </div>
         </div>
     </div>
@@ -50,47 +49,47 @@
     <div class="row g-4 mb-5">
         <div class="col-md-6">
             <div class="p-4 bg-light rounded-3 h-100">
-                <h3 class="fw-bold mb-3">Open Positions</h3>
-                <p class="text-muted mb-4">We're always looking for talented individuals to join our team across all departments.</p>
+                <h3 class="fw-bold mb-3">{{ t('open_positions') }}</h3>
+                <p class="text-muted mb-4">{{ t('open_positions_desc') }}</p>
                 <div class="mb-3">
-                    <h5 class="fw-bold">Hotel Operations</h5>
+                    <h5 class="fw-bold">{{ t('hotel_operations') }}</h5>
                     <ul class="text-muted">
-                        <li>Front Desk Associates</li>
-                        <li>Housekeeping Supervisors</li>
-                        <li>Guest Services Managers</li>
+                        <li>{{ t('front_desk_associates') }}</li>
+                        <li>{{ t('housekeeping_supervisors') }}</li>
+                        <li>{{ t('guest_services_managers') }}</li>
                     </ul>
                 </div>
                 <div class="mb-3">
-                    <h5 class="fw-bold">Corporate</h5>
+                    <h5 class="fw-bold">{{ t('corporate') }}</h5>
                     <ul class="text-muted">
-                        <li>Marketing Specialists</li>
-                        <li>Revenue Analysts</li>
-                        <li>IT Support Engineers</li>
+                        <li>{{ t('marketing_specialists') }}</li>
+                        <li>{{ t('revenue_analysts') }}</li>
+                        <li>{{ t('it_support_engineers') }}</li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="p-4 bg-light rounded-3 h-100">
-                <h3 class="fw-bold mb-3">Benefits & Perks</h3>
+                <h3 class="fw-bold mb-3">{{ t('benefits_perks') }}</h3>
                 <ul class="list-unstyled text-muted">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Competitive salary and performance bonuses</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Health, dental, and vision insurance</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Employee discounts on stays</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Professional development opportunities</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Paid time off and holidays</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Retirement savings plan</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('competitive_salary') }}</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('health_insurance') }}</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('employee_discounts') }}</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('professional_development') }}</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('paid_time_off') }}</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ t('retirement_savings') }}</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="row" style="margin-top: 1rem; margin-bottom: 4rem;">
+    <div class="row careers-contact-section">
         <div class="col-lg-6 mx-auto text-center">
-            <h3 class="fw-bold mb-4">Ready to Join Us?</h3>
-            <p class="text-muted mb-4">Send your resume and cover letter to careers@luminahotels.com</p>
+            <h3 class="fw-bold mb-4">{{ t('ready_to_join') }}</h3>
+            <p class="text-muted mb-4">{{ t('send_resume') }}</p>
             <a href="mailto:careers@luminahotels.com?subject=Job Application" class="btn btn-primary btn-lg">
-                <i class="bi bi-envelope me-2"></i>Contact Our HR Team
+                <i class="bi bi-envelope me-2"></i>{{ t('contact_hr_team') }}
             </a>
         </div>
     </div>

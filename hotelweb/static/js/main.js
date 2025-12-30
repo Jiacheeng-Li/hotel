@@ -51,6 +51,19 @@ document.addEventListener('DOMContentLoaded', function () {
             // Ignore invalid URLs
         }
     });
+
+    // Keyboard shortcuts modal handler
+    const keyboardShortcutsLink = document.getElementById('keyboard-shortcuts-link');
+    if (keyboardShortcutsLink) {
+        keyboardShortcutsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = document.getElementById('keyboard-shortcuts-modal');
+            if (modal && typeof bootstrap !== 'undefined') {
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            }
+        });
+    }
 });
 
 // Date validation functions

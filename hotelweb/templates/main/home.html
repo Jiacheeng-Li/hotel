@@ -4,28 +4,25 @@
 
 {% block content %}
 <!-- Hero Section -->
-<div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light hero-banner"
-    style="background: url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1920&q=80') no-repeat center center; background-size: cover; border-radius: 12px; min-height: 600px; display: flex; align-items: center; justify-content: center;">
+<div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light hero-banner home-hero-banner"
+    style="background-image: url('{{ url_for('static', filename='img/home_hero.jpg') }}');">
     <div class="overlay hero-overlay"></div>
 
     <div class="col-md-8 p-lg-5 mx-auto my-5 position-relative text-white hero-text-container">
-        <h1 class="display-3 fw-bold mb-4 font-serif text-white" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
-            Experience the
-            Extraordinary</h1>
-        <p class="lead mb-4 fw-normal text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-size: 1.5rem;">
-            Unforgettable stays in the world's most desirable locations.</p>
+        <h1 class="display-3 fw-bold mb-4 font-serif text-white">
+            {{ t('experience_extraordinary') }}</h1>
+        <p class="lead mb-4 fw-normal text-white">
+            {{ t('unforgettable_stays') }}</p>
 
         <!-- Search Card -->
-        <div class="card p-4 shadow-lg text-start mx-auto border-0"
-            style="max-width: 1100px; background: rgba(255, 255, 255, 0.98); border-radius: 16px;">
+        <div class="card p-4 shadow-lg text-start mx-auto border-0 home-search-card">
             <form action="{{ url_for('main.search') }}" method="get" id="homeSearchForm" novalidate>
                 <div class="row g-3 footer-links">
                     <div class="col-lg-3">
-                        <label for="city" class="form-label text-uppercase fw-bold small text-muted">Destination</label>
+                        <label for="city" class="form-label text-uppercase fw-bold small text-muted">{{ t('destination') }}</label>
                         <input class="form-control border-0 bg-light fw-bold text-dark ps-3 py-2" list="cityOptions"
-                            id="city" name="city" placeholder="Where to?" required
-                            oninvalid="this.setCustomValidity('Please enter a destination.')"
-                            oninput="this.setCustomValidity('')"
+                            id="city" name="city" placeholder="{{ t('where_to') }}" required
+                            maxlength="50"
                             aria-label="Enter destination city">
                         <datalist id="cityOptions">
                             {% for city in cities %}
@@ -36,27 +33,23 @@
 
                     <div class="col-lg-3">
                         <label for="check_in"
-                            class="form-label text-uppercase fw-bold small text-muted">Check-in</label>
+                            class="form-label text-uppercase fw-bold small text-muted">{{ t('check_in') }}</label>
                         <input type="date" class="form-control border-0 bg-light py-2" id="check_in" name="check_in"
                             required min="{{ today }}" value="{{ today.strftime('%Y-%m-%d') }}"
-                            oninvalid="this.setCustomValidity('Please select a check-in date.')"
-                            oninput="this.setCustomValidity('')"
                             aria-label="Check-in date">
                     </div>
                     <div class="col-lg-3">
                         <label for="check_out"
-                            class="form-label text-uppercase fw-bold small text-muted">Check-out</label>
+                            class="form-label text-uppercase fw-bold small text-muted">{{ t('check_out') }}</label>
                         <input type="date" class="form-control border-0 bg-light py-2" id="check_out" name="check_out"
                             required min="{{ today }}" value="{{ tomorrow.strftime('%Y-%m-%d') }}"
-                            oninvalid="this.setCustomValidity('Please select a check-out date.')"
-                            oninput="this.setCustomValidity('')"
                             aria-label="Check-out date">
                     </div>
 
                     <div class="col-lg-3 d-grid">
-                        <button type="submit" class="btn btn-primary fw-bold py-2 mt-md-4"
-                            style="border-radius: 8px;" aria-label="Search for hotels">
-                            <i class="bi bi-search me-2" aria-hidden="true"></i>SEARCH
+                        <button type="submit" class="btn btn-primary fw-bold py-2 mt-md-4 home-search-btn"
+                            aria-label="Search for hotels">
+                            <i class="bi bi-search me-2" aria-hidden="true"></i>{{ t('search') }}
                         </button>
                     </div>
                 </div>
@@ -65,24 +58,24 @@
                 <div class="mt-3 text-center">
                     <a href="#" class="text-decoration-none small text-muted" data-bs-toggle="collapse"
                         data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch" aria-label="Toggle advanced search options">
-                        <i class="bi bi-sliders" aria-hidden="true"></i> Advanced Options
+                        <i class="bi bi-sliders" aria-hidden="true"></i> {{ t('advanced_options') }}
                     </a>
                 </div>
                 <div class="collapse mt-3" id="advancedSearch">
                     <div class="row g-2">
                         <div class="col-md-2 pe-4">
-                            <label for="guests" class="form-label small">Guests</label>
+                            <label for="guests" class="form-label small">{{ t('guests') }}</label>
                             <input type="number" class="form-control form-control-sm" id="guests" name="guests" value="2" min="1" aria-label="Number of guests">
                         </div>
                         <div class="col-md-10 ps-0">
                             <label class="form-label small">Brands</label>
                             <div class="d-flex flex-wrap gap-1">
                                 {% for brand in brands %}
-                                <div class="form-check form-check-inline small" style="margin-right: 0.75rem;">
+                                <div class="form-check form-check-inline small home-brand-checkbox">
                                     <input class="form-check-input" type="checkbox" value="{{ brand.id }}"
                                         id="hm_brand_{{ brand.id }}" name="brands">
-                                    <label class="form-check-label" for="hm_brand_{{ brand.id }}"
-                                        style="color: {{ brand.logo_color }}; font-size: 0.875rem;">
+                                    <label class="form-check-label home-brand-label" for="hm_brand_{{ brand.id }}"
+                                        style="color: {{ brand.logo_color }};">
                                         {{ brand.name }}
                                     </label>
                                 </div>
@@ -99,8 +92,8 @@
 <!-- Brands Section -->
 <div class="container my-5 py-5">
     <div class="text-center mb-5">
-        <h2 class="font-serif display-5 fw-bold">Our Collection</h2>
-        <p class="text-muted">Discover the perfect brand for your journey.</p>
+        <h2 class="font-serif display-5 fw-bold">{{ t('our_collection') }}</h2>
+        <p class="text-muted">{{ t('discover_perfect_brand') }}</p>
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -114,15 +107,13 @@
         {% for brand in brands %}
         <div class="col-md-3">
             <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-decoration-none text-dark">
-                <div class="card h-100 border-0 shadow-sm text-center p-4 hover-lift"
-                    style="transition: all 0.3s ease;">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 100px;">
+                <div class="card h-100 border-0 shadow-sm text-center p-4 hover-lift brand-card">
+                    <div class="mb-3 d-flex align-items-center justify-content-center brand-logo-container">
                         <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}"
-                            alt="{{ brand.name }}" class="img-fluid" style="max-height: 80px; max-width: 100%;">
+                            alt="{{ brand.name }}" class="img-fluid brand-logo-img">
                     </div>
                     <h5 class="fw-bold mb-2 font-serif">{{ brand.name }}</h5>
-                    <div
-                        style="height: 3px; width: 40px; background-color: {{ brand.logo_color }}; margin: 0 auto 10px auto;">
+                    <div class="brand-color-bar" style="background-color: {{ brand.logo_color }};">
                     </div>
                     <p class="small text-muted mb-0">{{ brand.description }}</p>
                 </div>
@@ -137,35 +128,32 @@
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-md-6">
-                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80"
+                <img src="{{ url_for('static', filename='img/home_feature.jpg') }}"
                     class="img-fluid rounded-3 shadow-lg" alt="Luxury Interior">
             </div>
             <div class="col-md-6">
-                <h6 class="section-label">Membership</h6>
-                <h2 class="font-serif display-6 fw-bold mb-4">Unlock Exclusive Benefits</h2>
-                <p class="lead text-muted mb-4">Join our loyalty program to earn points on every stay, enjoy
-                    complimentary upgrades, and access member-only rates.</p>
+                <h6 class="section-label">{{ t('membership') }}</h6>
+                <h2 class="font-serif display-6 fw-bold mb-4">{{ t('unlock_exclusive_benefits') }}</h2>
+                <p class="lead text-muted mb-4">{{ t('join_loyalty_program') }}</p>
                 <div class="d-flex gap-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-star-fill text-warning fs-4 me-2"></i>
-                        <span>Earn Points</span>
+                        <span>{{ t('earn_points') }}</span>
                     </div>
                     <div class="d-flex align-items-center">
                         <i class="bi bi-wifi fs-4 text-primary me-2"></i>
-                        <span>Free Wi-Fi</span>
+                        <span>{{ t('free_wifi') }}</span>
                     </div>
                     <div class="d-flex align-items-center">
                         <i class="bi bi-clock-history fs-4 text-success me-2"></i>
-                        <span>Late Checkout</span>
+                        <span>{{ t('late_checkout') }}</span>
                     </div>
                 </div>
                 <div class="mt-5">
                     {% if not current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary rounded-pill px-4">Join
-                        Now</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary rounded-pill px-4">{{ t('join_now') }}</a>
                     {% else %}
-                    <a href="{{ url_for('main.account') }}" class="btn btn-outline-primary rounded-pill px-4">My
-                        Status</a>
+                    <a href="{{ url_for('main.account') }}" class="btn btn-outline-primary rounded-pill px-4">{{ t('my_status') }}</a>
                     {% endif %}
                 </div>
             </div>

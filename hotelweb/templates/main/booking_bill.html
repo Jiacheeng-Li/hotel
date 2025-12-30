@@ -2,335 +2,8 @@
 
 {% block title %}Hotel Bill - {{ booking.room_type.hotel.name }}{% endblock %}
 
+
 {% block content %}
-<style>
-    @media print {
-        .no-print {
-            display: none;
-        }
-
-        body {
-            background: white;
-        }
-    }
-
-    .bill-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        background: white;
-        padding: 3rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border-radius: 12px;
-    }
-
-    .bill-header {
-        text-align: center;
-        border-bottom: 3px solid #1e3a8a;
-        padding-bottom: 2rem;
-        margin-bottom: 2.5rem;
-        position: relative;
-    }
-
-    .bill-header::after {
-        content: '';
-        position: absolute;
-        bottom: -3px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, #1e3a8a, transparent);
-    }
-
-    .bill-header h1 {
-        font-size: 2.25rem;
-        color: #1a1a1a;
-        margin-bottom: 0.75rem;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-
-    .hotel-info {
-        color: #6b7280;
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    .bill-details {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        margin-bottom: 2.5rem;
-        padding-bottom: 2rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-
-    .detail-section h3 {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: #9ca3af;
-        font-weight: 700;
-        letter-spacing: 1px;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .detail-section h3::before {
-        content: '';
-        width: 3px;
-        height: 16px;
-        background: #1e3a8a;
-        border-radius: 2px;
-    }
-
-    .detail-item {
-        margin-bottom: 0.75rem;
-        color: #1a1a1a;
-        display: flex;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .detail-label {
-        font-weight: 600;
-        color: #4b5563;
-        min-width: 120px;
-    }
-
-    .detail-value {
-        color: #1a1a1a;
-        flex: 1;
-    }
-
-    .charges-table {
-        width: 100%;
-        margin-bottom: 2rem;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .charges-table th {
-        text-align: left;
-        padding: 1rem 0;
-        border-bottom: 2px solid #e5e7eb;
-        font-weight: 700;
-        color: #1a1a1a;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .charges-table td {
-        padding: 1rem 0;
-        border-bottom: 1px solid #f3f4f6;
-        color: #374151;
-    }
-
-    .charges-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .amount {
-        text-align: right;
-        font-weight: 600;
-        color: #1a1a1a;
-    }
-
-    .subtotal-row {
-        font-weight: 700;
-        border-top: 2px solid #e5e7eb !important;
-        padding-top: 1rem;
-    }
-
-    .subtotal-row td {
-        padding-top: 1.5rem;
-    }
-
-    .total-row {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #1e3a8a;
-        border-top: 3px solid #1e3a8a !important;
-        background: linear-gradient(to right, rgba(30, 58, 138, 0.05), transparent);
-    }
-
-    .total-row td {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-    }
-
-    .points-section {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-
-    .points-section h3 {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: #9ca3af;
-        font-weight: 700;
-        letter-spacing: 1px;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .points-section h3::before {
-        content: '';
-        width: 3px;
-        height: 16px;
-        background: #1e3a8a;
-        border-radius: 2px;
-    }
-
-    .points-amount {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    .points-section p {
-        margin-top: 0.5rem;
-        color: #6b7280;
-        font-size: 0.95rem;
-    }
-
-    .payment-info {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-
-    .payment-info h4 {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: #9ca3af;
-        font-weight: 700;
-        letter-spacing: 1px;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .payment-info h4::before {
-        content: '';
-        width: 3px;
-        height: 16px;
-        background: #1e3a8a;
-        border-radius: 2px;
-    }
-
-    .payment-info-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #f3f4f6;
-    }
-
-    .payment-info-item:last-child {
-        border-bottom: none;
-    }
-
-    .payment-label {
-        color: #6b7280;
-        font-weight: 500;
-    }
-
-    .payment-value {
-        color: #1a1a1a;
-        font-weight: 600;
-    }
-
-
-    .bill-footer {
-        text-align: center;
-        color: #6b7280;
-        font-size: 0.9rem;
-        margin-top: 2.5rem;
-        padding-top: 2rem;
-        border-top: 2px solid #e5e7eb;
-    }
-
-    .bill-footer p {
-        margin-bottom: 0.5rem;
-        line-height: 1.6;
-    }
-
-    .bill-footer strong {
-        color: #1a1a1a;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 2.5rem;
-    }
-
-    .btn {
-        padding: 0.875rem 2rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background-color: #1e3a8a;
-        color: white;
-        box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
-    }
-
-    .btn-primary:hover {
-        background-color: #1e40af;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
-        color: white;
-    }
-
-    .btn-outline {
-        background-color: white;
-        color: #4b5563;
-        border: 2px solid #d1d5db;
-    }
-
-    .btn-outline:hover {
-        background-color: #f9fafb;
-        color: #1a1a1a;
-        border-color: #9ca3af;
-        transform: translateY(-2px);
-    }
-
-
-    @media (max-width: 768px) {
-        .bill-container {
-            padding: 2rem 1.5rem;
-        }
-
-        .bill-details {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-        }
-    }
-</style>
 
 <div class="bill-container">
     <div class="bill-header">
@@ -393,8 +66,8 @@
         <tbody>
             <tr>
                 <td>
-                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Room Rate</div>
-                    <div style="font-size: 0.85rem; color: #6b7280;">
+                    <div class="bill-row-title">Room Rate</div>
+                    <div class="bill-row-detail">
                         {{ booking.rooms_count }} room{{ 's' if booking.rooms_count > 1 else '' }} × {{ nights }}
                         night{{ 's' if nights > 1 else '' }} × ${{ "%.2f"|format(booking.base_rate) }}
                     </div>
@@ -404,8 +77,8 @@
             {% if booking.breakfast_included %}
             <tr>
                 <td>
-                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Breakfast Included</div>
-                    <div style="font-size: 0.85rem; color: #6b7280;">
+                    <div class="bill-row-title">Breakfast Included</div>
+                    <div class="bill-row-detail">
                         {{ booking.rooms_count }} room{{ 's' if booking.rooms_count > 1 else '' }} × ${{ "%.2f"|format(booking.breakfast_price_per_room) }}
                     </div>
                 </td>
@@ -423,8 +96,8 @@
             {% if booking.points_used > 0 %}
             <tr>
                 <td>
-                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Points Redeemed</div>
-                    <div style="font-size: 0.85rem; color: #6b7280;">
+                    <div class="bill-row-title">Points Redeemed</div>
+                    <div class="bill-row-detail">
                         {{ "{:,}".format(booking.points_used) }} points (${{ "%.2f"|format(booking.points_used / 100) }})
                     </div>
                 </td>
@@ -481,7 +154,7 @@
         <h3>Loyalty Points Earned</h3>
         <div class="points-amount">{{ "{:,}".format(booking.points_earned) }} Points</div>
         <p>Thank you for being a {{ current_user.membership_level }} member!</p>
-        <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.9;">
+        <p class="bill-points-note">
             Calculation: 1 dollar = 10 base points × {{ current_user.get_points_multiplier() }}x multiplier
             {% if booking.points_used > 0 %}
             <br>Note: Points earned on actual payment only (excludes amounts paid with points).
@@ -492,20 +165,20 @@
     <div class="points-section">
         <h3>Points Payment</h3>
         <div class="points-amount" style="font-size: 1.5rem;">Fully Paid with Points</div>
-        <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.9;">No points earned as booking was fully paid with points.</p>
+        <p class="bill-points-note">No points earned as booking was fully paid with points.</p>
     </div>
     {% endif %}
 
     <div class="bill-footer">
         <p><strong>Booking Confirmation #:</strong> {{ booking.id | string | upper }}</p>
         <p><strong>Booking Date:</strong> {{ booking.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
-        <p style="margin-top: 1rem;">Thank you for choosing {{ booking.room_type.hotel.name }}!</p>
-        <p style="margin-top: 0.5rem;">For questions about this bill, please contact us at support@luminahotels.com</p>
+        <p class="bill-footer-thanks">Thank you for choosing {{ booking.room_type.hotel.name }}!</p>
+        <p class="bill-footer-contact">For questions about this bill, please contact us at support@luminahotels.com</p>
     </div>
 
     <div class="action-buttons no-print">
-        <button onclick="window.print()" class="btn btn-primary">Print Bill</button>
-        <a href="{{ url_for('main.my_stays') }}" class="btn btn-outline">Back to My Stays</a>
+        <button onclick="window.print()" class="bill-btn bill-btn-primary">Print Bill</button>
+        <a href="{{ url_for('main.my_stays') }}" class="bill-btn bill-btn-outline">Back to My Stays</a>
     </div>
 </div>
 {% endblock %}

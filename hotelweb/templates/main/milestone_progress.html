@@ -6,9 +6,9 @@
 <div class="container">
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('main.account') }}">My Account</a></li>
-            <li class="breadcrumb-item active">Milestone Rewards Progress</li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ t('home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.account') }}">{{ t('my_account') }}</a></li>
+            <li class="breadcrumb-item active">{{ t('milestone_rewards_progress_title') }}</li>
         </ol>
     </nav>
 </div>
@@ -18,14 +18,14 @@
 
 <div class="milestone-progress-container">
     <div class="page-header">
-        <h1>Milestone Rewards Progress</h1>
-        <p>Track your progress and view all milestone rewards for {{ current_year }}</p>
+        <h1>{{ t('milestone_rewards_progress_title') }}</h1>
+        <p>{{ t('track_progress_view') }} {{ current_year }}</p>
     </div>
 
     <!-- Milestone Rules -->
     <div class="milestone-rules-card">
         <div class="rules-header" id="rules-header">
-            <h2>How Milestone Rewards Work</h2>
+            <h2>{{ t('how_milestone_rewards_work') }}</h2>
             <i class="bi bi-chevron-down rules-toggle-icon" id="rules-toggle-icon"></i>
         </div>
         <div class="rules-content" id="rules-content">
@@ -33,29 +33,29 @@
             <li>
                 <i class="bi bi-check-circle-fill"></i>
                 <div>
-                    <strong>Earn Milestone Rewards Every 10 Nights</strong>
-                    <p class="text-muted small mb-0 mt-1">Starting at 20 nights, you can claim a reward every 10 nights you stay (20, 30, 40, 50, 60, 70, 80, 90, 100 nights).</p>
+                    <strong>{{ t('earn_milestone_every_10') }}</strong>
+                    <p class="text-muted small mb-0 mt-1">{{ t('starting_at_20_nights') }}</p>
                 </div>
             </li>
             <li>
                 <i class="bi bi-check-circle-fill"></i>
                 <div>
-                    <strong>Choose Your Reward</strong>
-                    <p class="text-muted small mb-0 mt-1">At each milestone, choose between 5,000 bonus points or 2 complimentary breakfasts.</p>
+                    <strong>{{ t('choose_your_reward') }}</strong>
+                    <p class="text-muted small mb-0 mt-1">{{ t('at_each_milestone_choose') }}</p>
                 </div>
             </li>
             <li>
                 <i class="bi bi-check-circle-fill"></i>
                 <div>
-                    <strong>Annual Reset</strong>
-                    <p class="text-muted small mb-0 mt-1">Milestone progress resets each calendar year. Nights count from January 1st to December 31st.</p>
+                    <strong>{{ t('annual_reset') }}</strong>
+                    <p class="text-muted small mb-0 mt-1">{{ t('milestone_progress_resets') }}</p>
                 </div>
             </li>
             <li>
                 <i class="bi bi-check-circle-fill"></i>
                 <div>
-                    <strong>Use Your Rewards</strong>
-                    <p class="text-muted small mb-0 mt-1">Points are added to your account immediately. Breakfast vouchers can be used on your next booking.</p>
+                    <strong>{{ t('use_your_rewards') }}</strong>
+                    <p class="text-muted small mb-0 mt-1">{{ t('points_added_immediately') }}</p>
                 </div>
             </li>
         </ul>
@@ -64,21 +64,21 @@
 
     <!-- Progress Section -->
     <div class="progress-section">
-        <h2>Your {{ current_year }} Milestone Progress</h2>
+        <h2>{{ t('your_milestone_progress') }} {{ current_year }} {{ t('milestone_progress') }}</h2>
         
         {% if milestone_progress %}
         <div>
             {% for milestone in milestone_progress %}
             <div class="milestone-item {% if milestone.status == 'claimed' %}claimed{% elif milestone.status == 'unclaimed' %}unclaimed{% elif milestone.is_current %}current{% else %}upcoming{% endif %}">
                 <div class="milestone-header">
-                    <div class="milestone-title">{{ milestone.nights }} Nights Milestone</div>
+                    <div class="milestone-title">{{ milestone.nights }} {{ t('nights_milestone') }}</div>
                     <span class="milestone-status status-{{ milestone.status }}">
                         {% if milestone.status == 'claimed' %}
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> Claimed
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ t('claimed') }}
                         {% elif milestone.status == 'unclaimed' %}
-                        Available
+                        {{ t('available') }}
                         {% else %}
-                        Not Reached
+                        {{ t('not_reached') }}
                         {% endif %}
                     </span>
                 </div>
@@ -86,13 +86,13 @@
                 {% if milestone.is_current %}
                 <div class="milestone-details">
                     <div class="detail-item">
-                        <span class="detail-label">Your Progress</span>
-                        <span class="detail-value">{{ year_nights }} / {{ milestone.nights }} nights</span>
+                        <span class="detail-label">{{ t('your_progress') }}</span>
+                        <span class="detail-value">{{ year_nights }} / {{ milestone.nights }} {{ t('nights') }}</span>
                     </div>
                     {% if year_nights < milestone.nights %}
                     <div class="detail-item">
-                        <span class="detail-label">Nights Needed</span>
-                        <span class="detail-value">{{ milestone.nights - year_nights }} more nights</span>
+                        <span class="detail-label">{{ t('nights_needed') }}</span>
+                        <span class="detail-value">{{ milestone.nights - year_nights }} {{ t('more_nights') }}</span>
                     </div>
                     {% endif %}
                 </div>
@@ -100,53 +100,53 @@
 
                 {% if milestone.reward %}
                 <div class="reward-info">
-                    <div class="detail-label mb-2">Reward Claimed:</div>
+                    <div class="detail-label mb-2">{{ t('reward_claimed') }}</div>
                     {% if milestone.reward.reward_type == 'points' %}
                     <span class="reward-type reward-points">
                         <i class="bi bi-star-fill"></i>
-                        {{ "{:,}".format(milestone.reward.reward_value|int) }} Bonus Points
+                        {{ "{:,}".format(milestone.reward.reward_value|int) }} {{ t('bonus_points') }}
                     </span>
                     {% elif milestone.reward.reward_type == 'breakfast' %}
                     <span class="reward-type reward-breakfast">
                         <i class="bi bi-cup-hot-fill"></i>
-                        {{ milestone.reward.reward_value }} Complimentary Breakfast{{ 's' if milestone.reward.reward_value != 1 else '' }}
+                        {{ milestone.reward.reward_value }} {{ t('complimentary_breakfast') if milestone.reward.reward_value == 1 else t('complimentary_breakfasts') }}
                     </span>
                     {% endif %}
                     <div class="text-muted small mt-2">
-                        Claimed: {{ milestone.reward.claimed_at.strftime('%B %d, %Y') if milestone.reward.claimed_at else milestone.reward.created_at.strftime('%B %d, %Y') }}
+                        {{ t('claimed') }}: {{ milestone.reward.claimed_at.strftime('%B %d, %Y') if milestone.reward.claimed_at else milestone.reward.created_at.strftime('%B %d, %Y') }}
                     </div>
                     {% if milestone.reward.reward_type == 'breakfast' %}
                     {% set available = milestone.reward.get_available_breakfasts() %}
                     {% set used = milestone.reward.breakfasts_used %}
                     <div class="text-muted small mt-1">
                         {% if used > 0 %}
-                        <span class="badge bg-secondary">{{ used }} used</span>
+                        <span class="badge bg-secondary">{{ used }} {{ t('used') }}</span>
                         {% endif %}
                         {% if available > 0 %}
-                        <span class="badge bg-success">{{ available }} available</span>
+                        <span class="badge bg-success">{{ available }} {{ t('available') }}</span>
                         {% else %}
-                        <span class="badge bg-danger">All used</span>
+                        <span class="badge bg-danger">{{ t('all_used') }}</span>
                         {% endif %}
                     </div>
                     {% endif %}
                 </div>
                 {% else %}
                 <div class="reward-info">
-                    <div class="detail-label mb-2">Available Rewards:</div>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div class="detail-label mb-2">{{ t('available_rewards') }}</div>
+                    <div class="reward-options-container">
                         <span class="reward-type reward-points">
                             <i class="bi bi-star-fill"></i>
-                            5,000 Bonus Points
+                            5,000 {{ t('bonus_points') }}
                         </span>
                         <span class="reward-type reward-breakfast">
                             <i class="bi bi-cup-hot-fill"></i>
-                            2 Complimentary Breakfasts
+                            2 {{ t('complimentary_breakfasts') }}
                         </span>
                     </div>
                     {% if milestone.status == 'unclaimed' %}
                     <div class="mt-3">
                         <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone.nights) }}" class="btn btn-warning">
-                            Claim Your Reward
+                            {{ t('claim_your_reward') }}
                         </a>
                     </div>
                     {% endif %}
@@ -158,9 +158,9 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-building" aria-hidden="true"></i></div>
-            <h3>No Milestone Progress Yet</h3>
-            <p>Start booking stays to earn milestone rewards!</p>
-            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Book Your First Stay</a>
+            <h3>{{ t('no_milestone_progress_yet') }}</h3>
+            <p>{{ t('start_booking_stays') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">{{ t('book_your_first_stay') }}</a>
         </div>
         {% endif %}
     </div>

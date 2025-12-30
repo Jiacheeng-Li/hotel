@@ -1,9 +1,10 @@
 // Favorites functionality
-function toggleFavorite(hotelId) {
+function toggleFavorite(hotelId, event) {
     if (!hotelId) return;
     
     // Support both .btn-favorite (hotel detail page) and .hotel-card-favorite (hotel cards)
-    const button = event.target.closest('.btn-favorite') || event.target.closest('.hotel-card-favorite');
+    const button = (event && (event.target.closest('.btn-favorite') || event.target.closest('.hotel-card-favorite'))) || 
+                   document.querySelector(`[data-hotel-id="${hotelId}"]`);
     if (!button) return;
     
     const icon = button.querySelector('i');
@@ -134,6 +135,18 @@ function toggleFavorite(hotelId) {
 
 // Initialize favorite buttons on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // This will be used to update favorite states dynamically if needed
+    // Use event delegation for better performance and dynamic content support
+    document.addEventListener('click', function(e) {
+        // Check if clicked element or its parent is a favorite button
+        const button = e.target.closest('.btn-favorite, .hotel-card-favorite');
+        if (button) {
+            e.preventDefault();
+            e.stopPropagation();
+            const hotelId = button.getAttribute('data-hotel-id');
+            if (hotelId) {
+                toggleFavorite(parseInt(hotelId), e);
+            }
+        }
+    });
 });
 

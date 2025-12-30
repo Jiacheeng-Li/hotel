@@ -20,6 +20,7 @@ def search_available_roomtypes(city, check_in, check_out, guests, rooms_needed=1
         raise ValueError("Check-out must be after check-in.")
 
     # 1. Base Query
+    # Note: City matching (case-insensitive and space-insensitive) is handled in routes.py
     query = RoomType.query.join(Hotel).filter(
         Hotel.city == city,
         RoomType.capacity >= guests

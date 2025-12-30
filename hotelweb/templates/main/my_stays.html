@@ -6,28 +6,28 @@
 
 <div class="stays-container">
     <div class="stays-header">
-        <h2>My Stays</h2>
-        <p class="text-muted">Manage your hotel reservations and view your stay history</p>
+        <h2>{{ t('my_stays_title') }}</h2>
+        <p class="text-muted">{{ t('manage_reservations') }}</p>
     </div>
 
     <div class="stays-tabs" role="tablist" aria-label="Booking categories">
         <button class="tab-button" data-tab="upcoming" id="upcoming-tab" role="tab" aria-controls="upcoming" aria-selected="false" aria-label="View upcoming bookings, {{ upcoming|length }} bookings">
-            Upcoming <span class="badge text-white ms-1" style="background-color: #1e3a8a;">{{ upcoming|length }}</span>
+            {{ t('upcoming') }} <span class="badge text-white ms-1 badge-upcoming">{{ upcoming|length }}</span>
         </button>
         <button class="tab-button active" data-tab="current" id="current-tab" role="tab" aria-controls="current" aria-selected="true" aria-label="View current stays, {{ current|length }} stays">
-            Current <span class="badge bg-success ms-1">{{ current|length }}</span>
+            {{ t('current') }} <span class="badge bg-success ms-1">{{ current|length }}</span>
         </button>
         <button class="tab-button" data-tab="past" id="past-tab" role="tab" aria-controls="past" aria-selected="false" aria-label="View past stays, {{ past|length }} stays">
-            Past <span class="badge bg-secondary ms-1">{{ past|length }}</span>
+            {{ t('past') }} <span class="badge bg-secondary ms-1">{{ past|length }}</span>
         </button>
         <button class="tab-button" data-tab="cancelled" id="cancelled-tab" role="tab" aria-controls="cancelled" aria-selected="false" aria-label="View cancelled bookings, {{ cancelled|length }} bookings">
-            Cancelled <span class="badge bg-danger ms-1">{{ cancelled|length }}</span>
+            {{ t('cancelled') }} <span class="badge bg-danger ms-1">{{ cancelled|length }}</span>
         </button>
         <button class="tab-button" data-tab="favorites" id="favorites-tab" role="tab" aria-controls="favorites" aria-selected="false" aria-label="View favorite hotels">
-            Favorites <span class="badge bg-danger ms-1">{{ favorite_hotels|length }}</span>
+            {{ t('favorites') }} <span class="badge bg-danger ms-1">{{ favorite_hotels|length }}</span>
         </button>
         <button class="tab-button" data-tab="events" id="events-tab" role="tab" aria-controls="events" aria-selected="false" aria-label="View special events">
-            Events <span class="badge bg-info ms-1" style="background-color: #065D6F !important;">0</span>
+            {{ t('events') }} <span class="badge bg-info ms-1 badge-events">0</span>
         </button>
     </div>
 
@@ -47,26 +47,26 @@
 
                     <div class="date-info">
                         <div class="date-item">
-                            <span class="date-label">Check-in</span>
+                            <span class="date-label">{{ t('check_in') }}</span>
                             <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Check-out</span>
+                            <span class="date-label">{{ t('check_out') }}</span>
                             <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Rooms</span>
+                            <span class="date-label">{{ t('rooms_label_detail') }}</span>
                             <span class="date-value">{{ booking.rooms_count }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Nights</span>
+                            <span class="date-label">{{ t('nights_label') }}</span>
                             <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Total</span>
+                            <span class="date-label">{{ t('total_label') }}</span>
                             <span class="date-value">
                                 {% if booking.payment_method == 'points' and booking.points_used > 0 %}
-                                <span style="color: #7c3aed;">{{ "{:,}".format(booking.points_used) }} pts</span>
+                                <span class="points-amount">{{ "{:,}".format(booking.points_used) }} pts</span>
                                 {% else %}
                                 <span class="cash-amount">${{ "{:,.2f}".format(booking.total_cost) }}</span>
                                 {% endif %}
@@ -76,25 +76,24 @@
 
                     {% if booking.breakfast_included %}
                     <div class="d-flex align-items-center gap-2 mt-2">
-                        <i class="bi bi-cup-hot-fill" style="color: #d97706;"></i>
-                        <span class="text-muted small">Breakfast included</span>
+                        <i class="bi bi-cup-hot-fill breakfast-icon"></i>
+                        <span class="text-muted small">{{ t('breakfast_included') }}</span>
                         {% if booking.breakfast_voucher_used %}
-                        <span class="badge bg-success ms-1" style="font-size: 0.7rem;">Free (Voucher)</span>
+                        <span class="badge bg-success ms-1 badge-voucher">{{ t('free_voucher') }}</span>
                         {% endif %}
                     </div>
                     {% endif %}
 
                     {% set days_until = (booking.check_in - today).days %}
                     <div class="countdown">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> Check-in in {{ days_until }} day{{ 's' if days_until != 1 else '' }}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ t('check_in_in') }} {{ days_until }} {{ t('days') if days_until != 1 else t('day') }}
                     </div>
 
                     <div class="booking-actions">
-                        <span class="status-badge status-upcoming">Confirmed</span>
+                        <span class="status-badge status-upcoming">{{ t('confirmed') }}</span>
                         <form action="{{ url_for('main.cancel_booking', booking_id=booking.id) }}" method="post"
-                            onsubmit="return confirm('Are you sure you want to cancel this booking?');"
-                            style="margin: 0;">
-                            <button type="submit" class="btn-cancel" aria-label="Cancel booking for {{ booking.room_type.hotel.name }}">Cancel Booking</button>
+                            class="cancel-booking-form">
+                            <button type="submit" class="btn-cancel" aria-label="Cancel booking for {{ booking.room_type.hotel.name }}">{{ t('cancel_booking') }}</button>
                         </form>
                     </div>
                 </div>
@@ -104,9 +103,9 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-building" aria-hidden="true"></i></div>
-            <h3>No Upcoming Stays</h3>
-            <p>You don't have any upcoming reservations</p>
-            <a href="{{ url_for('main.index') }}" class="btn-primary">Book Your Next Stay</a>
+            <h3>{{ t('no_upcoming_stays') }}</h3>
+            <p>{{ t('no_upcoming_reservations') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">{{ t('book_your_next_stay') }}</a>
         </div>
         {% endif %}
     </div>
@@ -127,26 +126,26 @@
 
                     <div class="date-info">
                         <div class="date-item">
-                            <span class="date-label">Check-in</span>
+                            <span class="date-label">{{ t('check_in') }}</span>
                             <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Check-out</span>
+                            <span class="date-label">{{ t('check_out') }}</span>
                             <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Rooms</span>
+                            <span class="date-label">{{ t('rooms_label_detail') }}</span>
                             <span class="date-value">{{ booking.rooms_count }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Nights</span>
+                            <span class="date-label">{{ t('nights_label') }}</span>
                             <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Total</span>
+                            <span class="date-label">{{ t('total_label') }}</span>
                             <span class="date-value">
                                 {% if booking.payment_method == 'points' and booking.points_used > 0 %}
-                                <span style="color: #7c3aed;">{{ "{:,}".format(booking.points_used) }} pts</span>
+                                <span class="points-amount">{{ "{:,}".format(booking.points_used) }} pts</span>
                                 {% else %}
                                 <span class="cash-amount">${{ "{:,.2f}".format(booking.total_cost) }}</span>
                                 {% endif %}
@@ -156,16 +155,16 @@
 
                     {% if booking.breakfast_included %}
                     <div class="d-flex align-items-center gap-2 mt-2">
-                        <i class="bi bi-cup-hot-fill" style="color: #d97706;"></i>
-                        <span class="text-muted small">Breakfast included</span>
+                        <i class="bi bi-cup-hot-fill breakfast-icon"></i>
+                        <span class="text-muted small">{{ t('breakfast_included') }}</span>
                         {% if booking.breakfast_voucher_used %}
-                        <span class="badge bg-success ms-1" style="font-size: 0.7rem;">Free (Voucher)</span>
+                        <span class="badge bg-success ms-1 badge-voucher">{{ t('free_voucher') }}</span>
                         {% endif %}
                     </div>
                     {% endif %}
 
                     <div class="booking-actions">
-                        <span class="status-badge status-current">Active Stay</span>
+                        <span class="status-badge status-current">{{ t('active_stay') }}</span>
                     </div>
                 </div>
             </div>
@@ -174,9 +173,9 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-bed" aria-hidden="true"></i></div>
-            <h3>No Current Stays</h3>
-            <p>You're not currently checked in to any hotels</p>
-            <a href="{{ url_for('main.index') }}" class="btn-primary">Book Your Stay</a>
+            <h3>{{ t('no_current_stays') }}</h3>
+            <p>{{ t('not_checked_in') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">{{ t('book_your_stay') }}</a>
         </div>
         {% endif %}
     </div>
@@ -197,26 +196,26 @@
 
                     <div class="date-info">
                         <div class="date-item">
-                            <span class="date-label">Check-in</span>
+                            <span class="date-label">{{ t('check_in') }}</span>
                             <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Check-out</span>
+                            <span class="date-label">{{ t('check_out') }}</span>
                             <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Rooms</span>
+                            <span class="date-label">{{ t('rooms_label_detail') }}</span>
                             <span class="date-value">{{ booking.rooms_count }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Nights</span>
+                            <span class="date-label">{{ t('nights_label') }}</span>
                             <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Total</span>
+                            <span class="date-label">{{ t('total_label') }}</span>
                             <span class="date-value">
                                 {% if booking.payment_method == 'points' and booking.points_used > 0 %}
-                                <span style="color: #7c3aed;">{{ "{:,}".format(booking.points_used) }} pts</span>
+                                <span class="points-amount">{{ "{:,}".format(booking.points_used) }} pts</span>
                                 {% else %}
                                 <span class="cash-amount">${{ "{:,.2f}".format(booking.total_cost) }}</span>
                                 {% endif %}
@@ -226,29 +225,29 @@
 
                     {% if booking.breakfast_included %}
                     <div class="d-flex align-items-center gap-2 mt-2">
-                        <i class="bi bi-cup-hot-fill" style="color: #d97706;"></i>
-                        <span class="text-muted small">Breakfast included</span>
+                        <i class="bi bi-cup-hot-fill breakfast-icon"></i>
+                        <span class="text-muted small">{{ t('breakfast_included') }}</span>
                         {% if booking.breakfast_voucher_used %}
-                        <span class="badge bg-success ms-1" style="font-size: 0.7rem;">Free (Voucher)</span>
+                        <span class="badge bg-success ms-1 badge-voucher">{{ t('free_voucher') }}</span>
                         {% endif %}
                     </div>
                     {% endif %}
 
                     {% if booking.points_earned > 0 %}
                     <div class="points-earned">
-                        <i class="bi bi-star-fill" aria-hidden="true"></i> Earned {{ "{:,}".format(booking.points_earned) }} points
+                        <i class="bi bi-star-fill" aria-hidden="true"></i> {{ t('earned_points') }} {{ "{:,}".format(booking.points_earned) }} {{ t('points') }}
                     </div>
                     {% endif %}
 
                     <div class="booking-actions">
-                        <span class="status-badge status-past">Completed</span>
-                        <a href="{{ url_for('main.view_bill', booking_id=booking.id) }}" class="btn-secondary" aria-label="View bill for {{ booking.room_type.hotel.name }}">View Bill</a>
+                        <span class="status-badge status-past">{{ t('completed') }}</span>
+                        <a href="{{ url_for('main.view_bill', booking_id=booking.id) }}" class="btn-secondary" aria-label="View bill for {{ booking.room_type.hotel.name }}">{{ t('view_bill') }}</a>
                         {% if booking.id not in reviewed_booking_ids %}
-                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary" aria-label="Write review for {{ booking.room_type.hotel.name }}">Write Review</a>
+                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary" aria-label="Write review for {{ booking.room_type.hotel.name }}">{{ t('write_review') }}</a>
                         {% else %}
-                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary" aria-label="Edit review for {{ booking.room_type.hotel.name }}">Edit Review</a>
+                        <a href="{{ url_for('main.write_review', booking_id=booking.id) }}" class="btn-primary" aria-label="Edit review for {{ booking.room_type.hotel.name }}">{{ t('edit_review') }}</a>
                         {% endif %}
-                        <a href="{{ url_for('main.stay_again', booking_id=booking.id) }}" class="btn-outline" aria-label="Book {{ booking.room_type.hotel.name }} again">Stay Again</a>
+                        <a href="{{ url_for('main.stay_again', booking_id=booking.id) }}" class="btn-outline" aria-label="Book {{ booking.room_type.hotel.name }} again">{{ t('stay_again') }}</a>
                     </div>
                 </div>
             </div>
@@ -257,9 +256,9 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-clipboard-check" aria-hidden="true"></i></div>
-            <h3>No Past Stays</h3>
-            <p>Your completed stays will appear here</p>
-            <a href="{{ url_for('main.index') }}" class="btn-primary">Book Your First Stay</a>
+            <h3>{{ t('no_past_stays') }}</h3>
+            <p>{{ t('completed_stays_appear') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">{{ t('book_your_first_stay') }}</a>
         </div>
         {% endif %}
     </div>
@@ -280,26 +279,26 @@
 
                     <div class="date-info">
                         <div class="date-item">
-                            <span class="date-label">Check-in</span>
+                            <span class="date-label">{{ t('check_in') }}</span>
                             <span class="date-value">{{ booking.check_in.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Check-out</span>
+                            <span class="date-label">{{ t('check_out') }}</span>
                             <span class="date-value">{{ booking.check_out.strftime('%b %d, %Y') }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Rooms</span>
+                            <span class="date-label">{{ t('rooms_label_detail') }}</span>
                             <span class="date-value">{{ booking.rooms_count }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Nights</span>
+                            <span class="date-label">{{ t('nights_label') }}</span>
                             <span class="date-value">{{ (booking.check_out - booking.check_in).days }}</span>
                         </div>
                         <div class="date-item">
-                            <span class="date-label">Total</span>
+                            <span class="date-label">{{ t('total_label') }}</span>
                             <span class="date-value">
                                 {% if booking.payment_method == 'points' and booking.points_used > 0 %}
-                                <span style="color: #7c3aed;">{{ "{:,}".format(booking.points_used) }} pts</span>
+                                <span class="points-amount">{{ "{:,}".format(booking.points_used) }} pts</span>
                                 {% else %}
                                 <span class="cash-amount">${{ "{:,.2f}".format(booking.total_cost) }}</span>
                                 {% endif %}
@@ -309,10 +308,10 @@
 
                     {% if booking.breakfast_included %}
                     <div class="d-flex align-items-center gap-2 mt-2">
-                        <i class="bi bi-cup-hot-fill" style="color: #d97706;"></i>
-                        <span class="text-muted small">Breakfast included</span>
+                        <i class="bi bi-cup-hot-fill breakfast-icon"></i>
+                        <span class="text-muted small">{{ t('breakfast_included') }}</span>
                         {% if booking.breakfast_voucher_used %}
-                        <span class="badge bg-success ms-1" style="font-size: 0.7rem;">Free (Voucher)</span>
+                        <span class="badge bg-success ms-1 badge-voucher">{{ t('free_voucher') }}</span>
                         {% endif %}
                     </div>
                     {% endif %}
@@ -327,9 +326,9 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
-            <h3>No Cancelled Bookings</h3>
-            <p>You haven't cancelled any reservations</p>
-            <a href="{{ url_for('main.index') }}" class="btn-primary">Explore Hotels</a>
+            <h3>{{ t('no_cancelled_bookings') }}</h3>
+            <p>{{ t('no_cancelled_reservations') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">{{ t('explore_hotels') }}</a>
         </div>
         {% endif %}
     </div>
@@ -341,14 +340,12 @@
         <div class="card mb-4 shadow-sm border-0 favorite-hotel-card" data-hotel-card-id="{{ hotel.id }}">
             <div class="row g-0">
                 <div class="col-md-4 position-relative">
-                    <img src="{{ hotel.image_url }}" class="img-fluid rounded-start"
-                        style="width: 100%; height: 300px; object-fit: cover; display: block;" alt="{{ hotel.name }}">
+                    <img src="{{ hotel.image_url }}" class="img-fluid rounded-start favorite-hotel-image" alt="{{ hotel.name }}">
                     <a href="{{ url_for('main.brand_detail', brand_id=hotel.brand.id) }}" class="brand-badge position-absolute top-0 start-0 m-2" style="background-color: {{ hotel.brand.logo_color }};">
                         {{ hotel.brand.name }}
                     </a>
                     {% if current_user.is_authenticated %}
                     <button type="button" class="hotel-card-favorite favorited" 
-                            onclick="toggleFavorite({{ hotel.id }})" 
                             data-hotel-id="{{ hotel.id }}"
                             aria-label="Remove from favorites">
                         <i class="bi bi-heart-fill"></i>
@@ -356,7 +353,7 @@
                     {% endif %}
                 </div>
                 <div class="col-md-8">
-                    <div class="card-body h-100" style="min-height: 300px;">
+                    <div class="card-body h-100 favorite-hotel-card-body">
                         <div class="d-flex justify-content-between">
                             <h5 class="fw-bold mb-2">
                                 <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
@@ -397,15 +394,15 @@
                         <div class="d-flex justify-content-between align-items-end mt-3">
                             <small class="text-muted">
                                 {% if hotel.room_types %}
-                                {{ hotel.room_types|length }} Room Type{{ 's' if hotel.room_types|length != 1 else '' }} Available
+                                {{ hotel.room_types|length }} {{ t('room_types_available_plural') if hotel.room_types|length != 1 else t('room_types_available') }} {{ t('available_text') }}
                                 {% else %}
-                                View hotel details for room availability
+                                {{ t('view_hotel_details') }}
                                 {% endif %}
                             </small>
 
                             <div class="text-end d-flex flex-column gap-2">
                                 <a href="{{ url_for('main.hotel_detail', hotel_id=hotel.id) }}"
-                                    class="btn btn-primary btn-sm">View</a>
+                                    class="btn btn-primary btn-sm">{{ t('view') }}</a>
                             </div>
                         </div>
                     </div>
@@ -416,10 +413,10 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-heart" aria-hidden="true"></i></div>
-            <h3>No Favorite Hotels</h3>
-            <p>You haven't added any hotels to your favorites yet</p>
-            <p class="text-muted small">Click the heart icon on any hotel to add it to your favorites</p>
-            <a href="{{ url_for('main.index') }}" class="btn-primary">Explore Hotels</a>
+            <h3>{{ t('no_favorite_hotels') }}</h3>
+            <p>{{ t('no_favorites_yet') }}</p>
+            <p class="text-muted small">{{ t('click_heart_to_add') }}</p>
+            <a href="{{ url_for('main.index') }}" class="btn-primary">{{ t('explore_hotels') }}</a>
         </div>
         {% endif %}
     </div>
@@ -428,85 +425,14 @@
     <div class="tab-content" id="events" role="tabpanel" aria-labelledby="events-tab">
         <div class="empty-state">
             <div class="empty-state-icon"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
-            <h3>Events Coming Soon</h3>
-            <p>Special hotel events, promotions, and exclusive offers will appear here</p>
+            <h3>{{ t('events_coming_soon') }}</h3>
+            <p>{{ t('events_will_appear') }}</p>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-// Tab switching for My Stays page
-document.addEventListener('DOMContentLoaded', function() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-    
-    // Function to switch tabs
-    function switchStaysTab(tabName) {
-        // Hide all tab contents
-        tabContents.forEach(content => {
-            content.style.display = 'none';
-        });
-        
-        // Remove active class from all buttons
-        tabButtons.forEach(button => {
-            button.classList.remove('active');
-        });
-        
-        // Show selected tab content
-        const targetTab = document.getElementById(tabName);
-        if (targetTab) {
-            targetTab.style.display = 'block';
-        }
-        
-        // Add active class to clicked button
-        const activeButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
-        
-        // Update URL hash without scrolling
-        if (tabName !== 'current') {
-            // Use history API to update hash without scrolling
-            if (history.replaceState) {
-                history.replaceState(null, null, '#' + tabName);
-            } else {
-                // Fallback for older browsers
-                const scrollY = window.scrollY;
-                window.location.hash = tabName;
-                window.scrollTo(0, scrollY);
-            }
-        } else {
-            // Remove hash for current tab
-            if (history.replaceState) {
-                history.replaceState(null, null, window.location.pathname + window.location.search);
-            } else {
-                window.location.hash = '';
-            }
-        }
-    }
-    
-    // Add click event listeners to tab buttons
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault(); // Prevent any default behavior
-            const tabName = this.getAttribute('data-tab');
-            if (tabName) {
-                switchStaysTab(tabName);
-            }
-        });
-    });
-    
-    // Check URL hash on page load
-    const hash = window.location.hash.substring(1);
-    if (hash && ['upcoming', 'current', 'past', 'cancelled', 'favorites', 'events'].includes(hash)) {
-        switchStaysTab(hash);
-    } else {
-        // Default to current tab
-        switchStaysTab('current');
-    }
-});
-</script>
+<script src="{{ url_for('static', filename='js/my_stays.js') }}"></script>
 <script src="{{ url_for('static', filename='js/favorites.js') }}"></script>
 {% endblock %}

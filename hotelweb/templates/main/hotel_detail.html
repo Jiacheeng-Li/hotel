@@ -6,28 +6,28 @@
 <div class="container">
     <nav aria-label="breadcrumb" class="py-1">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ t('home') }}</a></li>
             {% if breadcrumb.from_search %}
             <li class="breadcrumb-item">
-                <a href="{{ url_for('main.search', **breadcrumb.search_params) }}">Search Results</a>
+                <a href="{{ url_for('main.search', **breadcrumb.search_params) }}">{{ t('search_results') }}</a>
             </li>
             {% elif breadcrumb.from_brand %}
             <li class="breadcrumb-item">
-                <a href="{{ url_for('main.brands') }}">Brands</a>
+                <a href="{{ url_for('main.brands') }}">{{ t('brands') }}</a>
             </li>
             <li class="breadcrumb-item">
                 <a href="{{ url_for('main.brand_detail', brand_id=breadcrumb.brand_id) }}">{{ hotel.brand.name }}</a>
             </li>
             {% elif breadcrumb.from_city %}
             <li class="breadcrumb-item">
-                <a href="{{ url_for('main.destinations') }}">Destinations</a>
+                <a href="{{ url_for('main.destinations') }}">{{ t('destinations') }}</a>
             </li>
             <li class="breadcrumb-item">
                 <a href="{{ url_for('main.city_hotels', city_name=breadcrumb.city_name) }}">{{ breadcrumb.city_name }}</a>
             </li>
             {% elif breadcrumb.from_destinations %}
             <li class="breadcrumb-item">
-                <a href="{{ url_for('main.destinations') }}">Destinations</a>
+                <a href="{{ url_for('main.destinations') }}">{{ t('destinations') }}</a>
             </li>
             {% endif %}
             <li class="breadcrumb-item active">{{ hotel.name }}</li>
@@ -37,19 +37,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="row align-items-end">
+{% set reviews_per_row = 3 %}
+{% set max_rows = 2 %}
+{% set max_visible = reviews_per_row * max_rows %}
+<div class="row align-items-end" 
+     data-hotel-detail='{"totalReviews": {{ hotel.reviews|length if hotel.reviews else 0 }}, "visibleReviews": {{ max_visible }}, "lat": {% if hotel.latitude %}{{ hotel.latitude }}{% else %}null{% endif %}, "lng": {% if hotel.longitude %}{{ hotel.longitude }}{% else %}null{% endif %}}'>
     <div class="col-md-6">
-        <img src="{{ hotel.image_url }}" class="img-fluid rounded shadow w-100" style="object-fit: cover; display: block;"
+        <img src="{{ hotel.image_url }}" class="img-fluid rounded shadow w-100 hotel-main-image"
             alt="{{ hotel.name }}" id="hotel-main-image">
 </div>
 
-    <div class="col-md-6 d-flex flex-column" id="hotel-info-column" style="min-height: 450px;">
+    <div class="col-md-6 d-flex flex-column hotel-info-column" id="hotel-info-column">
         <div class="flex-grow-1">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <h1 class="display-5 fw-bold mb-0">{{ hotel.name }}</h1>
                 {% if current_user.is_authenticated %}
                 <button type="button" class="btn-favorite {% if is_favorited %}favorited{% endif %}" 
-                        onclick="toggleFavorite({{ hotel.id }})" 
+                        data-hotel-id="{{ hotel.id }}"
                         aria-label="{% if is_favorited %}Remove from favorites{% else %}Add to favorites{% endif %}">
                     <i class="bi {% if is_favorited %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                 </button>
@@ -81,14 +85,14 @@
                         {% endfor %}
                     </div>
                     <span class="fw-bold">{{ "%.1f"|format(avg_rating) }}</span>
-                    <span class="text-muted">({{ hotel.reviews|length }} review{{ 's' if hotel.reviews|length != 1 else '' }})</span>
+                    <span class="text-muted">({{ hotel.reviews|length }} {{ t('reviews') if hotel.reviews|length != 1 else t('review') }})</span>
                 </div>
             </div>
             {% endif %}
             
             {% if hotel.description %}
             <div class="mb-3">
-                <p class="text-muted mb-0" style="font-size: 0.95rem; line-height: 1.7;">
+                <p class="text-muted mb-0 hotel-description-text">
                     {{ hotel.description }}
                 </p>
             </div>
@@ -97,14 +101,14 @@
 
         <div class="mt-auto">
             {% if hotel.latitude and hotel.longitude %}
-            <div class="card border-0 shadow-sm" style="height: 200px; overflow: hidden; border-radius: 12px;">
-                <div id="hotel-map" style="width: 100%; height: 100%;"></div>
+            <div class="card border-0 shadow-sm hotel-map-card">
+                <div id="hotel-map" class="hotel-map-container"></div>
             </div>
             {% else %}
-            <div class="card border-0 shadow-sm d-flex align-items-center justify-content-center" style="height: 200px; border-radius: 12px; background: #f8f9fa;">
+            <div class="card border-0 shadow-sm d-flex align-items-center justify-content-center hotel-map-unavailable">
                 <div class="text-center text-muted">
-                    <i class="bi bi-map" style="font-size: 2rem;"></i>
-                    <p class="small mb-0 mt-2">Map unavailable</p>
+                    <i class="bi bi-map map-icon-large"></i>
+                    <p class="small mb-0 mt-2">{{ t('map_unavailable') }}</p>
                 </div>
             </div>
             {% endif %}
@@ -114,16 +118,16 @@
 
 <!-- Room Types Section - Display First -->
 <section class="mt-4 mb-4" aria-labelledby="rooms-heading">
-    <h2 id="rooms-heading" class="h4 fw-bold mb-4">Room Types</h2>
+    <h2 id="rooms-heading" class="h4 fw-bold mb-4">{{ t('room_types') }}</h2>
     <div class="row g-4">
             {% for rt in hotel.room_types %}
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 border-0 shadow-sm hover-effect">
                 {% if rt.image_url %}
-                <img src="{{ rt.image_url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ rt.name }}">
+                <img src="{{ rt.image_url }}" class="card-img-top room-type-image" alt="{{ rt.name }}">
                 {% else %}
-                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center room-type-placeholder">
+                    <i class="bi bi-image text-muted room-type-placeholder-icon"></i>
                 </div>
                 {% endif %}
                 <div class="card-body d-flex flex-column">
@@ -136,35 +140,35 @@
                             </h3>
                             <div class="d-flex flex-wrap gap-2 mt-2">
                                 <span class="badge bg-light text-dark">
-                                    <i class="bi bi-people me-1" aria-hidden="true"></i>{{ rt.capacity }} guest{{ 's' if rt.capacity > 1 else '' }}
+                                    <i class="bi bi-people me-1" aria-hidden="true"></i>{{ rt.capacity }} {{ t('guests') if rt.capacity > 1 else t('guest') }}
                                 </span>
                                 <span class="badge bg-light text-dark">
-                                    <i class="bi bi-star me-1" aria-hidden="true"></i>{{ rt.amenities|length }} amenit{{ 'ies' if rt.amenities|length != 1 else 'y' }}
+                                    <i class="bi bi-star me-1" aria-hidden="true"></i>{{ rt.amenities|length }} {{ t('amenities') if rt.amenities|length != 1 else t('amenity') }}
                                 </span>
                             </div>
                 </div>
                 <div class="text-end">
                             <div class="text-success fw-bold fs-4 mb-0">${{ "{:,.0f}".format(rt.price_per_night) }}</div>
-                            <small class="text-muted">per night</small>
+                            <small class="text-muted">{{ t('per_night') }}</small>
                             {% if room_availability and rt.id in room_availability %}
                             <div class="mt-1">
                                 {% set avail = room_availability[rt.id] %}
                                 {% if avail == 0 %}
-                                <span class="availability-badge-small sold-out">Sold Out</span>
+                                <span class="availability-badge-small sold-out">{{ t('sold_out') }}</span>
                                 {% elif avail < 5 %}
-                                <span class="availability-badge-small low-stock">Only {{ avail }} left</span>
+                                <span class="availability-badge-small low-stock">{{ t('only_left') }} {{ avail }} {{ t('left') }}</span>
                                 {% endif %}
                             </div>
                             {% endif %}
                         </div>
                     </div>
                     {% if room_availability and rt.id in room_availability and room_availability[rt.id] == 0 %}
-                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% if breadcrumb.search_params.check_in %}&check_in={{ breadcrumb.search_params.check_in }}{% endif %}{% if breadcrumb.search_params.check_out %}&check_out={{ breadcrumb.search_params.check_out }}{% endif %}{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-secondary w-100 mt-auto" style="opacity: 0.6; cursor: not-allowed;" onclick="return false;">
-                        Sold Out
+                    <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% if breadcrumb.search_params.check_in %}&check_in={{ breadcrumb.search_params.check_in }}{% endif %}{% if breadcrumb.search_params.check_out %}&check_out={{ breadcrumb.search_params.check_out }}{% endif %}{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-secondary w-100 mt-auto sold-out-btn">
+                        {{ t('sold_out') }}
                     </a>
                     {% else %}
                     <a href="{{ url_for('main.roomtype_detail', roomtype_id=rt.id) }}{% if breadcrumb.from_search %}?from=search{% if breadcrumb.search_params.check_in %}&check_in={{ breadcrumb.search_params.check_in }}{% endif %}{% if breadcrumb.search_params.check_out %}&check_out={{ breadcrumb.search_params.check_out }}{% endif %}{% elif breadcrumb.from_brand %}?from=brand{% elif breadcrumb.from_city %}?from=city&city_name={{ breadcrumb.city_name }}{% elif breadcrumb.from_destinations %}?from=destinations{% endif %}" class="btn btn-primary w-100 mt-auto">
-                        View Details
+                        {{ t('view_details') }}
                         <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                     {% endif %}
@@ -177,24 +181,21 @@
 
 <!-- Guest Reviews Section - Display After Room Types -->
 <section class="mt-5 mb-4" aria-labelledby="reviews-heading">
-    <h2 id="reviews-heading" class="h4 fw-bold mb-4">Guest Reviews</h2>
+    <h2 id="reviews-heading" class="h4 fw-bold mb-4">{{ t('guest_reviews') }}</h2>
     {% if not hotel.reviews %}
     <div class="card border-0 shadow-sm">
         <div class="card-body text-center py-5">
-            <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
-            <p class="text-muted mt-3 mb-0">No reviews yet. Be the first to review this hotel!</p>
+            <i class="bi bi-chat-dots text-muted empty-reviews-icon"></i>
+            <p class="text-muted mt-3 mb-0">{{ t('no_reviews_yet_first') }}</p>
         </div>
     </div>
     {% else %}
     {% set reviews_list = hotel.reviews|list %}
-    {% set reviews_per_row = 3 %}
-    {% set max_rows = 2 %}
-    {% set max_visible = reviews_per_row * max_rows %}
     <div class="reviews-container">
         <div class="row g-3 reviews-row" id="reviews-display">
             {% for review in reviews_list %}
             <div class="col-md-6 col-lg-4 review-item {% if loop.index > max_visible %}review-hidden{% endif %}">
-                <div class="card h-100 shadow-sm border-0" style="background-color: white;">
+                <div class="card h-100 shadow-sm border-0 review-card-bg">
             <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="fw-bold mb-0">{{ review.author.username }}</h6>
@@ -212,8 +213,8 @@
         </div>
         {% if reviews_list|length > max_visible %}
         <div class="text-center mt-4">
-            <button type="button" class="btn btn-outline-secondary" id="toggle-reviews-btn" onclick="toggleReviews()">
-                <span id="toggle-reviews-text">Show More Reviews ({{ reviews_list|length - max_visible }} more)</span>
+            <button type="button" class="btn btn-outline-secondary" id="toggle-reviews-btn">
+                <span id="toggle-reviews-text">{{ t('show_more_reviews') }} ({{ reviews_list|length - max_visible }} {{ t('more_reviews') }})</span>
                 <i class="bi bi-chevron-down ms-2" id="toggle-reviews-icon"></i>
             </button>
         </div>
@@ -222,29 +223,12 @@
     {% endif %}
 </section>
 
-<style>
-.review-hidden {
-    display: none;
-}
-
-.reviews-container.expanded .review-hidden {
-    display: block;
-}
-
-#toggle-reviews-icon {
-    transition: transform 0.3s ease;
-}
-
-.reviews-container.expanded #toggle-reviews-icon {
-    transform: rotate(180deg);
-}
-</style>
 
 
 <!-- Recommended Hotels Section -->
 {% if recommended_hotels %}
 <section class="mt-5 mb-4" aria-labelledby="recommended-heading">
-    <h2 id="recommended-heading" class="h4 fw-bold mb-4">You Might Also Like</h2>
+    <h2 id="recommended-heading" class="h4 fw-bold mb-4">{{ t('you_might_also_like') }}</h2>
     <div class="row g-4">
         {% for rec_hotel in recommended_hotels %}
         <div class="col-md-6 col-lg-4">
@@ -254,7 +238,7 @@
                     <img src="{{ rec_hotel.image_url }}" class="hotel-card-img" alt="{{ rec_hotel.name }}">
                     {% else %}
                     <div class="hotel-card-img bg-light d-flex align-items-center justify-content-center">
-                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                        <i class="bi bi-image text-muted room-type-placeholder-icon"></i>
                     </div>
                     {% endif %}
                 </div>
@@ -291,7 +275,7 @@
                                     {% endfor %}
                                 </div>
                                 <span class="hotel-card-rating-score">{{ "%.1f"|format(rec_avg_rating) }}</span>
-                                <span class="hotel-card-rating-count">({{ rec_hotel.reviews|length }} review{{ 's' if rec_hotel.reviews|length != 1 else '' }})</span>
+                                <span class="hotel-card-rating-count">({{ rec_hotel.reviews|length }} {{ t('reviews') if rec_hotel.reviews|length != 1 else t('review') }})</span>
                             </div>
                             {% endif %}
                         </div>
@@ -306,16 +290,9 @@
 </div>
 </section>
 {% endif %}
+{% endblock %}
 
-<script>
-    // Initialize data for external JS
-    window.hotelDetailData = {
-        totalReviews: {{ hotel.reviews|length if hotel.reviews else 0 }},
-        visibleReviews: {{ max_visible }},
-        lat: {{ hotel.latitude if hotel.latitude else 'null' }},
-        lng: {{ hotel.longitude if hotel.longitude else 'null' }}
-    };
-</script>
+{% block extra_scripts %}
 <script src="{{ url_for('static', filename='js/hotel_detail.js') }}"></script>
 <script src="{{ url_for('static', filename='js/favorites.js') }}"></script>
 {% endblock %}

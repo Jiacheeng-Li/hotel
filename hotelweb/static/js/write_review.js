@@ -1,5 +1,31 @@
 // Write Review Logic
+
+// Initialize review data from data attribute
+function initializeReviewData() {
+    const dataElement = document.querySelector('.review-data');
+    if (dataElement) {
+        try {
+            const initialRatingStr = dataElement.getAttribute('data-initial-rating');
+            window.reviewData = {
+                initialRating: initialRatingStr === 'null' ? null : parseInt(initialRatingStr)
+            };
+        } catch (e) {
+            console.error('Error parsing review data:', e);
+            window.reviewData = {
+                initialRating: null
+            };
+        }
+    } else {
+        window.reviewData = {
+            initialRating: null
+        };
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize data first
+    initializeReviewData();
+    
     const ratingInputs = document.querySelectorAll('input[name="rating"]');
     const ratingText = document.getElementById('rating-text');
     const ratingLabels = document.querySelectorAll('.rating-star');
@@ -15,12 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize rating display if existing review
     if (window.reviewData && window.reviewData.initialRating) {
         const initialRating = window.reviewData.initialRating;
-        ratingText.textContent = ratingTexts[initialRating];
+        if (ratingText) {
+            ratingText.textContent = ratingTexts[initialRating];
+        }
         ratingLabels.forEach((label, index) => {
             if (index < initialRating) {
-                label.style.color = '#dc3545'; // Red for selected
+                label.classList.add('rating-selected');
             } else {
-                label.style.color = '#ddd'; // Gray for unselected
+                label.classList.remove('rating-selected');
             }
         });
     }
@@ -28,14 +56,16 @@ document.addEventListener('DOMContentLoaded', function() {
     ratingInputs.forEach(input => {
         input.addEventListener('change', function() {
             const rating = parseInt(this.value);
-            ratingText.textContent = ratingTexts[rating];
+            if (ratingText) {
+                ratingText.textContent = ratingTexts[rating];
+            }
             
-            // Update star colors
+            // Update star colors using CSS classes
             ratingLabels.forEach((label, index) => {
                 if (index < rating) {
-                    label.style.color = '#dc3545'; // Red for selected
+                    label.classList.add('rating-selected');
                 } else {
-                    label.style.color = '#ddd'; // Gray for unselected
+                    label.classList.remove('rating-selected');
                 }
             });
         });
@@ -46,21 +76,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const hoverRating = parseInt(input.value);
             ratingLabels.forEach((l, index) => {
                 if (index < hoverRating) {
-                    l.style.color = '#ffc107'; // Yellow on hover
+                    l.classList.add('rating-hover');
                 }
             });
         });
         
         label.addEventListener('mouseout', function() {
+            // Remove hover class from all labels
+            ratingLabels.forEach(l => {
+                l.classList.remove('rating-hover');
+            });
+            
             // Revert to selected state
             const checkedInput = document.querySelector('input[name="rating"]:checked');
             const currentRating = checkedInput ? parseInt(checkedInput.value) : 0;
             
             ratingLabels.forEach((l, index) => {
                 if (index < currentRating) {
-                    l.style.color = '#dc3545';
+                    l.classList.add('rating-selected');
                 } else {
-                    l.style.color = '#ddd';
+                    l.classList.remove('rating-selected');
                 }
             });
         });

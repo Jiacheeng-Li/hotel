@@ -37,6 +37,18 @@ def create_app(config_class=Config):
     def inject_csrf():
         from .utils.security import generate_csrf_token
         return dict(csrf_token=generate_csrf_token)
+    
+    # Context processor to make language variables available in all templates
+    @app.context_processor
+    def inject_language():
+        from flask import session
+        from .main.language import get_current_language, SUPPORTED_LANGUAGES, get_translation
+        current_lang = get_current_language(session)
+        return dict(
+            current_language=current_lang,
+            supported_languages=SUPPORTED_LANGUAGES,
+            t=lambda key, default=None: get_translation(session, key, default)
+        )
 
     # Setup Logging
     configure_logging(app)

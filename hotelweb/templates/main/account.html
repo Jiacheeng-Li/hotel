@@ -10,39 +10,31 @@
     {% set tier_display_name = actual_tier + ' Member' %}
 {% endif %}
 
-<style>
-    /* Override main container padding for account page to allow full-width header */
-    main.container {
-        padding: 0 !important;
-        max-width: 100% !important;
-        background: transparent !important;
-    }
-</style>
 
 <div class="account-page-wrapper tier-{{ actual_tier.lower().replace(' ', '-') }}">
 <div class="account-header">
     <div class="header-content">
         <div class="header-left">
-            <h1>Hello {{ current_user.username }},</h1>
+            <h1>{{ t('hello') }} {{ current_user.username }},</h1>
             <h2>{{ tier_display_name }}</h2>
-            <p class="member-number">Member #{{ current_user.member_number or 'N/A' }}</p>
+            <p class="member-number">{{ t('member_number') }} {{ current_user.member_number or t('n_a') }}</p>
         </div>
         <div class="header-right">
-            <div class="points-label">YOUR POINTS</div>
+            <div class="points-label">{{ t('your_points') }}</div>
             <div class="points-value">{{ "{:,}".format(current_user.points) }}</div>
             <div class="header-actions">
-                <a href="{{ url_for('main.index') }}" class="btn-header">Redeem Points</a>
+                <a href="{{ url_for('main.index') }}" class="btn-header">{{ t('redeem_points') }}</a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="account-nav">
-    <a href="#overview" class="nav-tab active" data-tab="overview" onclick="return switchTab('overview', event);">Overview</a>
-    <a href="#rewards" class="nav-tab" data-tab="rewards" onclick="return switchTab('rewards', event);">Rewards Wallet</a>
-    <a href="#activity" class="nav-tab" data-tab="activity" onclick="return switchTab('activity', event);">Account Activity</a>
-    <a href="#settings" class="nav-tab" data-tab="settings" onclick="return switchTab('settings', event);">Settings</a>
-    <a href="#benefits" class="nav-tab" data-tab="benefits" onclick="return switchTab('benefits', event);">Member Benefits</a>
+    <a href="#overview" class="nav-tab active" data-tab="overview" onclick="return switchTab('overview', event);">{{ t('overview') }}</a>
+    <a href="#rewards" class="nav-tab" data-tab="rewards" onclick="return switchTab('rewards', event);">{{ t('rewards_wallet') }}</a>
+    <a href="#activity" class="nav-tab" data-tab="activity" onclick="return switchTab('activity', event);">{{ t('account_activity') }}</a>
+    <a href="#settings" class="nav-tab" data-tab="settings" onclick="return switchTab('settings', event);">{{ t('settings') }}</a>
+    <a href="#benefits" class="nav-tab" data-tab="benefits" onclick="return switchTab('benefits', event);">{{ t('member_benefits') }}</a>
 </div>
 
 <div class="account-container">
@@ -52,64 +44,64 @@
         <!-- Current Status Card -->
         <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Current Status</h3>
+                    <h3 class="card-title">{{ t('current_status') }}</h3>
             </div>
                 <div>
-                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="tier-badge-container">
                         <div class="current-tier-badge tier-{{ current_user.membership_level.lower().replace(' ', '-') }}">
                             {{ current_user.membership_level }}
                         </div>
                         {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="color: #6b7280; font-size: 0.9rem;">until</span>
-                            <span style="color: #1a1a1a; font-weight: 600; font-size: 0.95rem;">{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</span>
-                            <span style="cursor: pointer; color: #6b7280; font-size: 0.85rem; text-decoration: underline;" onclick="toggleRetentionRules()" title="Click to view retention rules">
+                        <div class="tier-retention-info">
+                            <span class="tier-retention-until">{{ t('until') }}</span>
+                            <span class="tier-retention-date">{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</span>
+                            <span class="tier-retention-info-link" onclick="toggleRetentionRules()" title="{{ t('click_to_view_retention') }}">
                                 <i class="bi bi-info-circle"></i>
                             </span>
                         </div>
                         {% endif %}
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <p class="mb-0" style="color: #6b7280; font-size: 0.9rem;">
-                            Here's your status tracker
+                        <p class="mb-0 status-tracker-text">
+                            {{ t('here_status_tracker') }}
                         </p>
                         <div class="status-tracker-toggle">
-                            <button class="toggle-btn active" id="nights-toggle" onclick="switchTracker('nights')">By nights</button>
-                            <button class="toggle-btn" id="points-toggle" onclick="switchTracker('points')">By points</button>
+                            <button class="toggle-btn active" id="nights-toggle" onclick="switchTracker('nights')">{{ t('by_nights') }}</button>
+                            <button class="toggle-btn" id="points-toggle" onclick="switchTracker('points')">{{ t('by_points') }}</button>
                         </div>
             </div>
 
                     <!-- Nights Tracker (Default) -->
                     <div id="nights-tracker" class="tracker-content">
                 <div class="progress-info">
-                            <span><strong>{{ current_user.nights_stayed }}</strong> nights stayed</span>
+                            <span><strong>{{ current_user.nights_stayed }}</strong> {{ t('nights_stayed') }}</span>
                             {% if nights_to_next_milestone > 0 %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">{{ nights_to_next_milestone }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ nights_next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: white !important; cursor: pointer; font-weight: 600; margin-left: 0.5rem;">{{ nights_next_tier }}</a></span>
+                            <span class="progress-info-text">{{ nights_to_next_milestone }} {{ t('more_to_tier') }} <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ nights_next_tier.lower().replace(' ', '-') }} next-tier-link">{{ nights_next_tier }}</a></span>
                             {% else %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
+                            <span class="progress-info-text">{{ t('maximum_tier_achieved') }}</span>
                             {% endif %}
                 </div>
                 <div class="progress-tracker">
                     <div class="progress-bar-wrapper">
                         <div class="progress-markers">
                             <div class="progress-marker {% if current_user.nights_stayed >= 0 %}active{% endif %}" style="left: {{ nights_marker_0_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
+                                <div class="progress-marker-dot tier-club"></div>
                                 <div class="progress-marker-label">0</div>
                 </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 10 %}active{% endif %}" style="left: {{ nights_marker_10_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
+                                <div class="progress-marker-dot tier-silver"></div>
                                 <div class="progress-marker-label">10</div>
                     </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 20 %}active{% endif %}" style="left: {{ nights_marker_20_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #705200; border-color: #705200;"></div>
+                                <div class="progress-marker-dot tier-gold"></div>
                                 <div class="progress-marker-label">20</div>
                     </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 70 %}active{% endif %}" style="left: {{ nights_marker_70_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
+                                <div class="progress-marker-dot tier-diamond"></div>
                                 <div class="progress-marker-label">70</div>
                     </div>
                             <div class="progress-marker {% if current_user.nights_stayed >= 200 %}active{% endif %}" style="left: {{ nights_marker_200_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
+                                <div class="progress-marker-dot tier-platinum"></div>
                                 <div class="progress-marker-label">200</div>
                     </div>
                     </div>
@@ -119,63 +111,63 @@
                     </div>
                     <div class="tier-labels">
                         <div class="tier-label club-member {% if current_user.nights_stayed >= 0 %}achieved{% endif %}">
-                            <div class="tier-label-name">Club Member</div>
-                            <div class="tier-label-requirement">0 nights</div>
+                            <div class="tier-label-name">{{ t('club_member') }}</div>
+                            <div class="tier-label-requirement">0 {{ t('nights') }}</div>
                         </div>
                         <div class="tier-label silver {% if current_user.nights_stayed >= 10 %}achieved{% endif %}">
-                            <div class="tier-label-name">Silver Elite</div>
-                            <div class="tier-label-requirement">10 nights</div>
+                            <div class="tier-label-name">{{ t('silver_elite') }}</div>
+                            <div class="tier-label-requirement">10 {{ t('nights') }}</div>
                         </div>
                         <div class="tier-label gold {% if current_user.nights_stayed >= 20 %}achieved{% endif %}">
-                            <div class="tier-label-name">Gold Elite</div>
-                            <div class="tier-label-requirement">20 nights</div>
+                            <div class="tier-label-name">{{ t('gold_elite') }}</div>
+                            <div class="tier-label-requirement">20 {{ t('nights') }}</div>
                         </div>
                         <div class="tier-label diamond {% if current_user.nights_stayed >= 70 %}achieved{% endif %}">
-                            <div class="tier-label-name">Diamond Elite</div>
-                            <div class="tier-label-requirement">70 nights</div>
+                            <div class="tier-label-name">{{ t('diamond_elite') }}</div>
+                            <div class="tier-label-requirement">70 {{ t('nights') }}</div>
                     </div>
                         <div class="tier-label platinum {% if current_user.nights_stayed >= 200 %}achieved{% endif %}">
-                            <div class="tier-label-name">Platinum Elite</div>
-                            <div class="tier-label-requirement">200 nights</div>
+                            <div class="tier-label-name">{{ t('platinum_elite') }}</div>
+                            <div class="tier-label-requirement">200 {{ t('nights') }}</div>
                     </div>
                     </div>
                 </div>
-                        <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
-                            Earn qualifying nights or points to unlock more member benefits.
+                        <p class="mt-4 mb-0 tracker-helper-text">
+                            {{ t('earn_qualifying_nights') }}
                         </p>
             </div>
 
                     <!-- Points Tracker (Hidden by default) -->
-                    <div id="points-tracker" class="tracker-content" style="display: none;">
+                    <div id="points-tracker" class="tracker-content hidden">
                 <div class="progress-info">
-                            <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> lifetime points</span>
+                            <span><strong>{{ "{:,}".format(current_user.lifetime_points) }}</strong> {{ t('lifetime_points') }}</span>
                             {% if points_to_next > 0 %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">{{ "{:,}".format(points_to_next) }} more to <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ next_tier.lower().replace(' ', '-') }}" style="text-decoration: none; color: white !important; cursor: pointer; font-weight: 600; margin-left: 0.5rem;">{{ next_tier }}</a></span>
+                            <span class="progress-info-text">{{ "{:,}".format(points_to_next) }} {{ t('more_to_tier') }} <a href="#" onclick="return switchTab('benefits', event);" class="next-tier-badge tier-{{ next_tier.lower().replace(' ', '-') }} next-tier-link">{{ next_tier }}</a></span>
                             {% else %}
-                            <span style="color: #6b7280; font-size: 0.9rem;">Maximum tier achieved!</span>
+                            <span class="progress-info-text">{{ t('maximum_tier_achieved') }}</span>
                             {% endif %}
                 </div>
                 <div class="progress-tracker">
                     <div class="progress-bar-wrapper">
                         <div class="progress-markers">
                             <div class="progress-marker {% if current_user.lifetime_points >= 0 %}active{% endif %}" style="left: {{ points_marker_0_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #0B254E; border-color: #0B254E;"></div>
+                                <div class="progress-marker-dot tier-club"></div>
                                 <div class="progress-marker-label">0</div>
                 </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 50000 %}active{% endif %}" style="left: {{ points_marker_50k_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #606060; border-color: #606060;"></div>
+                                <div class="progress-marker-dot tier-silver"></div>
                                 <div class="progress-marker-label">50K</div>
                     </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 100000 %}active{% endif %}" style="left: {{ points_marker_100k_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #705200; border-color: #705200;"></div>
+                                <div class="progress-marker-dot tier-gold"></div>
                                 <div class="progress-marker-label">100K</div>
                     </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 500000 %}active{% endif %}" style="left: {{ points_marker_500k_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #37283F; border-color: #37283F;"></div>
+                                <div class="progress-marker-dot tier-diamond"></div>
                                 <div class="progress-marker-label">500K</div>
                     </div>
                             <div class="progress-marker {% if current_user.lifetime_points >= 1000000 %}active{% endif %}" style="left: {{ points_marker_1m_pct }}%;">
-                                <div class="progress-marker-dot" style="background: #253639; border-color: #253639;"></div>
+                                <div class="progress-marker-dot tier-platinum"></div>
                                 <div class="progress-marker-label">1M</div>
                     </div>
                     </div>
@@ -185,29 +177,29 @@
             </div>
                     <div class="tier-labels">
                         <div class="tier-label club-member {% if current_user.lifetime_points >= 0 %}achieved{% endif %}">
-                            <div class="tier-label-name">Club Member</div>
-                            <div class="tier-label-requirement">0 points</div>
+                            <div class="tier-label-name">{{ t('club_member') }}</div>
+                            <div class="tier-label-requirement">0 {{ t('points') }}</div>
                         </div>
                         <div class="tier-label silver {% if current_user.lifetime_points >= 50000 %}achieved{% endif %}">
-                            <div class="tier-label-name">Silver Elite</div>
-                            <div class="tier-label-requirement">50K points</div>
+                            <div class="tier-label-name">{{ t('silver_elite') }}</div>
+                            <div class="tier-label-requirement">50K {{ t('points') }}</div>
                         </div>
                         <div class="tier-label gold {% if current_user.lifetime_points >= 100000 %}achieved{% endif %}">
-                            <div class="tier-label-name">Gold Elite</div>
-                            <div class="tier-label-requirement">100K points</div>
+                            <div class="tier-label-name">{{ t('gold_elite') }}</div>
+                            <div class="tier-label-requirement">100K {{ t('points') }}</div>
                         </div>
                         <div class="tier-label diamond {% if current_user.lifetime_points >= 500000 %}achieved{% endif %}">
-                            <div class="tier-label-name">Diamond Elite</div>
-                            <div class="tier-label-requirement">500K points</div>
+                            <div class="tier-label-name">{{ t('diamond_elite') }}</div>
+                            <div class="tier-label-requirement">500K {{ t('points') }}</div>
                         </div>
                         <div class="tier-label platinum {% if current_user.lifetime_points >= 1000000 %}achieved{% endif %}">
-                            <div class="tier-label-name">Platinum Elite</div>
-                            <div class="tier-label-requirement">1M points</div>
+                            <div class="tier-label-name">{{ t('platinum_elite') }}</div>
+                            <div class="tier-label-requirement">1M {{ t('points') }}</div>
                         </div>
                     </div>
                 </div>
-                        <p class="mt-4 mb-0" style="font-size: 0.85rem; color: #6b7280; text-align: center;">
-                            Earn qualifying nights or points to unlock more member benefits.
+                        <p class="mt-4 mb-0 tracker-helper-text">
+                            {{ t('earn_qualifying_nights') }}
                         </p>
             </div>
                 </div>
@@ -216,32 +208,32 @@
         <!-- Milestone Rewards Card -->
         <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ current_year }} Milestone Rewards</h3>
+                    <h3 class="card-title">{{ current_year }} {{ t('milestone_rewards') }}</h3>
                 </div>
                 <div class="milestone-rewards">
-                    <div class="milestone-title">Earn Milestone Rewards!</div>
+                    <div class="milestone-title">{{ t('earn_milestone_rewards') }}</div>
                     <div class="milestone-description">
-                        Choose your first reward at 20 nights, and again every 10 nights you stay this year, up to 100 nights.
+                        {{ t('milestone_description') }}
                     </div>
             <div class="milestone-circle" style="background: conic-gradient(from 0deg, #e5e7eb 0%, #e5e7eb {{ 100 - milestone_progress_percent }}%, var(--tier-color) {{ 100 - milestone_progress_percent }}%, var(--tier-color) 100%);">
                         <div class="milestone-circle-inner">
                             <div class="milestone-number">{{ nights_to_milestone_year }}</div>
-                            <div class="milestone-label">nights to next milestone</div>
+                            <div class="milestone-label">{{ t('nights_to_next_milestone') }}</div>
                         </div>
                     </div>
                     {% if unclaimed_milestones %}
                     <div class="alert alert-warning mb-3">
-                        <strong>You have unclaimed rewards!</strong><br>
+                        <strong>{{ t('you_have_unclaimed_rewards') }}</strong><br>
                         {% for milestone in unclaimed_milestones %}
                         <a href="{{ url_for('main.claim_milestone_reward', milestone_nights=milestone) }}" class="btn btn-sm btn-warning mt-2">
-                            Claim {{ milestone }}-Night Reward
+                            {{ t('claim_reward') }} {{ milestone }}{{ t('night_reward') }}
                         </a>
                         {% endfor %}
                     </div>
                     {% endif %}
                     <div class="mt-3">
-                        <a href="{{ url_for('main.milestone_progress') }}" style="font-size: 0.9rem; color: #37283F; text-decoration: none; font-weight: 500;">
-                            Milestone Rewards progress >
+                        <a href="{{ url_for('main.milestone_progress') }}" class="milestone-progress-link">
+                            {{ t('milestone_rewards_progress') }}
                         </a>
                     </div>
                 </div>
@@ -255,37 +247,37 @@
         {% if milestone_rewards %}
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="card-title">Milestone Rewards</h3>
+                <h3 class="card-title">{{ t('milestone_rewards') }}</h3>
             </div>
             <div class="rewards-list collapsible-list" data-default-show="5">
                 {% for reward in milestone_rewards %}
-                <div class="reward-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %}>
+                <div class="reward-item collapsible-item {% if loop.index > 5 %}hidden{% endif %}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
                                 {% if reward.reward_type == 'points' %}
-                                <i class="bi bi-star-fill text-warning"></i> {{ "{:,}".format(reward.reward_value|int) }} Bonus Points
+                                <i class="bi bi-star-fill text-warning"></i> {{ "{:,}".format(reward.reward_value|int) }} {{ t('bonus_points') }}
                                 {% elif reward.reward_type == 'breakfast' %}
-                                <i class="bi bi-cup-hot text-primary"></i> {{ reward.reward_value }} Complimentary Breakfast{{ 's' if reward.reward_value != 1 else '' }}
+                                <i class="bi bi-cup-hot text-primary"></i> {{ reward.reward_value }} {{ t('complimentary_breakfast') if reward.reward_value == 1 else t('complimentary_breakfasts') }}
                                 {% endif %}
                             </strong>
                             <div class="text-muted small mt-1">
-                                {{ reward.milestone_nights }}-Night Milestone Reward
+                                {{ reward.milestone_nights }}{{ t('milestone_reward') }}
                             </div>
                             <div class="text-muted small">
-                                Claimed: {{ reward.claimed_at.strftime('%B %d, %Y') if reward.claimed_at else reward.created_at.strftime('%B %d, %Y') }}
+                                {{ t('claimed') }}: {{ reward.claimed_at.strftime('%B %d, %Y') if reward.claimed_at else reward.created_at.strftime('%B %d, %Y') }}
                             </div>
                             {% if reward.reward_type == 'breakfast' %}
                             {% set available_breakfasts = reward.get_available_breakfasts() %}
                             {% set used_breakfasts = reward.breakfasts_used %}
                             <div class="text-muted small mt-1">
                                 {% if used_breakfasts > 0 %}
-                                <span class="badge bg-secondary">{{ used_breakfasts }} used</span>
+                                <span class="badge bg-secondary">{{ used_breakfasts }} {{ t('used') }}</span>
                                 {% endif %}
                                 {% if available_breakfasts > 0 %}
-                                <span class="badge bg-success">{{ available_breakfasts }} available</span>
+                                <span class="badge bg-success">{{ available_breakfasts }} {{ t('available') }}</span>
                                 {% else %}
-                                <span class="badge bg-danger">All used</span>
+                                <span class="badge bg-danger">{{ t('all_used') }}</span>
                                 {% endif %}
                             </div>
                             {% endif %}
@@ -304,8 +296,8 @@
             {% if milestone_rewards|length > 5 %}
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="milestone-rewards-list">
-                    <span class="show-more-text">Show More ({{ milestone_rewards|length - 5 }} more)</span>
-                    <span class="show-less-text" style="display: none;">Show Less</span>
+                    <span class="show-more-text">{{ t('show_more') }} ({{ milestone_rewards|length - 5 }} {{ t('more') }})</span>
+                    <span class="show-less-text hidden">{{ t('show_less') }}</span>
                 </button>
             </div>
             {% endif %}
@@ -315,14 +307,14 @@
         <!-- Free Nights and Booking Rewards -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Free Nights and Booking Rewards</h3>
+                <h3 class="card-title">{{ t('free_nights_booking_rewards') }}</h3>
                 </div>
             {% if points_bookings or breakfast_voucher_bookings %}
             {% set total_bookings_count = (points_bookings|length + breakfast_voucher_bookings|length) %}
             <div class="rewards-list collapsible-list" data-default-show="5">
                 <!-- Bookings Paid with Points -->
                 {% for booking in points_bookings %}
-                <div class="reward-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %}>
+                <div class="reward-item collapsible-item {% if loop.index > 5 %}hidden{% endif %}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
@@ -335,12 +327,12 @@
             </div>
                             {% if booking.status == 'CANCELLED' %}
                             <div class="text-muted small mt-1">
-                                <span class="badge bg-danger">Cancelled</span>
+                                <span class="badge bg-danger">{{ t('cancelled') }}</span>
                             </div>
                             {% endif %}
                         </div>
                         <div class="text-danger fw-bold">
-                            -{{ "{:,}".format(booking.points_used) }} points
+                            -{{ "{:,}".format(booking.points_used) }} {{ t('points') }}
                         </div>
                     </div>
                 </div>
@@ -349,7 +341,7 @@
                 <!-- Bookings with Breakfast Voucher -->
                 {% for booking in breakfast_voucher_bookings %}
                 {% set display_index = points_bookings|length + loop.index %}
-                <div class="reward-item collapsible-item" {% if display_index > 5 %}style="display: none;"{% endif %}>
+                <div class="reward-item collapsible-item {% if display_index > 5 %}hidden{% endif %}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>
@@ -361,16 +353,16 @@
                                 ({{ (booking.check_out - booking.check_in).days }} night{{ 's' if (booking.check_out - booking.check_in).days != 1 else '' }})
                             </div>
                             <div class="text-muted small mt-1">
-                                <span class="badge bg-success">{{ booking.rooms_count }} breakfast{{ 's' if booking.rooms_count != 1 else '' }} (Free)</span>
+                                <span class="badge bg-success">{{ booking.rooms_count }} {{ t('complimentary_breakfast') if booking.rooms_count == 1 else t('complimentary_breakfasts') }} ({{ t('free_breakfast') }})</span>
                             </div>
                             {% if booking.status == 'CANCELLED' %}
                             <div class="text-muted small mt-1">
-                                <span class="badge bg-danger">Cancelled</span>
+                                <span class="badge bg-danger">{{ t('cancelled') }}</span>
                             </div>
                             {% endif %}
                         </div>
                         <div class="text-success fw-bold">
-                            Free Breakfast
+                            {{ t('free_breakfast') }}
                         </div>
                     </div>
                 </div>
@@ -380,15 +372,15 @@
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="free-nights-list">
                     <span class="show-more-text">Show More ({{ total_bookings_count - 5 }} more)</span>
-                    <span class="show-less-text" style="display: none;">Show Less</span>
+                    <span class="show-less-text hidden">Show Less</span>
                 </button>
             </div>
             {% endif %}
             {% else %}
             <div class="text-center py-5">
-                <i class="bi bi-wallet2" style="font-size: 3rem; color: #d1d5db;"></i>
-                <p class="text-muted mt-3">No free nights or booking rewards yet.</p>
-                <a href="{{ url_for('main.search') }}" class="btn-premium mt-2">Start Using Rewards</a>
+                <i class="bi bi-wallet2 empty-wallet-icon"></i>
+                <p class="text-muted mt-3">{{ t('no_free_nights') }}</p>
+                <a href="{{ url_for('main.search') }}" class="btn-premium mt-2">{{ t('start_using_rewards') }}</a>
             </div>
             {% endif %}
         </div>
@@ -399,26 +391,26 @@
         <!-- Summary Section -->
         <div class="activity-summary">
             <div class="summary-card">
-                <div class="summary-label">Current Tier</div>
+                <div class="summary-label">{{ t('current_tier') }}</div>
                 <div class="summary-value">{{ current_user.membership_level }}</div>
                 <div class="mt-2">
                     <span class="current-tier-badge tier-{{ current_user.membership_level.lower().replace(' ', '-') }}">
-                        {{ current_user.get_points_multiplier() }}x Multiplier
+                        {{ current_user.get_points_multiplier() }}x {{ t('multiplier') }}
                     </span>
         </div>
         </div>
             <div class="summary-card">
-                <div class="summary-label">Total Nights</div>
+                <div class="summary-label">{{ t('total_nights') }}</div>
                 <div class="summary-value">{{ current_user.nights_stayed }}</div>
-                <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
-                    {{ total_bookings }} stay{{ 's' if total_bookings != 1 else '' }}
+                <div class="mt-2 summary-card-stats">
+                    {{ total_bookings }} {{ t('stays') if total_bookings != 1 else t('stay') }}
         </div>
             </div>
             <div class="summary-card">
-                <div class="summary-label">Total Spent</div>
+                <div class="summary-label">{{ t('total_spent') }}</div>
                 <div class="summary-value">${{ "{:,.0f}".format(total_spent) }}</div>
-                <div class="mt-2" style="font-size: 0.85rem; color: #6b7280;">
-                    {{ "{:,}".format(current_user.points) }} points
+                <div class="mt-2 summary-card-stats">
+                    {{ "{:,}".format(current_user.points) }} {{ t('points') }}
                 </div>
         </div>
     </div>
@@ -426,15 +418,15 @@
         <!-- Points History -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Points History</h3>
-                <div class="text-muted small mt-2" style="font-size: 0.85rem;">
-                    <i class="bi bi-info-circle"></i> Points Calculation: 1 dollar = 10 base points × {{ current_user.get_points_multiplier() }}x {{ current_user.membership_level }} multiplier. Points are not earned on amounts paid with points.
+                <h3 class="card-title">{{ t('points_history') }}</h3>
+                <div class="text-muted small mt-2 points-info-text">
+                    <i class="bi bi-info-circle"></i> {{ t('points_calculation') }} {{ current_user.get_points_multiplier() }}{{ t('multiplier_text') }}
                 </div>
         </div>
             {% if all_transactions %}
             <div class="collapsible-list" data-default-show="5">
                 {% for transaction in all_transactions %}
-                <div class="activity-item collapsible-item" {% if loop.index > 5 %}style="display: none;"{% endif %} {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'" style="cursor: pointer;"{% else %}style="cursor: default;"{% endif %}>
+                <div class="activity-item collapsible-item {% if loop.index > 5 %}hidden{% endif %} {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}clickable{% endif %}" {% if transaction.booking_id and transaction.transaction_type in ['EARNED', 'REDEEMED'] %}onclick="window.location.href='{{ url_for('main.view_bill', booking_id=transaction.booking_id) }}'"{% endif %}>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ transaction.description }}</strong>
@@ -442,8 +434,8 @@
                             {% if transaction.transaction_type == 'EARNED' and transaction.booking_id %}
                             {% set booking = all_bookings|selectattr('id', 'equalto', transaction.booking_id)|first %}
                             {% if booking and booking.points_used > 0 %}
-                            <div class="text-muted small" style="font-size: 0.75rem; margin-top: 0.25rem;">
-                                <i class="bi bi-info-circle"></i> Points earned on actual payment (excludes points payment)
+                            <div class="text-muted small activity-item-info">
+                                <i class="bi bi-info-circle"></i> {{ t('points_earned_on_payment') }}
                             </div>
                             {% endif %}
                             {% endif %}
@@ -459,12 +451,12 @@
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-link p-0 toggle-collapse-btn" onclick="toggleCollapseList(this)" data-list-id="points-history-list">
                     <span class="show-more-text">Show More ({{ all_transactions|length - 5 }} more)</span>
-                    <span class="show-less-text" style="display: none;">Show Less</span>
+                    <span class="show-less-text hidden">Show Less</span>
                 </button>
             </div>
             {% endif %}
             {% else %}
-            <p class="text-muted text-center py-4">No points transactions yet.</p>
+            <p class="text-muted text-center py-4">{{ t('no_points_transactions') }}</p>
             {% endif %}
         </div>
 
@@ -474,65 +466,97 @@
     <div id="settings" class="tab-content">
         <div class="card">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="card-title mb-0">Profile Information</h3>
-            <button class="btn-edit" onclick="toggleEdit()" aria-label="Edit profile information">Edit Profile</button>
+                <h3 class="card-title mb-0">{{ t('profile_information') }}</h3>
+            <button id="edit-profile-btn" class="btn-edit" onclick="toggleEdit()" aria-label="Edit profile information">{{ t('edit_profile') }}</button>
         </div>
 
         <form id="profileForm" action="{{ url_for('main.update_profile') }}" method="POST" onsubmit="event.preventDefault(); updateProfile();">
             <div class="profile-grid">
                 <div class="profile-field">
-                    <label for="edit-username" class="profile-label">Username</label>
+                    <label for="edit-username" class="profile-label">{{ t('username') }}</label>
                     <span class="profile-value" id="view-username">{{ current_user.username }}</span>
-                    <input type="text" class="profile-input" id="edit-username" name="username"
-                        value="{{ current_user.username }}" style="display: none;" aria-label="Username">
+                    <input type="text" class="profile-input hidden" id="edit-username" name="username"
+                        value="{{ current_user.username }}" aria-label="Username">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-email" class="profile-label">Email</label>
+                    <label for="edit-email" class="profile-label">{{ t('email') }}</label>
                     <span class="profile-value" id="view-email">{{ current_user.email }}</span>
-                    <input type="email" class="profile-input" id="edit-email" name="email"
-                        value="{{ current_user.email }}" style="display: none;" aria-label="Email address">
+                    <input type="email" class="profile-input hidden" id="edit-email" name="email"
+                        value="{{ current_user.email }}" aria-label="Email address">
+                    </div>
+                <div class="profile-field">
+                    <label for="edit-phone" class="profile-label">{{ t('phone') }}</label>
+                    <span class="profile-value" id="view-phone">{{ current_user.phone or t('not_provided') }}</span>
+                    <input type="tel" class="profile-input hidden" id="edit-phone" name="phone"
+                        value="{{ current_user.phone or '' }}" aria-label="Phone number">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-phone" class="profile-label">Phone</label>
-                    <span class="profile-value" id="view-phone">{{ current_user.phone or 'Not provided' }}</span>
-                    <input type="tel" class="profile-input" id="edit-phone" name="phone"
-                        value="{{ current_user.phone or '' }}" style="display: none;" aria-label="Phone number">
+                    <label for="edit-birthday" class="profile-label">{{ t('birthday') }}</label>
+                        <span class="profile-value" id="view-birthday">{{ current_user.birthday.strftime('%B %d, %Y') if current_user.birthday else t('not_provided') }}</span>
+                    <input type="date" class="profile-input hidden" id="edit-birthday" name="birthday"
+                            value="{{ current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '' }}" aria-label="Birthday">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-birthday" class="profile-label">Birthday</label>
-                        <span class="profile-value" id="view-birthday">{{ current_user.birthday.strftime('%B %d, %Y') if current_user.birthday else 'Not provided' }}</span>
-                    <input type="date" class="profile-input" id="edit-birthday" name="birthday"
-                            value="{{ current_user.birthday.strftime('%Y-%m-%d') if current_user.birthday else '' }}" style="display: none;" aria-label="Birthday">
+                    <label for="edit-address" class="profile-label">{{ t('address') }}</label>
+                    <span class="profile-value" id="view-address">{{ current_user.address or t('not_provided') }}</span>
+                    <input type="text" class="profile-input hidden" id="edit-address" name="address"
+                        value="{{ current_user.address or '' }}" aria-label="Street address">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-address" class="profile-label">Address</label>
-                    <span class="profile-value" id="view-address">{{ current_user.address or 'Not provided' }}</span>
-                    <input type="text" class="profile-input" id="edit-address" name="address"
-                        value="{{ current_user.address or '' }}" style="display: none;" aria-label="Street address">
+                    <label for="edit-city" class="profile-label">{{ t('city') }}</label>
+                    <span class="profile-value" id="view-city">{{ current_user.city or t('not_provided') }}</span>
+                    <input type="text" class="profile-input hidden" id="edit-city" name="city"
+                        value="{{ current_user.city or '' }}" aria-label="City">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-city" class="profile-label">City</label>
-                    <span class="profile-value" id="view-city">{{ current_user.city or 'Not provided' }}</span>
-                    <input type="text" class="profile-input" id="edit-city" name="city"
-                        value="{{ current_user.city or '' }}" style="display: none;" aria-label="City">
+                    <label for="edit-country" class="profile-label">{{ t('country') }}</label>
+                    <span class="profile-value" id="view-country">{{ current_user.country or t('not_provided') }}</span>
+                    <input type="text" class="profile-input hidden" id="edit-country" name="country"
+                        value="{{ current_user.country or '' }}" aria-label="Country">
                 </div>
                 <div class="profile-field">
-                    <label for="edit-country" class="profile-label">Country</label>
-                    <span class="profile-value" id="view-country">{{ current_user.country or 'Not provided' }}</span>
-                    <input type="text" class="profile-input" id="edit-country" name="country"
-                        value="{{ current_user.country or '' }}" style="display: none;" aria-label="Country">
-                </div>
-                <div class="profile-field">
-                    <label for="edit-postal" class="profile-label">Postal Code</label>
-                    <span class="profile-value" id="view-postal">{{ current_user.postal_code or 'Not provided' }}</span>
-                    <input type="text" class="profile-input" id="edit-postal" name="postal_code"
-                        value="{{ current_user.postal_code or '' }}" style="display: none;" aria-label="Postal code">
+                    <label for="edit-postal" class="profile-label">{{ t('postal_code') }}</label>
+                    <span class="profile-value" id="view-postal">{{ current_user.postal_code or t('not_provided') }}</span>
+                    <input type="text" class="profile-input hidden" id="edit-postal" name="postal_code"
+                        value="{{ current_user.postal_code or '' }}" aria-label="Postal code">
                 </div>
             </div>
 
-            <div class="form-actions" id="formActions" style="display: none;">
-                <button type="submit" class="btn-edit">Save Changes</button>
-                <button type="button" class="btn-secondary" onclick="cancelEdit()">Cancel</button>
+            <div class="form-actions hidden" id="formActions">
+                <button type="submit" class="btn-edit">{{ t('save_changes') }}</button>
+                <button type="button" class="btn-secondary" onclick="cancelEdit()">{{ t('cancel') }}</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Password Change Section -->
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="card-title mb-0">{{ t('change_password') }}</h3>
+            <button id="edit-password-btn" class="btn-edit" onclick="togglePasswordEdit()" aria-label="Change password">{{ t('change_password') }}</button>
+        </div>
+        
+        <form id="passwordForm" action="{{ url_for('main.change_password') }}" method="POST" onsubmit="event.preventDefault(); updatePassword();">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="profile-grid hidden" id="passwordFields">
+                <div class="profile-field">
+                    <label for="current-password" class="profile-label">{{ t('current_password') }}</label>
+                    <input type="password" class="profile-input" id="current-password" name="current_password" required autocomplete="current-password" aria-label="Current password">
+                </div>
+                <div class="profile-field">
+                    <label for="new-password" class="profile-label">{{ t('new_password') }}</label>
+                    <input type="password" class="profile-input" id="new-password" name="new_password" required autocomplete="new-password" aria-label="New password">
+                    <small class="text-muted">{{ t('password_requirements') }}</small>
+                </div>
+                <div class="profile-field">
+                    <label for="confirm-password" class="profile-label">{{ t('confirm_password') }}</label>
+                    <input type="password" class="profile-input" id="confirm-password" name="confirm_password" required autocomplete="new-password" aria-label="Confirm new password">
+                </div>
+            </div>
+            
+            <div class="form-actions hidden mt-3" id="passwordFormActions">
+                <button type="submit" class="btn-edit">{{ t('change_password') }}</button>
+                <button type="button" class="btn-secondary" onclick="cancelPasswordEdit()">{{ t('cancel') }}</button>
             </div>
         </form>
     </div>
@@ -540,16 +564,16 @@
     <!-- Payment Methods Section -->
     <div class="card">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="card-title mb-0">Payment Methods</h3>
+            <h3 class="card-title mb-0">{{ t('payment_methods') }}</h3>
             <button id="add-card-btn" class="btn-edit" onclick="toggleAddCard()" aria-label="Add new payment card">
-                <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Card
+                <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ t('add_card') }}
             </button>
 </div>
 
         {% if payment_methods %}
         <div class="payment-methods-list">
             {% for card in payment_methods %}
-            <div class="profile-field mb-3 pb-3" style="border-bottom: 1px solid #e5e7eb;">
+            <div class="profile-field mb-3 pb-3 payment-method-field">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-3">
                         <div class="card-icon">
@@ -569,36 +593,34 @@
                             <div class="profile-value mb-1 d-flex align-items-center gap-2">
                                 <span>**** {{ card.last4 }}</span>
                                 {% if card.card_type == 'Visa' %}
-                                <span class="badge" style="background-color: #1a1f71; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">VISA</span>
+                                <span class="badge card-badge-visa">VISA</span>
                                 {% elif card.card_type == 'Mastercard' %}
-                                <span class="badge" style="background-color: #eb001b; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">MASTERCARD</span>
+                                <span class="badge card-badge-mastercard">MASTERCARD</span>
                                 {% elif card.card_type == 'Amex' %}
-                                <span class="badge" style="background-color: #006fcf; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">AMEX</span>
+                                <span class="badge card-badge-amex">AMEX</span>
                                 {% elif card.card_type == 'Discover' %}
-                                <span class="badge" style="background-color: #ff6000; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">DISCOVER</span>
+                                <span class="badge card-badge-discover">DISCOVER</span>
                                 {% else %}
-                                <span class="badge" style="background-color: #6b7280; color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">{{ card.card_type }}</span>
+                                <span class="badge card-badge-other">{{ card.card_type }}</span>
                                 {% endif %}
                             </div>
-                            <div class="profile-label mb-0">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</div>
+                            <div class="profile-label mb-0">{{ t('expires') }} {{ card.expiry_month }}/{{ card.expiry_year }}</div>
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
                         {% if card.is_default %}
-                        <span class="badge default-badge" data-card-id="{{ card.id }}" data-csrf-token="{{ csrf_token() }}" style="background-color: #1e3a8a; color: white; padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 600;">Default</span>
+                        <span class="badge default-badge" data-card-id="{{ card.id }}" data-csrf-token="{{ csrf_token() }}">{{ t('default') }}</span>
                         {% else %}
                         <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 set-default-btn" 
                                 data-card-id="{{ card.id }}" 
                                 data-csrf-token="{{ csrf_token() }}"
-                                style="color: #1e3a8a; font-weight: 500;"
-                                aria-label="Set {{ card.card_type }} card ending in {{ card.last4 }} as default">Set Default</button>
+                                aria-label="Set {{ card.card_type }} card ending in {{ card.last4 }} as default">{{ t('set_default') }}</button>
                         {% endif %}
                         <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 delete-card-btn" 
                                 data-card-id="{{ card.id }}" 
                                 data-csrf-token="{{ csrf_token() }}"
                                 data-card-type="{{ card.card_type }}"
                                 data-card-last4="{{ card.last4 }}"
-                                style="color: #dc2626;"
                                 aria-label="Delete {{ card.card_type }} card ending in {{ card.last4 }}">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -608,24 +630,24 @@
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-muted text-center py-3">No payment methods saved.</p>
+        <p class="text-muted text-center py-3">{{ t('no_payment_methods') }}</p>
         {% endif %}
 
         <!-- Add Card Form (Hidden by default) -->
-        <div id="add-card-form" style="display: none;">
+        <div id="add-card-form" class="hidden">
             <form action="{{ url_for('main.add_card') }}" method="post" id="addCardForm">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="profile-grid">
                     <div class="profile-field">
-                        <label for="cardholder_name" class="profile-label">Cardholder Name</label>
+                        <label for="cardholder_name" class="profile-label">{{ t('cardholder_name') }}</label>
                         <input type="text" name="cardholder_name" id="cardholder_name" class="profile-input" required maxlength="100" autocomplete="cc-name" aria-label="Cardholder name">
                     </div>
                     <div class="profile-field">
-                        <label for="card_number" class="profile-label">Card Number</label>
+                        <label for="card_number" class="profile-label">{{ t('card_number') }}</label>
                         <input type="text" name="card_number" id="card_number" class="profile-input" placeholder="**** **** **** ****" required maxlength="19" autocomplete="cc-number" inputmode="numeric" aria-label="Card number">
                     </div>
                     <div class="profile-field">
-                        <label for="expiry_month" class="profile-label">Expiration Month</label>
+                        <label for="expiry_month" class="profile-label">{{ t('expiration_month') }}</label>
                         <select name="expiry_month" id="expiry_month" class="profile-input" required autocomplete="cc-exp-month" aria-label="Expiration month">
                             {% for i in range(1, 13) %}
                             <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
@@ -633,7 +655,7 @@
                         </select>
                     </div>
                     <div class="profile-field">
-                        <label for="expiry_year" class="profile-label">Expiration Year</label>
+                        <label for="expiry_year" class="profile-label">{{ t('expiration_year') }}</label>
                         <select name="expiry_year" id="expiry_year" class="profile-input" required autocomplete="cc-exp-year" aria-label="Expiration year">
                             {% for i in range(2025, 2036) %}
                             <option value="{{ i }}">{{ i }}</option>
@@ -641,14 +663,14 @@
                         </select>
                     </div>
                     <div class="profile-field">
-                        <label for="cvv" class="profile-label">CVV <span class="text-muted small">(not stored)</span></label>
+                        <label for="cvv" class="profile-label">{{ t('cvv') }} <span class="text-muted small">{{ t('not_stored') }}</span></label>
                         <input type="text" name="cvv" id="cvv" class="profile-input" placeholder="***" required maxlength="4" autocomplete="cc-csc" inputmode="numeric" aria-label="CVV security code">
-                        <small class="text-muted">CVV is not stored for security</small>
+                        <small class="text-muted">{{ t('cvv_security_note') }}</small>
                     </div>
                 </div>
                 <div class="form-actions mt-3">
-                    <button type="submit" class="btn-edit">Save Card</button>
-                    <button type="button" class="btn-secondary" onclick="cancelAddCard()">Cancel</button>
+                    <button type="submit" class="btn-edit">{{ t('save_card') }}</button>
+                    <button type="button" class="btn-secondary" onclick="cancelAddCard()">{{ t('cancel') }}</button>
                 </div>
             </form>
         </div>
@@ -658,7 +680,7 @@
     <!-- Club Member Benefits Tab -->
     <div id="benefits" class="tab-content">
         <div class="benefits-header">
-            <h2 style="font-size: 1.5rem;">Your Membership Benefits <span style="font-weight: 400;">|</span> {{ actual_tier }}</h2>
+            <h2 class="benefits-header-title">{{ t('your_membership_benefits') }} <span class="benefits-header-separator">|</span> {{ actual_tier }}</h2>
         </div>
 
         <div class="benefits-grid">
@@ -692,7 +714,7 @@
                     <i class="bi {{ benefit_icons.get(benefit, 'bi-check-circle-fill') }}"></i>
                 </div>
                 <div class="benefit-title">{{ benefit }}</div>
-                <div class="benefit-description">Available with your {{ current_user.membership_level }} status</div>
+                <div class="benefit-description">{{ t('available_with_status') }} {{ current_user.membership_level }} {{ t('status') }}</div>
             </div>
             {% endfor %}
         </div>
@@ -701,24 +723,24 @@
             <div class="text-center">
                 <a href="#" class="benefits-toggle" onclick="return toggleBenefitsComparison(event);">
                     <i class="bi bi-chevron-down" id="benefits-icon"></i>
-                    Compare All Club Membership Tiers
+                    {{ t('compare_all_tiers') }}
                 </a>
             </div>
             <div class="benefits-comparison" id="benefits-comparison">
                 <table class="benefits-table">
                     <thead>
                         <tr>
-                            <th style="color: white;">Benefit</th>
-                            <th class="tier-header tier-club-member" style="background: #0B254E; color: white;">Club Member</th>
-                            <th class="tier-header tier-silver-elite" style="background: #606060; color: white;">Silver Elite</th>
-                            <th class="tier-header tier-gold-elite" style="background: #705200; color: white;">Gold Elite</th>
-                            <th class="tier-header tier-diamond-elite" style="background: #37283F; color: white;">Diamond Elite</th>
-                            <th class="tier-header tier-platinum-elite" style="background: #253639; color: white;">Platinum Elite</th>
+                            <th class="benefits-table-header">{{ t('benefit') }}</th>
+                            <th class="tier-header tier-club-member">{{ t('club_member_tier') }}</th>
+                            <th class="tier-header tier-silver-elite">{{ t('silver_elite_tier') }}</th>
+                            <th class="tier-header tier-gold-elite">{{ t('gold_elite_tier') }}</th>
+                            <th class="tier-header tier-diamond-elite">{{ t('diamond_elite_tier') }}</th>
+                            <th class="tier-header tier-platinum-elite">{{ t('platinum_elite_tier') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Points Multiplier</td>
+                            <td class="benefits-table-row-header">{{ t('points_multiplier') }}</td>
                             <td>{{ multipliers['Club Member'] }}x</td>
                             <td>{{ multipliers['Silver Elite'] }}x</td>
                             <td>{{ multipliers['Gold Elite'] }}x</td>
@@ -726,7 +748,7 @@
                             <td>{{ multipliers['Platinum Elite'] }}x</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Earn Points on Stays</td>
+                            <td class="benefits-table-row-header">{{ t('earn_points_on_stays') }}</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -734,7 +756,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Club Member-only Rates</td>
+                            <td class="benefits-table-row-header">{{ t('club_member_only_rates') }}</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -742,7 +764,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Mobile Check-in</td>
+                            <td class="benefits-table-row-header">{{ t('mobile_checkin') }}</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -750,7 +772,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Late Checkout</td>
+                            <td class="benefits-table-row-header">{{ t('late_checkout') }}</td>
                             <td>-</td>
                             <td>2 PM</td>
                             <td>2 PM</td>
@@ -758,7 +780,7 @@
                             <td>4 PM</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Welcome Amenity</td>
+                            <td class="benefits-table-row-header">{{ t('welcome_amenity') }}</td>
                             <td>-</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -766,7 +788,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Support</td>
+                            <td class="benefits-table-row-header">{{ t('priority_support') }}</td>
                             <td>-</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -774,7 +796,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Priority Check-in</td>
+                            <td class="benefits-table-row-header">{{ t('priority_checkin') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
@@ -782,31 +804,23 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Room Upgrade</td>
+                            <td class="benefits-table-row-header">{{ t('room_upgrade') }}</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>Subject to availability</td>
-                            <td>Suite upgrade</td>
-                            <td>Penthouse upgrade</td>
+                            <td>{{ t('subject_to_availability') }}</td>
+                            <td>{{ t('suite_upgrade') }}</td>
+                            <td>{{ t('penthouse_upgrade') }}</td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Breakfast</td>
+                            <td class="benefits-table-row-header">{{ t('complimentary_breakfast') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
-                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
-                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
-                        </tr>
-                        <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Executive Lounge Access</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Dedicated Concierge</td>
+                            <td class="benefits-table-row-header">{{ t('executive_lounge_access') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -814,7 +828,15 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Personal Travel Advisor</td>
+                            <td class="benefits-table-row-header">{{ t('dedicated_concierge') }}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                            <td><i class="bi bi-check" aria-hidden="true"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="benefits-table-row-header">{{ t('personal_travel_advisor') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -822,7 +844,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Exclusive Events Access</td>
+                            <td class="benefits-table-row-header">{{ t('exclusive_events_access') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -830,7 +852,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Complimentary Spa Services</td>
+                            <td class="benefits-table-row-header">{{ t('complimentary_spa_services') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -838,7 +860,7 @@
                             <td><i class="bi bi-check" aria-hidden="true"></i></td>
                         </tr>
                         <tr>
-                            <td style="color: white; background: #0B254E; font-weight: 700; text-align: left; padding-left: 1.5rem;">Airport Transfers</td>
+                            <td class="benefits-table-row-header">{{ t('airport_transfers') }}</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -855,71 +877,68 @@
 
 <!-- Tier Retention Rules Modal -->
 {% if tier_retention.status != 'permanent' and tier_retention.expiry_date %}
-<div id="retention-rules-modal" style="display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding-top: 80px; padding-bottom: 20px;">
-    <div style="background-color: white; margin: auto; padding: 0; border-radius: 16px; width: 90%; max-width: 600px; max-height: calc(90vh - 100px); overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative;">
+<div id="retention-rules-modal" class="hidden">
+    <div class="retention-modal-content">
         <!-- Modal Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1a1a1a;">Tier Retention Rules</h3>
-            <span onclick="toggleRetentionRules()" style="color: #6b7280; font-size: 1.5rem; font-weight: 700; cursor: pointer; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b7280'">&times;</span>
+        <div class="retention-modal-header">
+            <h3 class="retention-modal-title">{{ t('tier_retention_rules') }}</h3>
+            <button type="button" class="retention-modal-close" onclick="toggleRetentionRules()" aria-label="Close modal">&times;</button>
         </div>
         
         <!-- Modal Body -->
-        <div style="padding: 1.5rem;">
-            <p style="color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                <strong>How Tier Retention Works:</strong><br>
-                To maintain your {{ current_user.membership_level }} status, you need to meet the retention requirements each year. 
-                Your tier status is valid until <strong>{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</strong>.
+        <div class="retention-modal-body">
+            <p class="retention-modal-text">
+                <strong>{{ t('how_tier_retention_works') }}</strong><br>
+                {{ t('to_maintain_status') }} {{ current_user.membership_level }} {{ t('status_valid_until') }} <strong>{{ tier_retention.expiry_date.strftime('%B %d, %Y') }}</strong>.
             </p>
             
-            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Your Retention Requirements:</p>
-                <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
-                    <li><strong>{{ tier_requirements.nights }} qualifying nights</strong> OR</li>
-                    <li><strong>{{ "{:,}".format(tier_requirements.points) }} points</strong></li>
+            <div class="retention-requirements-box">
+                <p class="retention-requirements-title">{{ t('your_retention_requirements') }}</p>
+                <ul class="retention-requirements-list">
+                    <li><strong>{{ tier_requirements.nights }} {{ t('qualifying_nights') }}</strong> {{ t('or') }}</li>
+                    <li><strong>{{ "{:,}".format(tier_requirements.points) }} {{ t('points') }}</strong></li>
                 </ul>
-                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #9ca3af; font-style: italic;">
+                <p class="retention-requirements-note">
                     {{ tier_requirements.note }}
                 </p>
             </div>
             
-            <div style="background: {% if tier_retention.meets_requirement %}#d1fae5{% else %}#fee2e2{% endif %}; padding: 1rem; border-radius: 8px; border-left: 4px solid {% if tier_retention.meets_requirement %}#10b981{% else %}#ef4444{% endif %}; margin-bottom: 1rem;">
-                <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+            <div class="retention-status-box {% if tier_retention.meets_requirement %}met{% else %}not-met{% endif %}">
+                <p class="retention-status-title">
                     {% if tier_retention.meets_requirement %}
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> Retention Requirement Met
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ t('retention_requirement_met') }}
                     {% else %}
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Retention Requirement Not Met
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ t('retention_requirement_not_met') }}
                     {% endif %}
                 </p>
-                <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">
-                    Current Progress (this tier year):
+                <p class="retention-progress-text">
+                    {{ t('current_progress') }}
                 </p>
-                <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; font-size: 0.9rem;">
-                    <li>{{ tier_retention.current_nights }} / {{ tier_retention.required_nights }} nights</li>
-                    <li>{{ "{:,}".format(tier_retention.current_points) }} / {{ "{:,}".format(tier_retention.required_points) }} points</li>
+                <ul class="retention-progress-list">
+                    <li>{{ tier_retention.current_nights }} / {{ tier_retention.required_nights }} {{ t('nights') }}</li>
+                    <li>{{ "{:,}".format(tier_retention.current_points) }} / {{ "{:,}".format(tier_retention.required_points) }} {{ t('points') }}</li>
                 </ul>
                 {% if not tier_retention.meets_requirement %}
-                <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #dc2626; font-weight: 600;">
-                    You have {{ tier_retention.days_until_expiry }} days to meet the requirement to maintain your status.
+                <p class="retention-warning-text">
+                    {{ t('days_to_meet_requirement') }} {{ tier_retention.days_until_expiry }} {{ t('days_to_maintain_status') }}
                 </p>
                 {% endif %}
             </div>
             
-            <div style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 0.5rem;"><strong>Important Notes:</strong></p>
-                <ul style="margin: 0; padding-left: 1.5rem; color: #9ca3af; font-size: 0.85rem; line-height: 1.6;">
-                    <li>Retention requirements reset each year on your tier anniversary date</li>
-                    <li>You only need to meet ONE requirement (nights OR points) to retain your status</li>
-                    <li>If you don't meet the requirement, you'll be downgraded to the tier you qualify for based on your lifetime nights/points</li>
-                    <li>Qualifying nights and points are counted from stays completed during your tier year</li>
+            <div class="retention-notes-section">
+                <p class="retention-notes-title"><strong>{{ t('important_notes') }}</strong></p>
+                <ul class="retention-notes-list">
+                    <li>{{ t('retention_resets') }}</li>
+                    <li>{{ t('meet_one_requirement') }}</li>
+                    <li>{{ t('downgrade_note') }}</li>
+                    <li>{{ t('qualifying_counted') }}</li>
                 </ul>
             </div>
         </div>
         
         <!-- Modal Footer -->
-        <div style="padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; text-align: right;">
-            <button onclick="toggleRetentionRules()" style="background: #6b7280; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='#6b7280'">
-                Close
-            </button>
+        <div class="retention-modal-footer">
+            <button type="button" class="retention-modal-close-btn" onclick="toggleRetentionRules()">{{ t('close') }}</button>
         </div>
     </div>
 </div>
@@ -929,78 +948,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-    // Inline fallback for critical tab switching functionality
-    function switchTab(tabName, event) {
-        console.log("SwitchTab called for:", tabName);
-        if (event) event.preventDefault();
-        
-        // Update URL hash to maintain tab state on refresh (without scrolling)
-        if (tabName && tabName !== 'overview') {
-            // Use history API to update hash without scrolling
-            if (window.history && window.history.replaceState) {
-                window.history.replaceState(null, null, '#' + tabName);
-            } else {
-                // Fallback for older browsers
-                var scrollY = window.scrollY;
-                window.location.hash = tabName;
-                window.scrollTo(0, scrollY);
-            }
-        } else {
-            // Remove hash for overview (default tab)
-            if (window.history && window.history.replaceState) {
-                window.history.replaceState(null, null, window.location.pathname + window.location.search);
-            } else {
-                window.location.hash = '';
-            }
-        }
-        
-        // 1. Hide all tab contents
-        var contents = document.getElementsByClassName('tab-content');
-        for (var i = 0; i < contents.length; i++) {
-            contents[i].style.display = 'none';
-            contents[i].classList.remove('active');
-        }
-        
-        // 2. Remove active from all tabs
-        var tabs = document.getElementsByClassName('nav-tab');
-        for (var i = 0; i < tabs.length; i++) {
-            tabs[i].classList.remove('active');
-        }
-        
-        // 3. Show target content
-        var target = document.getElementById(tabName);
-        if (target) {
-            target.style.display = 'block';
-            target.classList.add('active');
-        } else {
-            console.error("Target tab not found:", tabName);
-        }
-        
-        // 4. Set active tab
-        if (event && event.currentTarget) {
-            event.currentTarget.classList.add('active');
-        } else if (event && event.target) {
-             // Fallback if currentTarget is not available
-             event.target.classList.add('active');
-        } else {
-            // Find tab by data-tab attribute
-            var navTab = document.querySelector('.nav-tab[data-tab="' + tabName + '"]');
-            if (navTab) {
-                navTab.classList.add('active');
-            }
-        }
-        
-        return false;
-    }
-    
-    // On page load, check hash and switch to appropriate tab
-    document.addEventListener('DOMContentLoaded', function() {
-        var hash = window.location.hash.substring(1);
-        if (hash && ['overview', 'rewards', 'activity', 'settings', 'benefits'].includes(hash)) {
-            switchTab(hash);
-        }
-    });
-</script>
-<script src="{{ url_for('static', filename='js/account.js') }}?v=3"></script>
+<script src="{{ url_for('static', filename='js/account.js') }}?v=4"></script>
 {% endblock %}

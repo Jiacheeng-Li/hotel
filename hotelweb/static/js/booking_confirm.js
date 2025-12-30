@@ -120,10 +120,12 @@ function toggleCardOptions() {
     
     if (payByCard && payByCard.checked) {
         if (cardOptionsContainer) {
+            cardOptionsContainer.classList.add('show');
             cardOptionsContainer.style.display = 'block';
         }
     } else {
         if (cardOptionsContainer) {
+            cardOptionsContainer.classList.remove('show');
             cardOptionsContainer.style.display = 'none';
         }
         // Uncheck all card selection options when Pay by Card is deselected
@@ -132,7 +134,10 @@ function toggleCardOptions() {
             radio.checked = false;
         });
         // Hide warning when switching away from Pay by Card
-        if (noCardWarning) noCardWarning.style.display = 'none';
+        if (noCardWarning) {
+            noCardWarning.classList.remove('show');
+            noCardWarning.style.display = 'none';
+        }
     }
     updatePaymentMethod();
 }
@@ -202,7 +207,10 @@ function updatePaymentMethod(newTotal) {
         } else {
             // No card selected
             isValidPayment = false;
-            if (noCardWarning) noCardWarning.style.display = 'block';
+            if (noCardWarning) {
+                noCardWarning.classList.add('show');
+                noCardWarning.style.display = 'block';
+            }
         }
     } else if (payWithPoints && payWithPoints.checked) {
         actualPaymentMethod = 'points';
@@ -212,7 +220,10 @@ function updatePaymentMethod(newTotal) {
         if (window.bookingData.userPoints < pointsNeeded) {
             // Insufficient points
             isValidPayment = false;
-            if (insufficientPointsWarning) insufficientPointsWarning.style.display = 'block';
+            if (insufficientPointsWarning) {
+                insufficientPointsWarning.classList.add('show');
+                insufficientPointsWarning.style.display = 'block';
+            }
         }
     } else {
         const payAtHotel = document.getElementById('pay_at_hotel');
@@ -223,13 +234,22 @@ function updatePaymentMethod(newTotal) {
     
     // Hide warnings when payment is valid
     if (isValidPayment) {
-        if (noCardWarning) noCardWarning.style.display = 'none';
-        if (insufficientPointsWarning) insufficientPointsWarning.style.display = 'none';
+        if (noCardWarning) {
+            noCardWarning.classList.remove('show');
+            noCardWarning.style.display = 'none';
+        }
+        if (insufficientPointsWarning) {
+            insufficientPointsWarning.classList.remove('show');
+            insufficientPointsWarning.style.display = 'none';
+        }
     }
     
     // Update points payment info
     if (payWithPoints && payWithPoints.checked) {
-        if (pointsInfo) pointsInfo.style.display = 'block';
+        if (pointsInfo) {
+            pointsInfo.classList.add('show');
+            pointsInfo.style.display = 'block';
+        }
         const total = newTotal || window.bookingData.baseTotal + (window.bookingData.breakfastIncluded ? window.bookingData.breakfastPrice : 0);
         const pointsNeeded = Math.ceil(total * window.bookingData.pointsPerDollar);
         const remainingBalance = Math.max(0, total - (window.bookingData.userPoints / window.bookingData.pointsPerDollar));
@@ -237,21 +257,20 @@ function updatePaymentMethod(newTotal) {
         if (pointsNeededSpan) pointsNeededSpan.textContent = pointsNeeded.toLocaleString();
         if (remainingBalanceSpan) remainingBalanceSpan.textContent = '$' + remainingBalance.toFixed(2);
     } else {
-        if (pointsInfo) pointsInfo.style.display = 'none';
+        if (pointsInfo) {
+            pointsInfo.classList.remove('show');
+            pointsInfo.style.display = 'none';
+        }
     }
     
     // Enable/disable Complete button
     if (completeBtn) {
         if (isValidPayment) {
             completeBtn.disabled = false;
-            completeBtn.style.background = '#1e3a8a';
-            completeBtn.style.opacity = '1';
-            completeBtn.style.cursor = 'pointer';
+            completeBtn.classList.remove('disabled');
         } else {
             completeBtn.disabled = true;
-            completeBtn.style.background = '#9ca3af';
-            completeBtn.style.opacity = '0.6';
-            completeBtn.style.cursor = 'not-allowed';
+            completeBtn.classList.add('disabled');
         }
     }
 }
@@ -307,8 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!selectedCard) {
                     isValid = false;
                     e.preventDefault();
-                    if (document.getElementById('no_card_selected_warning')) {
-                        document.getElementById('no_card_selected_warning').style.display = 'block';
+                    const warning = document.getElementById('no_card_selected_warning');
+                    if (warning) {
+                        warning.classList.add('show');
+                        warning.style.display = 'block';
                     }
                 }
             } else if (payWithPoints && payWithPoints.checked) {
@@ -317,8 +338,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (window.bookingData.userPoints < pointsNeeded) {
                     isValid = false;
                     e.preventDefault();
-                    if (document.getElementById('insufficient_points_warning')) {
-                        document.getElementById('insufficient_points_warning').style.display = 'block';
+                    const warning = document.getElementById('insufficient_points_warning');
+                    if (warning) {
+                        warning.classList.add('show');
+                        warning.style.display = 'block';
                     }
                 }
             }

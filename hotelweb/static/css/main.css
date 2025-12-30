@@ -1,107 +1,22 @@
 /* ============================================
-   WCAG Accessibility Enhancements
+   Lumina Hospitality - Main Stylesheet
+   ============================================
+   This file contains all styles for the client-side application.
+   Structure:
+   1. Global Variables & Base Styles
+   2. Navigation & Layout Components
+   3. Form & Input Components
+   4. Card & Content Components
+   5. Page-Specific Styles
+   6. WCAG Accessibility Enhancements
+   7. Responsive Design (at end of file)
    ============================================ */
-
-/* Skip to main content link (for screen readers and keyboard navigation) */
-.skip-link {
-    position: absolute;
-    top: -40px;
-    left: 0;
-    background: var(--primary-color);
-    color: white;
-    padding: 8px;
-    text-decoration: none;
-    z-index: 100;
-}
-
-.skip-link:focus {
-    top: 0;
-}
-
-/* Enhanced focus visibility for keyboard navigation */
-*:focus-visible {
-    outline: 3px solid #005fcc;
-    outline-offset: 2px;
-    border-radius: 2px;
-}
-
-/* Ensure buttons and interactive elements have visible focus */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 3px solid #005fcc;
-    outline-offset: 2px;
-}
-
-/* Screen reader only content */
-.visually-hidden,
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    :root {
-        --text-color: #000000;
-        --text-muted: #333333;
-        --bg-color: #ffffff;
-    }
-    
-    .btn-primary {
-        border: 2px solid #000000;
-    }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Ensure sufficient color contrast for text */
-.text-muted {
-    color: #4a5568 !important; /* Improved contrast from #64748b */
-}
-
-/* Form labels should be clearly associated */
-label {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-/* Error states should be clearly visible */
-.form-control:invalid,
-.form-control.is-invalid {
-    border-color: #dc2626;
-    border-width: 2px;
-}
-
-.form-control:invalid:focus,
-.form-control.is-invalid:focus {
-    outline-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
-}
 
 /* ============================================
-   End WCAG Accessibility Enhancements
+   Global Variables & Base Styles
    ============================================ */
 
-/* Global Vars */
+/* CSS Custom Properties (Variables) */
 :root {
     --primary-color: #0f172a;
     /* Slate 900 */
@@ -120,6 +35,7 @@ label {
     --font-sans: 'Lato', sans-serif;
 }
 
+/* Base Typography */
 body {
     font-family: var(--font-sans);
     background-color: var(--bg-color);
@@ -127,13 +43,7 @@ body {
     line-height: 1.6;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.navbar-brand {
+h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: var(--font-serif);
     color: var(--primary-color);
 }
@@ -142,6 +52,10 @@ a {
     text-decoration: none;
     transition: color 0.2s;
 }
+
+/* ============================================
+   Navigation & Layout Components
+   ============================================ */
 
 /* Navbar */
 .navbar {
@@ -181,6 +95,15 @@ a {
     border-radius: 2px;
 }
 
+/* Remove white background from active button links */
+.nav-link.btn-outline-light.active,
+.nav-link.btn-outline-light.active:hover,
+.nav-link.btn-outline-light.active:focus {
+    background-color: transparent !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
 /* User dropdown button styling */
 .dropdown-toggle.btn-outline-light {
     border-color: rgba(255, 255, 255, 0.3) !important;
@@ -216,6 +139,10 @@ a {
     color: var(--accent-color);
 }
 
+/* ============================================
+   Form & Input Components
+   ============================================ */
+
 /* Buttons */
 .btn-primary {
     background-color: var(--primary-color);
@@ -242,6 +169,10 @@ a {
     background-color: var(--primary-color);
     color: white;
 }
+
+/* ============================================
+   Card & Content Components
+   ============================================ */
 
 /* Cards */
 .card {
@@ -706,42 +637,9 @@ footer h6,
     color: white;
 }
 
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .hotel-card-img {
-        height: 200px;
-    }
-    
-    .hotel-card-footer {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-    }
-    
-    .hotel-card-footer-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .hotel-card-footer-right {
-        width: 100%;
-    }
-    
-    .hotel-card-btn {
-        width: 100%;
-        text-align: center;
-    }
-    
-    .hotel-card-rating {
-        flex-wrap: wrap;
-    }
-}
-/* 
- * Milestone Progress Page Styles 
- * Specific styles for the milestone progress tracker
- */
+/* ============================================
+   Milestone Progress Page Styles
+   ============================================ */
 .milestone-progress-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -990,6 +888,204 @@ footer h6,
 .reward-breakfast {
     background: #dbeafe;
     color: #1e40af;
+}
+
+.reward-options-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Milestone Rewards Page Styles */
+.milestone-reward-card {
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.milestone-reward-icon {
+    font-size: 3rem;
+}
+
+/* ============================================
+   Room Type Detail Page Styles
+   ============================================ */
+
+.roomtype-image-card {
+    border-radius: 16px;
+}
+
+.roomtype-main-image {
+    height: 450px;
+    object-fit: cover;
+}
+
+.roomtype-placeholder {
+    height: 450px;
+}
+
+.roomtype-placeholder-icon {
+    font-size: 3rem;
+}
+
+.roomtype-description-card {
+    border-radius: 16px;
+    background: #f8fafc;
+}
+
+.roomtype-description-title {
+    color: #1a1a1a;
+    font-size: 1.25rem;
+}
+
+.roomtype-description-text {
+    line-height: 1.8;
+    font-size: 0.95rem;
+}
+
+.badge-amenities-count {
+    background-color: #1e3a8a;
+}
+
+.amenity-card {
+    border-left: 4px solid var(--primary-color);
+}
+
+.roomtype-booking-card {
+    top: 90px;
+    z-index: 1010;
+}
+
+.price-with-tax-text {
+    font-size: 0.85rem;
+}
+
+.btn-sold-out {
+    background: #9ca3af;
+    border: none;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Search Page Styles
+   ============================================ */
+
+/* Override nav-link color for nav-tabs (not navbar) */
+.nav-tabs .nav-link {
+    color: #4C5257 !important;
+    border: none;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #495057 !important;
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0f172a !important;
+    background-color: transparent;
+    border-bottom: 2px solid #d97706;
+}
+
+/* Reduce top spacing for search page */
+main.container {
+    padding-top: 0.5rem !important;
+}
+
+.badge-search-results {
+    background-color: #1e3a8a;
+}
+
+.search-sidebar-card {
+    top: 90px;
+    z-index: 1010;
+}
+
+.input-group-text-small {
+    font-size: 0.75rem;
+}
+
+.search-filter-scroll {
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.search-filter-label {
+    font-size: 0.75rem;
+}
+
+.btn-reset-filters {
+    padding: 0.25rem;
+}
+
+.search-hotel-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+
+.search-hotel-card-body {
+    min-height: 300px;
+}
+
+.search-map-container {
+    height: 600px;
+    border-radius: 8px;
+}
+
+/* ============================================
+   Write Review Page Styles
+   ============================================ */
+
+.rating-star {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.rating-star i {
+    display: block;
+}
+
+.rating-star.rating-selected {
+    color: #dc3545;
+}
+
+.rating-star.rating-hover {
+    color: #ffc107;
+}
+
+.rating-radio-hidden {
+    display: none;
+}
+
+/* ============================================
+   Base Template Styles
+   ============================================ */
+
+.navbar-logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.footer-custom-bg {
+    background: #0f172a !important;
+}
+
+.footer-logo {
+    height: 40px;
+    opacity: 0.9;
+}
+
+.footer-brand-logo {
+    height: 40px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.footer-brand-logo:hover {
+    opacity: 1;
 }
 
 /* Generic Empty State (Used in Milestone and Search) */
@@ -1960,45 +2056,9 @@ footer h6,
     margin-top: 1.5rem;
 }
 
-@media (max-width: 968px) {
-    .overview-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .activity-summary {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 1.5rem;
-    }
-    
-    .header-right {
-        align-items: center;
-        text-align: center;
-    }
-    
-    .account-nav {
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-    }
-    
-    .nav-tab {
-        white-space: nowrap;
-    }
-    
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* 
- * My Stays Page Styles 
- */
+/* ============================================
+   My Stays Page Styles
+   ============================================ */
 .stays-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -2087,6 +2147,42 @@ footer h6,
 .booking-card.cancelled {
     opacity: 0.7;
     background-color: #f9fafb;
+}
+
+/* My Stays Page Additional Styles */
+.badge-upcoming {
+    background-color: #1e3a8a !important;
+}
+
+.badge-events {
+    background-color: #065D6F !important;
+}
+
+.points-amount {
+    color: #7c3aed;
+}
+
+.breakfast-icon {
+    color: #d97706;
+}
+
+.badge-voucher {
+    font-size: 0.7rem;
+}
+
+.cancel-booking-form {
+    margin: 0;
+}
+
+.favorite-hotel-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+
+.favorite-hotel-card-body {
+    min-height: 300px;
 }
 
 .card-content {
@@ -2250,26 +2346,9 @@ footer h6,
     margin-top: 0.25rem;
 }
 
-@media (max-width: 768px) {
-    .card-content {
-        flex-direction: column;
-    }
-
-    .hotel-image {
-        width: 100%;
-        height: 200px;
-    }
-
-    .date-info {
-        gap: 1rem;
-    }
-
-    .booking-actions {
-        flex-wrap: wrap;
-    }
-}
-
-/* Celebration Modal */
+/* ============================================
+   Celebration Modal Styles
+   ============================================ */
 .celebration-modal {
     display: none;
     position: fixed;
@@ -2375,9 +2454,62 @@ footer h6,
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #f0f;
     animation: fall 3s linear infinite;
     opacity: 0;
+}
+
+.confetti-1 {
+    left: 10%;
+    animation-delay: 0s;
+    background-color: #f00;
+}
+
+.confetti-2 {
+    left: 20%;
+    animation-delay: 1s;
+    background-color: #0f0;
+}
+
+.confetti-3 {
+    left: 30%;
+    animation-delay: 2s;
+    background-color: #00f;
+}
+
+.confetti-4 {
+    left: 40%;
+    animation-delay: 0.5s;
+    background-color: #ff0;
+}
+
+.confetti-5 {
+    left: 50%;
+    animation-delay: 1.5s;
+    background-color: #0ff;
+}
+
+.confetti-6 {
+    left: 60%;
+    animation-delay: 2.5s;
+    background-color: #f0f;
+}
+
+.confetti-7 {
+    left: 70%;
+    animation-delay: 0.2s;
+    background-color: #f80;
+}
+
+.confetti-8 {
+    left: 80%;
+    animation-delay: 1.2s;
+    background-color: #08f;
+}
+
+.confetti-9 {
+    left: 90%;
+    animation-delay: 2.2s;
+    background-color: #80f;
 }
 
 @keyframes fadeIn {
@@ -2570,5 +2702,3060 @@ footer h6,
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
+}
+
+/* ============================================
+   Account Page Additional Styles
+   ============================================ */
+
+/* Override main container padding for account page */
+.account-page-wrapper main.container {
+    padding: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+}
+
+/* Tier Badge Container */
+.tier-badge-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Tier Retention Info */
+.tier-retention-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tier-retention-until {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.tier-retention-date {
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.tier-retention-info-link {
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-decoration: underline;
+}
+
+.tier-retention-info-link:hover {
+    color: #1a1a1a;
+}
+
+/* Status Tracker Text */
+.status-tracker-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* Progress Info Text */
+.progress-info-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* Next Tier Link */
+.next-tier-link {
+    text-decoration: none;
+    color: white !important;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+/* Progress Marker Dots - Tier Colors */
+.progress-marker-dot.tier-club {
+    background: #0B254E;
+    border-color: #0B254E;
+}
+
+.progress-marker-dot.tier-silver {
+    background: #606060;
+    border-color: #606060;
+}
+
+.progress-marker-dot.tier-gold {
+    background: #705200;
+    border-color: #705200;
+}
+
+.progress-marker-dot.tier-diamond {
+    background: #37283F;
+    border-color: #37283F;
+}
+
+.progress-marker-dot.tier-platinum {
+    background: #253639;
+    border-color: #253639;
+}
+
+/* Tracker Helper Text */
+.tracker-helper-text {
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* Hidden Tracker */
+.tracker-content.hidden {
+    display: none;
+}
+
+/* Milestone Progress Link */
+.milestone-progress-link {
+    font-size: 0.9rem;
+    color: #37283F;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.milestone-progress-link:hover {
+    color: #1a1a1a;
+    text-decoration: underline;
+}
+
+/* Empty Wallet Icon */
+.empty-wallet-icon {
+    font-size: 3rem;
+    color: #d1d5db;
+}
+
+/* Summary Card Stats */
+.summary-card-stats {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Points Info Text */
+.points-info-text {
+    font-size: 0.85rem;
+}
+
+/* Activity Item Info */
+.activity-item-info {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Hidden Form Fields */
+.profile-input.hidden {
+    display: none;
+}
+
+/* Form Actions Hidden */
+.form-actions.hidden {
+    display: none;
+}
+
+/* Payment Method Field */
+.payment-method-field {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Card Brand Badges */
+.card-badge-visa {
+    background-color: #1a1f71;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.card-badge-mastercard {
+    background-color: #eb001b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.card-badge-amex {
+    background-color: #006fcf;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.card-badge-discover {
+    background-color: #ff6000;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.card-badge-other {
+    background-color: #6b7280;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Default Badge */
+.default-badge {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Set Default Button */
+.set-default-btn {
+    color: #1e3a8a;
+    font-weight: 500;
+}
+
+.set-default-btn:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+/* Delete Card Button */
+.delete-card-btn {
+    color: #dc2626;
+}
+
+.delete-card-btn:hover {
+    color: #b91c1c;
+}
+
+/* Add Card Form Hidden */
+#add-card-form.hidden {
+    display: none;
+}
+
+/* Benefits Header Title */
+.benefits-header-title {
+    font-size: 1.5rem;
+}
+
+.benefits-header-separator {
+    font-weight: 400;
+}
+
+/* Benefits Table Header */
+.benefits-table-header {
+    color: white;
+}
+
+/* Retention Rules Modal */
+#retention-rules-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 20px;
+}
+
+#retention-rules-modal.show {
+    display: flex;
+}
+
+.retention-modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 0;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(90vh - 100px);
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.retention-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.retention-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.retention-modal-close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.retention-modal-close:hover {
+    color: #1a1a1a;
+}
+
+.retention-modal-body {
+    padding: 1.5rem;
+}
+
+.retention-modal-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.retention-requirements-box {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.retention-requirements-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.retention-requirements-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.retention-requirements-note {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.retention-status-box {
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid;
+    margin-bottom: 1rem;
+}
+
+.retention-status-box.met {
+    background: #d1fae5;
+    border-left-color: #10b981;
+}
+
+.retention-status-box.not-met {
+    background: #fee2e2;
+    border-left-color: #ef4444;
+}
+
+.retention-status-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.retention-progress-text {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.retention-progress-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.retention-warning-text {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.retention-notes-section {
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.retention-notes-title {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.retention-notes-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.retention-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    text-align: right;
+}
+
+.retention-modal-close-btn {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.retention-modal-close-btn:hover {
+    background: #4b5563;
+}
+
+/* Collapsible Item Hidden */
+.collapsible-item.hidden {
+    display: none;
+}
+
+/* Show/Hide Text */
+.show-less-text.hidden {
+    display: none;
+}
+
+/* Clickable Activity Item */
+.activity-item.clickable {
+    cursor: pointer;
+}
+
+.activity-item.clickable:hover {
+    background: #f0f2f5;
+}
+
+/* Benefits Table Row Headers */
+.benefits-table-row-header {
+    color: white;
+    background: #0B254E;
+    font-weight: 700;
+    text-align: left;
+    padding-left: 1.5rem;
+}
+
+/* Benefits Table Tier Headers */
+.benefits-table th.tier-club-member {
+    background: #0B254E;
+    color: white;
+}
+
+.benefits-table th.tier-silver-elite {
+    background: #606060;
+    color: white;
+}
+
+.benefits-table th.tier-gold-elite {
+    background: #705200;
+    color: white;
+}
+
+.benefits-table th.tier-diamond-elite {
+    background: #37283F;
+    color: white;
+}
+
+.benefits-table th.tier-platinum-elite {
+    background: #253639;
+    color: white;
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none;
+}
+
+/* ============================================
+   Home Page Styles
+   ============================================ */
+
+/* Hero Banner */
+.hero-banner {
+    background-size: cover;
+    border-radius: 12px;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-hero-banner {
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+/* Hero Text Styles */
+.hero-text-container h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hero-text-container .lead {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-size: 1.5rem;
+}
+
+/* Search Card */
+.home-search-card {
+    max-width: 1100px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 16px;
+}
+
+/* Search Button */
+.home-search-btn {
+    border-radius: 8px;
+}
+
+/* Brand Filter Checkbox */
+.home-brand-checkbox {
+    margin-right: 0.75rem;
+}
+
+/* Brand Card Styles */
+.brand-card {
+    transition: all 0.3s ease;
+}
+
+.brand-logo-container {
+    height: 100px;
+}
+
+.brand-logo-img {
+    max-height: 80px;
+    max-width: 100%;
+}
+
+/* Brand Color Bar - Note: background-color is set inline via brand.logo_color */
+.brand-color-bar {
+    height: 3px;
+    width: 40px;
+    margin: 0 auto 10px auto;
+}
+
+.home-brand-label {
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   Booking Bill Styles
+   ============================================ */
+
+.bill-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: white;
+    padding: 3rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+
+.bill-header {
+    text-align: center;
+    border-bottom: 3px solid #1e3a8a;
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.bill-header::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #1e3a8a, transparent);
+}
+
+.bill-header h1 {
+    font-size: 2.25rem;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.hotel-info {
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.bill-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.detail-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-section h3::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: #1e3a8a;
+    border-radius: 2px;
+}
+
+.detail-item {
+    margin-bottom: 0.75rem;
+    color: #1a1a1a;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #4b5563;
+    min-width: 120px;
+}
+
+.detail-value {
+    color: #1a1a1a;
+    flex: 1;
+}
+
+.charges-table {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.charges-table th {
+    text-align: left;
+    padding: 1rem 0;
+    border-bottom: 2px solid #e5e7eb;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.charges-table td {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+}
+
+.charges-table tr:last-child td {
+    border-bottom: none;
+}
+
+.amount {
+    text-align: right;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.subtotal-row {
+    font-weight: 700;
+    border-top: 2px solid #e5e7eb !important;
+    padding-top: 1rem;
+}
+
+.subtotal-row td {
+    padding-top: 1.5rem;
+}
+
+.total-row {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e3a8a;
+    border-top: 3px solid #1e3a8a !important;
+    background: linear-gradient(to right, rgba(30, 58, 138, 0.05), transparent);
+}
+
+.total-row td {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.points-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.points-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.points-section h3::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: #1e3a8a;
+    border-radius: 2px;
+}
+
+.points-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.points-section p {
+    margin-top: 0.5rem;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.payment-info {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.payment-info h4 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-info h4::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: #1e3a8a;
+    border-radius: 2px;
+}
+
+.payment-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.payment-info-item:last-child {
+    border-bottom: none;
+}
+
+.payment-label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.payment-value {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.bill-footer {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.bill-footer p {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.bill-footer strong {
+    color: #1a1a1a;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+.bill-btn {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+}
+
+.bill-btn-primary {
+    background-color: #1e3a8a;
+    color: white;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+}
+
+.bill-btn-primary:hover {
+    background-color: #1e40af;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+    color: white;
+}
+
+.bill-btn-outline {
+    background-color: white;
+    color: #4b5563;
+    border: 2px solid #d1d5db;
+}
+
+.bill-btn-outline:hover {
+    background-color: #f9fafb;
+    color: #1a1a1a;
+    border-color: #9ca3af;
+    transform: translateY(-2px);
+}
+
+/* Bill table row descriptions */
+.bill-row-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.bill-row-detail {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.bill-points-note {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.bill-footer-thanks {
+    margin-top: 1rem;
+}
+
+.bill-footer-contact {
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   Booking Confirm Styles
+   ============================================ */
+
+.booking-card {
+    border-radius: 12px;
+}
+
+.booking-sticky-card {
+    top: 90px;
+    z-index: 1010;
+    border-radius: 12px;
+}
+
+.card-options-container {
+    display: none;
+}
+
+.card-options-container.show {
+    display: block;
+}
+
+.card-expiry-label {
+    font-size: 0.75rem;
+}
+
+.add-card-link {
+    color: #1e3a8a;
+    text-decoration: none;
+}
+
+.add-card-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+.payment-warning {
+    display: none;
+}
+
+.payment-warning.show {
+    display: block;
+}
+
+.points-payment-info {
+    display: none;
+}
+
+.points-payment-info.show {
+    display: block;
+}
+
+
+/* ============================================
+   Brands Page Styles
+   ============================================ */
+
+.letter-spacing-2 {
+    letter-spacing: 2px;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1px;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Brands Hero Section */
+.brands-hero {
+    min-height: 500px;
+}
+
+.brands-hero-logo {
+    height: 100px;
+    opacity: 0.9;
+}
+
+/* Brand Card Styles */
+.brand-card-row {
+    min-height: 400px;
+}
+
+.brand-card-bg {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.brand-logo-img {
+    max-height: 120px;
+}
+
+/* Brand Detail Hero Section */
+.brand-detail-hero {
+    min-height: 500px;
+}
+
+.brand-detail-hero-bg {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.brand-detail-logo-circular {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    opacity: 0.85;
+}
+
+.brand-detail-title-shadow {
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.brand-detail-subtitle-shadow {
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================
+   Careers Page Styles
+   ============================================ */
+
+.careers-hero-image {
+    height: 300px;
+    object-fit: cover;
+}
+
+.careers-container {
+    padding-top: 1rem;
+}
+
+.careers-section-title {
+    margin-top: 0;
+}
+
+.careers-contact-section {
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+}
+
+/* ============================================
+   Sustainability Page Styles
+   ============================================ */
+
+.sustainability-image {
+    max-width: 100%;
+    transform: scale(0.9);
+}
+
+/* ============================================
+   City Hotels Page Styles
+   ============================================ */
+
+.city-hero-section {
+    min-height: 400px;
+}
+
+.city-hero-bg {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.city-hero-title-shadow {
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.city-hero-subtitle-shadow {
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.city-hero-count-shadow {
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   Hotel Detail Page Styles
+   ============================================ */
+
+.hotel-main-image {
+    object-fit: cover;
+    display: block;
+}
+
+.hotel-info-column {
+    min-height: 450px;
+}
+
+.hotel-description-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.hotel-map-card {
+    height: 200px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.hotel-map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.hotel-map-unavailable {
+    height: 200px;
+    border-radius: 12px;
+    background: #f8f9fa;
+}
+
+.map-icon-large {
+    font-size: 2rem;
+}
+
+.room-type-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.room-type-placeholder {
+    height: 200px;
+}
+
+.room-type-placeholder-icon {
+    font-size: 3rem;
+}
+
+.review-hidden {
+    display: none;
+}
+
+.reviews-container.expanded .review-hidden {
+    display: block;
+}
+
+#toggle-reviews-icon {
+    transition: transform 0.3s ease;
+}
+
+.reviews-container.expanded #toggle-reviews-icon {
+    transform: rotate(180deg);
+}
+
+.review-card-bg {
+    background-color: white;
+}
+
+.empty-reviews-icon {
+    font-size: 3rem;
+}
+
+.sold-out-btn {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#toggle-reviews-btn {
+    color: #4C5357;
+}
+
+#toggle-reviews-btn:hover {
+    color: #fffbeb;
+    border-color: #4C5357;
+}
+
+/* ============================================
+   WCAG Accessibility Enhancements
+   ============================================ */
+
+/* Skip to main content link (for screen readers and keyboard navigation) */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Enhanced focus visibility for keyboard navigation */
+*:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Ensure buttons and interactive elements have visible focus */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}
+
+/* Screen reader only content */
+.visually-hidden,
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --text-color: #000000;
+        --text-muted: #333333;
+        --bg-color: #ffffff;
+    }
+    
+    .btn-primary {
+        border: 2px solid #000000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Ensure sufficient color contrast for text */
+.text-muted {
+    color: #4a5568 !important; /* Improved contrast from #64748b */
+}
+
+/* Form labels should be clearly associated */
+label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Error states should be clearly visible */
+.form-control:invalid,
+.form-control.is-invalid {
+    border-color: #dc2626;
+    border-width: 2px;
+}
+
+.form-control:invalid:focus,
+.form-control.is-invalid:focus {
+    outline-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+/* ============================================
+   Responsive Design - Mobile & Tablet
+   ============================================
+   All responsive styles are consolidated here for better maintainability.
+   Breakpoints:
+   - 968px: Tablet landscape and below
+   - 768px: Tablet portrait and below
+   - 576px: Mobile devices and below
+   ============================================ */
+
+/* Tablet Landscape and Below (max-width: 968px) */
+@media (max-width: 968px) {
+    /* Account Page - Overview Grid */
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Account Page - Activity Summary */
+    .activity-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tablet Portrait and Below (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Hotel Cards */
+    .hotel-card-img {
+        height: 180px;
+    }
+    
+    .hotel-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .hotel-card-footer-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .hotel-card-footer-right {
+        width: 100%;
+    }
+    
+    .hotel-card-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .hotel-card-rating {
+        flex-wrap: wrap;
+    }
+    
+    /* Account Page - Header */
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+    }
+    
+    .header-right {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .header-left h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-left h2 {
+        font-size: 2.25rem;
+    }
+    
+    .points-value {
+        font-size: 2.75rem;
+    }
+    
+    /* Account Page - Navigation */
+    .account-nav {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        gap: 1.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tab {
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+    
+    /* Account Page - Cards */
+    .account-page-wrapper .card {
+        padding: 1.75rem;
+    }
+    
+    /* Account Page - Progress Bar */
+    .progress-bar-wrapper {
+        margin: 2.5rem 0 1rem 0;
+    }
+    
+    .progress-markers {
+        top: -45px;
+    }
+    
+    /* Account Page - Milestone Circle */
+    .milestone-circle {
+        width: 175px;
+        height: 175px;
+    }
+    
+    .milestone-circle-inner {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .milestone-number {
+        font-size: 2.5rem;
+    }
+    
+    /* Account Page - Profile Form */
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* My Stays Page */
+    .card-content {
+        flex-direction: column;
+    }
+
+    .hotel-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .date-info {
+        gap: 1rem;
+    }
+
+    .booking-actions {
+        flex-wrap: wrap;
+    }
+    
+    /* Booking Bill Page */
+    .bill-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .bill-details {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .bill-btn {
+        width: 100%;
+    }
+    
+    /* Search Page - Filter Sidebar */
+    .search-sidebar-card {
+        position: relative;
+        top: 0;
+        margin-bottom: 1rem;
+    }
+    
+    /* Search Page - Hotel Images */
+    .search-hotel-image {
+        height: 180px;
+    }
+    
+    .search-hotel-card-body {
+        min-height: 180px;
+    }
+    
+    /* Search Page - Map Container */
+    .search-map-container {
+        height: 300px;
+    }
+    
+    /* Room Type Detail - Main Image */
+    .roomtype-main-image {
+        height: 250px;
+    }
+    
+    .roomtype-placeholder {
+        height: 250px;
+    }
+    
+    /* Hero Banner */
+    .hero-banner {
+        min-height: 300px;
+    }
+    
+    /* Hotel Detail - Main Image */
+    .hotel-main-image {
+        height: 220px;
+    }
+    
+    .hotel-info-column {
+        min-height: auto;
+    }
+    
+    /* Room Type Images in Hotel Detail */
+    .room-type-image {
+        height: 150px;
+    }
+    
+    .room-type-placeholder {
+        height: 150px;
+    }
+    
+    /* Careers Hero Image */
+    .careers-hero-image {
+        height: 200px;
+    }
+    
+    /* Brands Hero */
+    .brands-hero {
+        min-height: 300px;
+    }
+    
+    .brand-card-row {
+        min-height: 250px;
+    }
+    
+    /* City Hero Section */
+    .city-hero-section {
+        min-height: 250px;
+    }
+    
+    /* Auth Pages - Tablet - Redesigned */
+    .auth-page {
+        padding: 2rem 1rem;
+        min-height: calc(100vh - 75px);
+        margin-top: 75px;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .auth-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0 !important;
+    }
+    
+    .auth-card {
+        flex-direction: column !important;
+        min-height: auto;
+        height: auto;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .auth-left {
+        display: none !important; /* Hide left card on tablet */
+        width: 0 !important;
+    }
+    
+    .auth-right {
+        width: 100% !important;
+        padding: 0;
+        flex: 1 1 100% !important;
+    }
+    
+    .auth-form-title {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    .auth-right .text-center.mb-3 {
+        margin-bottom: 2rem !important;
+    }
+    
+    .auth-right .text-muted.small {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+    
+    .auth-right .form-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .auth-right .form-control-lg {
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 1rem;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .auth-right .form-control-lg:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
+    }
+    
+    .auth-right .form-icon {
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        color: #9ca3af;
+    }
+    
+    .auth-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .auth-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+    }
+    
+    .auth-form-actions {
+        margin-top: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .auth-right .text-center {
+        margin-top: 1.5rem;
+        padding-top: 0;
+    }
+    
+    .auth-right .text-center p {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+    
+    .auth-link {
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+    
+    /* Typography - Slightly smaller on tablets */
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobile Devices and Below (max-width: 576px) */
+@media (max-width: 576px) {
+    /* Base Typography - Smaller fonts for mobile */
+    body {
+        font-size: 0.9rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
+    h4 {
+        font-size: 1.1rem;
+    }
+    
+    h5 {
+        font-size: 1rem;
+    }
+    
+    /* Auth Pages - Mobile - Redesigned */
+    .auth-page {
+        padding: 0;
+        min-height: calc(100vh - 70px);
+        margin-top: 70px;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    
+    .auth-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        padding: 0;
+        margin: 0 !important;
+    }
+    
+    .auth-card {
+        flex-direction: column !important;
+        min-height: auto;
+        height: auto;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .auth-left {
+        display: none !important; /* Hide left card on mobile */
+        width: 0 !important;
+    }
+    
+    .auth-right {
+        width: 100% !important;
+        padding: 0;
+        flex: 1 1 100% !important;
+    }
+    
+    .auth-form-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+    
+    .auth-right .text-center.mb-3 {
+        margin-bottom: 2rem !important;
+    }
+    
+    .auth-right .text-muted.small {
+        font-size: 0.875rem;
+        color: #6b7280;
+        line-height: 1.5;
+    }
+    
+    .auth-right .form-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        letter-spacing: 0.5px;
+        color: #374151;
+    }
+    
+    .auth-right .form-control-lg {
+        padding: 0.875rem 0.875rem 0.875rem 2.75rem;
+        font-size: 1rem;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+    
+    .auth-right .form-control-lg:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
+        background-color: #ffffff;
+    }
+    
+    .auth-right .form-icon {
+        left: 0.875rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        color: #9ca3af;
+    }
+    
+    .auth-right .mb-2 {
+        margin-bottom: 1.25rem !important;
+    }
+    
+    .auth-submit-btn {
+        width: 100%;
+        padding: 0.875rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+    
+    .auth-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+    }
+    
+    .auth-submit-btn:active {
+        transform: translateY(0);
+    }
+    
+    .auth-form-actions {
+        margin-top: 1.75rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .auth-right .text-center {
+        margin-top: 1.75rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .auth-right .text-center p {
+        font-size: 0.875rem;
+        margin-bottom: 0;
+        line-height: 1.6;
+        color: #6b7280;
+    }
+    
+    .auth-link {
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+    
+    .auth-link:hover {
+        color: var(--accent-color) !important;
+    }
+    
+    /* Search Page - Filter Sidebar Collapsible */
+    .search-sidebar-card {
+        margin-bottom: 1rem;
+    }
+    
+    .search-filter-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        color: #495057;
+        cursor: pointer;
+        margin-bottom: 1rem;
+        text-align: left;
+    }
+    
+    .search-filter-toggle:hover {
+        background: #e9ecef;
+    }
+    
+    .search-filter-toggle:focus {
+        outline: 2px solid #005fcc;
+        outline-offset: 2px;
+    }
+    
+    .search-filter-toggle i {
+        transition: transform 0.3s ease;
+        font-size: 1rem;
+    }
+    
+    .search-filter-toggle[aria-expanded="true"] i {
+        transform: rotate(180deg);
+    }
+    
+    .search-filter-content {
+        display: none;
+    }
+    
+    .search-filter-content.show {
+        display: block;
+    }
+    
+    /* Ensure filter content is visible on desktop */
+    @media (min-width: 768px) {
+        .search-filter-content {
+            display: block !important;
+        }
+    }
+    
+    /* Search Page - Hotel Cards */
+    .search-hotel-image {
+        height: 150px;
+    }
+    
+    .search-hotel-card-body {
+        min-height: 150px;
+        padding: 1rem;
+    }
+    
+    .search-hotel-card-body h5 {
+        font-size: 1.1rem;
+    }
+    
+    /* Search Page - Map Container */
+    .search-map-container {
+        height: 250px;
+    }
+    
+    /* Hotel Cards - General */
+    .hotel-card-img {
+        height: 150px;
+    }
+    
+    .hotel-card-body {
+        padding: 1rem;
+    }
+    
+    .hotel-card-title {
+        font-size: 1.1rem;
+    }
+    
+    .hotel-card-description {
+        font-size: 0.85rem;
+    }
+    
+    /* Room Type Detail */
+    .roomtype-main-image {
+        height: 180px;
+    }
+    
+    .roomtype-placeholder {
+        height: 180px;
+    }
+    
+    .roomtype-placeholder-icon {
+        font-size: 2.5rem;
+    }
+    
+    .roomtype-description-title {
+        font-size: 1.1rem;
+    }
+    
+    .roomtype-description-text {
+        font-size: 0.9rem;
+    }
+    
+    /* Hero Banner */
+    .hero-banner {
+        min-height: 250px;
+    }
+    
+    .home-hero-banner {
+        min-height: 250px;
+    }
+    
+    .hero-text-container h1 {
+        font-size: 1.75rem;
+    }
+    
+    .hero-text-container .lead {
+        font-size: 1.1rem;
+    }
+    
+    /* Hotel Detail - Main Image */
+    .hotel-main-image {
+        height: 180px !important;
+    }
+    
+    .hotel-info-column {
+        min-height: auto;
+    }
+    
+    /* Room Type Images in Hotel Detail */
+    .room-type-image {
+        height: 120px;
+    }
+    
+    .room-type-placeholder {
+        height: 120px;
+    }
+    
+    .room-type-placeholder-icon {
+        font-size: 2rem;
+    }
+    
+    /* Hotel Map */
+    .hotel-map-card {
+        height: 180px;
+    }
+    
+    .hotel-map-unavailable {
+        height: 180px;
+    }
+    
+    /* My Stays Page */
+    .hotel-image {
+        height: 150px;
+    }
+    
+    .favorite-hotel-image {
+        height: 150px;
+    }
+    
+    .favorite-hotel-card-body {
+        min-height: 150px;
+        padding: 1rem;
+    }
+    
+    /* Careers Hero Image */
+    .careers-hero-image {
+        height: 150px;
+    }
+    
+    /* Brands Hero */
+    .brands-hero {
+        min-height: 200px;
+    }
+    
+    .brand-card-row {
+        min-height: 180px;
+    }
+    
+    .brand-detail-hero {
+        min-height: 200px;
+    }
+    
+    /* City Hero Section */
+    .city-hero-section {
+        min-height: 180px;
+    }
+    
+    
+    /* Account Page - Header */
+    .account-header {
+        padding: 1.5rem 0;
+    }
+    
+    .header-content {
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+    
+    .header-left h1 {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .header-left h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .member-number {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+    
+    .points-label {
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .points-value {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+    
+    .btn-header {
+        width: 100%;
+        text-align: center;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Account Page - Navigation */
+    .account-nav {
+        gap: 1rem;
+        padding: 0 0.5rem;
+        margin-bottom: 1.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    
+    .account-nav::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .account-nav::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+    }
+    
+    .nav-tab {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    
+    /* Account Page - Container */
+    .account-container {
+        padding: 0 0.5rem;
+    }
+    
+    /* Account Page - Cards */
+    .account-page-wrapper .card {
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .account-page-wrapper .card-header {
+        padding: 0.75rem 1rem;
+        margin: -1.25rem -1.25rem 1rem -1.25rem;
+    }
+    
+    .account-page-wrapper .card-title {
+        font-size: 1.1rem;
+    }
+    
+    /* Account Page - Overview Grid */
+    .overview-grid {
+        gap: 1.5rem;
+    }
+    
+    /* Account Page - Status Tracker */
+    .status-tracker-toggle {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .toggle-btn {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        padding-left: 2.5rem;
+    }
+    
+    .progress-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .progress-info-text {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .progress-bar-wrapper {
+        margin: 2rem 0 1rem 0;
+    }
+    
+    .progress-bar-bg {
+        height: 16px;
+        margin-top: 1.5rem;
+    }
+    
+    .progress-markers {
+        top: -40px;
+        height: 40px;
+    }
+    
+    .progress-marker-dot {
+        width: 14px;
+        height: 14px;
+        border-width: 2px;
+    }
+    
+    .progress-marker.active .progress-marker-dot {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .progress-marker-label {
+        font-size: 0.65rem;
+    }
+    
+    .tier-labels {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .tier-label {
+        flex: 0 0 calc(50% - 0.25rem);
+        min-width: 0;
+    }
+    
+    .tier-label-name {
+        font-size: 0.75rem;
+    }
+    
+    .tier-label-requirement {
+        font-size: 0.65rem;
+    }
+    
+    .tracker-helper-text {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+    
+    /* Account Page - Milestone Circle */
+    .milestone-circle {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 1rem;
+    }
+    
+    .milestone-circle-inner {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .milestone-number {
+        font-size: 2.25rem;
+    }
+    
+    .milestone-label {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+    
+    .milestone-description {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-premium {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Account Page - Activity Summary */
+    .activity-summary {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .summary-card {
+        padding: 1.25rem;
+    }
+    
+    .summary-label {
+        font-size: 0.75rem;
+    }
+    
+    .summary-value {
+        font-size: 1.5rem;
+    }
+    
+    .summary-card-stats {
+        font-size: 0.8rem;
+    }
+    
+    /* Account Page - Activity Items */
+    .activity-item {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .activity-item-info {
+        font-size: 0.7rem;
+    }
+    
+    /* Account Page - Benefits */
+    .benefits-header {
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .benefits-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .benefits-header p {
+        font-size: 1rem;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .benefit-card {
+        padding: 1.25rem;
+    }
+    
+    .benefit-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .benefit-title {
+        font-size: 1rem;
+    }
+    
+    .benefit-description {
+        font-size: 0.85rem;
+    }
+    
+    /* Account Page - Profile Form */
+    .profile-grid {
+        gap: 1rem;
+    }
+    
+    .profile-label {
+        font-size: 0.8rem;
+    }
+    
+    .profile-value {
+        font-size: 0.9rem;
+    }
+    
+    .profile-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .btn-edit,
+    .btn-secondary {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    
+    /* Make edit buttons in card headers smaller and not full width */
+    .card-header .btn-edit,
+    #edit-profile-btn,
+    #add-card-btn {
+        width: auto;
+        min-width: fit-content;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Account Page - Payment Methods */
+    .payment-card-option {
+        padding: 0.75rem;
+    }
+    
+    .card-icon {
+        font-size: 1.1rem;
+    }
+    
+    .card-brand-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .default-badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    /* Account Page - Rewards */
+    .reward-item {
+        padding: 1rem;
+    }
+    
+    /* Account Page - Tier Badge */
+    .current-tier-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .tier-retention-info {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .tier-retention-until,
+    .tier-retention-date {
+        font-size: 0.85rem;
+    }
+    
+    .tier-retention-info-link {
+        font-size: 0.8rem;
+    }
+    
+    /* Account Page - Next Tier Info */
+    .next-tier-info {
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+    }
+    
+    .next-tier-badge {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
+    }
+    
+    /* Account Page - Benefits Table */
+    .benefits-table {
+        font-size: 0.85rem;
+        overflow-x: auto;
+        display: block;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .benefits-table th,
+    .benefits-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+    
+    .benefits-toggle {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+    
+    /* Account Page - Progress Markers - Prevent Overlap on Small Screens */
+    .progress-marker {
+        min-width: 0;
+    }
+    
+    .progress-marker-label {
+        word-break: break-word;
+        white-space: normal;
+        max-width: 50px;
+        text-align: center;
+        line-height: 1.2;
+    }
+    
+    /* Account Page - Collapsible Lists */
+    .collapsible-list {
+        margin-top: 1rem;
+    }
+    
+    .toggle-collapse-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 0;
+    }
+    
+    /* Account Page - Empty States */
+    .empty-wallet-icon {
+        font-size: 2.5rem;
+    }
+    
+    /* Account Page - Card Header Actions */
+    .card-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .card-header .btn-edit,
+    #edit-profile-btn,
+    #add-card-btn {
+        width: auto;
+        min-width: fit-content;
+        margin-top: 0;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Account Page - Payment Method Actions */
+    .payment-method-field .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .set-default-btn,
+    .delete-card-btn {
+        font-size: 0.85rem;
+        padding: 0.25rem 0;
+    }
+    
+    /* Account Page - Retention Modal */
+    .retention-modal-content {
+        width: 95%;
+        max-height: calc(95vh - 80px);
+        margin: 1rem;
+    }
+    
+    .retention-modal-header {
+        padding: 1rem;
+    }
+    
+    .retention-modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .retention-modal-body {
+        padding: 1rem;
+    }
+    
+    .retention-modal-text {
+        font-size: 0.85rem;
+    }
+    
+    .retention-requirements-box,
+    .retention-status-box {
+        padding: 0.75rem;
+    }
+    
+    .retention-requirements-title,
+    .retention-status-title {
+        font-size: 0.95rem;
+    }
+    
+    .retention-requirements-list,
+    .retention-progress-list {
+        font-size: 0.85rem;
+    }
+    
+    /* Buttons - Full width on mobile */
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Form Controls - Better touch targets */
+    .form-control,
+    .form-select {
+        padding: 12px 15px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Navbar */
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .navbar-logo {
+        height: 32px;
+        margin-right: 8px;
+    }
+    
+    /* Footer */
+    .footer-logo,
+    .footer-brand-logo {
+        height: 32px;
+    }
+    
+    /* Booking Bill */
+    .bill-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .bill-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    /* Milestone Progress */
+    .milestone-progress-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .milestone-item {
+        padding: 1rem;
+    }
+    
+    .milestone-title {
+        font-size: 1.1rem;
+    }
+    
+    /* Celebration Modal */
+    .celebration-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .celebration-title {
+        font-size: 1.5rem;
+    }
+    
+    .celebration-message {
+        font-size: 1rem;
+    }
+    
+    /* Brands Page */
+    .brands-hero {
+        min-height: 350px;
+    }
+    
+    .brand-card-row {
+        min-height: 300px;
+    }
+    
+    /* City Hotels */
+    .city-hero-section {
+        min-height: 300px;
+    }
+    
+    /* Map Containers */
+    .hotel-map-card {
+        height: 200px;
+    }
+    
+    /* Review Cards */
+    .review-card-bg {
+        padding: 1rem;
+    }
+    
+    /* Tab Navigation */
+    .nav-tabs .nav-link {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Badges */
+    .badge {
+        font-size: 0.75rem;
+    }
+    
+    /* Utilities */
+    .text-shadow {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* ============================================
+   Authentication Pages (Login & Register) Styles
+   ============================================ */
+
+/* Override main container padding for auth pages */
+.auth-page-wrapper main.container {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Override body styles for auth pages - only when auth-page exists */
+body:has(.auth-page) {
+    overflow-x: hidden;
+}
+
+/* Fallback for browsers that don't support :has() */
+body.auth-page-body {
+    overflow-x: hidden;
+}
+
+.auth-page {
+    min-height: calc(100vh - 80px); /* Full viewport minus navbar height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100%;
+    background-image: url('/static/img/brands_hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
+
+.auth-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.auth-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    min-height: 600px;
+    height: 600px;
+}
+
+.auth-left {
+    padding: 3rem;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 35%;
+    flex-shrink: 0;
+    position: relative;
+    background-image: url('/static/img/brands_hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #0f172a; /* Fallback color if image fails to load */
+    height: 100%;
+    min-height: 600px;
+}
+
+.auth-left::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+}
+
+.auth-left::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+    z-index: 0;
+}
+
+.auth-left > * {
+    position: relative;
+    z-index: 1;
+}
+
+.auth-logo {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auth-left h2,
+.auth-left h3,
+.auth-left p,
+.auth-left .text-white,
+.auth-left .text-white-50 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.auth-left .feature-item {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.auth-right {
+    padding: 2.5rem 3.5rem 3.5rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 65%;
+    background: white;
+}
+
+.auth-form-title {
+    color: var(--primary-color);
+}
+
+.auth-input-rounded {
+    border-radius: 10px;
+}
+
+.auth-submit-btn {
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.auth-submit-btn:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.auth-form-actions {
+    margin-top: 1.5rem;
+}
+
+.auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.form-icon {
+    position: absolute;
+    left: 15px;
+    top: 38px;
+    color: var(--text-muted);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.form-control-with-icon {
+    padding-left: 45px;
+}
+
+.auth-page .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(15, 23, 42, 0.15);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.feature-item i {
+    margin-right: 0.75rem;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+}
+
+/* Password Strength Indicator */
+.password-strength-indicator {
+    margin-top: 0.5rem;
+}
+
+.password-strength-bar {
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-weak .password-strength-fill {
+    width: 33%;
+    background-color: #dc3545;
+}
+
+.password-medium .password-strength-fill {
+    width: 66%;
+    background-color: #ffc107;
+}
+
+.password-strong .password-strength-fill {
+    width: 100%;
+    background-color: #28a745;
+}
+
+.password-strength-message {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.password-strength-message.password-weak {
+    color: #dc3545;
+}
+
+.password-strength-message.password-medium {
+    color: #ffc107;
+}
+
+.password-strength-message.password-strong {
+    color: #28a745;
+}
+
+.auth-password-hint {
+    font-size: 0.8rem;
+}
+
+/* Hide default validation styles unless explicitly shown */
+.auth-page .form-control:not(.is-invalid) {
+    border-color: #ced4da;
+}
+
+.auth-page .form-control.is-invalid {
+    border-color: #dc3545 !important;
+    border-width: 2px;
+}
+
+.auth-page .form-control.is-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.validation-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   Tour Guide Customization
+   ============================================ */
+
+/* Custom intro.js tooltip styling */
+.introjs-tooltip {
+    font-family: var(--font-sans);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.introjs-tooltip h3 {
+    font-family: var(--font-serif);
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.introjs-tooltip p {
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.introjs-tooltipbuttons {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.introjs-button {
+    font-family: var(--font-sans);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.introjs-button.introjs-nextbutton,
+.introjs-button.introjs-donebutton {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.introjs-button.introjs-nextbutton:hover,
+.introjs-button.introjs-donebutton:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.introjs-button.introjs-prevbutton {
+    background-color: #f8fafc;
+    color: var(--text-color);
+    border-color: #e2e8f0;
+}
+
+.introjs-button.introjs-prevbutton:hover {
+    background-color: #e2e8f0;
+}
+
+.introjs-button.introjs-skipbutton {
+    color: #64748b;
+}
+
+.introjs-button.introjs-skipbutton:hover {
+    color: var(--text-color);
+}
+
+.introjs-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.introjs-helperLayer {
+    border-radius: 12px;
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.3), 0 0 0 9999px rgba(0, 0, 0, 0.7);
+}
+
+.introjs-progressbar {
+    background-color: var(--accent-color);
+}
+
+.introjs-bullets ul li a {
+    background-color: #cbd5e1;
+}
+
+.introjs-bullets ul li a.active {
+    background-color: var(--primary-color);
+}
+
+/* Footer link icon styling */
+.footer-link-icon {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    transition: all 0.2s;
+}
+
+#tour-guide-link {
+    margin-top: 0.5rem;
+}
+
+.footer-link-icon:hover {
+    background-color: rgba(217, 119, 6, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Language Switcher Styles */
+.language-code {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.2s ease;
+}
+
+#languageDropdown:hover .language-code {
+    color: white;
+}
+
+#languageDropdown .dropdown-item.active {
+    background-color: #1e3a8a !important;
+    color: white !important;
+    font-weight: 500;
+    border-left: none;
+    padding-left: 0.75rem;
+}
+
+#languageDropdown .dropdown-item:hover {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: var(--accent-color);
+}
+
+#languageDropdown .dropdown-item.active:hover {
+    background-color: #1e40af !important;
+    color: white !important;
+}
+
+/* Keyboard Shortcuts Modal Styles */
+.shortcut-item {
+    padding: 0.75rem;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    transition: background-color 0.2s;
+}
+
+.shortcut-item:hover {
+    background-color: #f1f5f9;
+}
+
+.shortcut-key {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-family: 'Courier New', monospace;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.shortcut-key kbd {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
 }
 

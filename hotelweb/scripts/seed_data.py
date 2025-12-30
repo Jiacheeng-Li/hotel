@@ -1,6 +1,23 @@
+"""
+Database Seeding Script for Hotel Platform
+
+This script populates the database with initial data including:
+- Brands, Hotels, Room Types, Amenities
+- Test users with booking history
+- Reviews and points transactions
+
+Image Sources:
+All photos used in this application (hotels, rooms, cities, backgrounds) are sourced from:
+- Unsplash (https://unsplash.com)
+- Pexels (https://www.pexels.com)
+
+These images are downloaded and stored locally in the static/img/ directory.
+"""
+
 import sys
 import os
 import random
+import glob
 from datetime import date, timedelta, datetime
 from werkzeug.security import generate_password_hash
 
@@ -74,38 +91,29 @@ def seed():
             {"name": "Bangkok", "lat": 13.7563, "lon": 100.5018}
         ]
 
-        # Pool of images - using ONLY local images (all external images have been downloaded)
-        # Local images available: hotel_0.jpg to hotel_29.jpg (30 images total)
-        local_hotel_images = [
-            "/static/img/hotels/hotel_0.jpg",
-            "/static/img/hotels/hotel_1.jpg",
-            "/static/img/hotels/hotel_2.jpg",
-            "/static/img/hotels/hotel_3.jpg",
-            "/static/img/hotels/hotel_4.jpg",
-            "/static/img/hotels/hotel_5.jpg",
-            "/static/img/hotels/hotel_6.jpg",
-            "/static/img/hotels/hotel_7.jpg",
-            "/static/img/hotels/hotel_8.jpg",
-            "/static/img/hotels/hotel_9.jpg",
-            "/static/img/hotels/hotel_11.jpg",
-            "/static/img/hotels/hotel_12.jpg",
-            "/static/img/hotels/hotel_13.jpg",
-            "/static/img/hotels/hotel_15.jpg",
-            "/static/img/hotels/hotel_16.jpg",
-            "/static/img/hotels/hotel_17.jpg",
-            "/static/img/hotels/hotel_18.jpg",
-            "/static/img/hotels/hotel_19.jpg",
-            "/static/img/hotels/hotel_20.jpg",
-            "/static/img/hotels/hotel_21.jpg",
-            "/static/img/hotels/hotel_22.jpg",
-            "/static/img/hotels/hotel_23.jpg",
-            "/static/img/hotels/hotel_24.jpg",
-            "/static/img/hotels/hotel_25.jpg",
-            "/static/img/hotels/hotel_26.jpg",
-            "/static/img/hotels/hotel_27.jpg",
-            "/static/img/hotels/hotel_28.jpg",
-            "/static/img/hotels/hotel_29.jpg"
-        ]
+        # Dynamically load hotel images from hotels folder
+        # Note: All images are sourced from Unsplash and Pexels, downloaded and stored locally
+        # Get the path to the static/img/hotels directory
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        static_dir = os.path.join(script_dir, '..', 'static', 'img')
+        hotels_dir = os.path.join(static_dir, 'hotels')
+        rooms_dir = os.path.join(static_dir, 'rooms')
+        
+        # Get all .jpg files from hotels folder (images from Unsplash/Pexels)
+        hotel_image_files = glob.glob(os.path.join(hotels_dir, '*.jpg'))
+        local_hotel_images = [f"/static/img/hotels/{os.path.basename(f)}" for f in hotel_image_files]
+        
+        # Get all .jpg files from rooms folder (images from Unsplash/Pexels)
+        room_image_files = glob.glob(os.path.join(rooms_dir, '*.jpg'))
+        local_room_images = [f"/static/img/rooms/{os.path.basename(f)}" for f in room_image_files]
+        
+        if not local_hotel_images:
+            raise ValueError(f"No hotel images found in {hotels_dir}")
+        if not local_room_images:
+            raise ValueError(f"No room images found in {rooms_dir}")
+        
+        print(f"  Found {len(local_hotel_images)} hotel images")
+        print(f"  Found {len(local_room_images)} room images")
         
         # All brands use the same local image pool (no external URLs)
         images_pool = {
@@ -226,16 +234,16 @@ def seed():
                         brand_rts = random.sample(available_rts, min(num_room_types, len(available_rts)))
                         price_mult = 1.2
 
-                    # Assign RoomType Images - using ONLY local images
+                    # Assign RoomType Images - using ONLY local room images from rooms folder
                     room_type_images = {
-                        "Standard Room": random.choice(local_hotel_images),
-                        "Superior Room": random.choice(local_hotel_images),
-                        "Deluxe Room": random.choice(local_hotel_images),
-                        "Junior Suite": random.choice(local_hotel_images),
-                        "Family Suite": random.choice(local_hotel_images),
-                        "Executive Suite": random.choice(local_hotel_images),
-                        "Presidential Suite": random.choice(local_hotel_images),
-                        "Penthouse": random.choice(local_hotel_images),
+                        "Standard Room": random.choice(local_room_images),
+                        "Superior Room": random.choice(local_room_images),
+                        "Deluxe Room": random.choice(local_room_images),
+                        "Junior Suite": random.choice(local_room_images),
+                        "Family Suite": random.choice(local_room_images),
+                        "Executive Suite": random.choice(local_room_images),
+                        "Presidential Suite": random.choice(local_room_images),
+                        "Penthouse": random.choice(local_room_images),
                     }
 
                     for rt_temp in brand_rts:
@@ -253,7 +261,7 @@ def seed():
                             price_per_night=price,
                             capacity=rt_temp["cap"],
                             inventory=inventory,
-                            image_url=room_type_images.get(rt_temp["name"], random.choice(local_hotel_images))
+                            image_url=room_type_images.get(rt_temp["name"], random.choice(local_room_images))
                         )
                         
                         # Assign Amenities

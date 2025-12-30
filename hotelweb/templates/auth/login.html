@@ -3,180 +3,6 @@
 {% block title %}Login - Lumina Hospitality{% endblock %}
 
 {% block content %}
-<style>
-    /* Override main container padding for auth pages */
-    html, body {
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow-x: hidden;
-    }
-    
-    main.container {
-        padding: 0 !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    body.d-flex {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    /* Remove any spacing from wrapper */
-    .min-vh-100 {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .auth-page {
-        min-height: calc(100vh - 80px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80') center/cover;
-        padding: 0 2rem 3rem 2rem;
-        margin: 0;
-        position: relative;
-        width: 100%;
-    }
-    
-    .auth-page::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.3);
-    }
-    
-    .auth-container {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-    
-    .auth-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
-        display: flex;
-        flex-direction: row;
-        min-height: 600px;
-    }
-    
-    .auth-left {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-        padding: 3rem;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 35%;
-        flex-shrink: 0;
-        position: relative;
-    }
-    
-    .auth-left::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80') center/cover;
-        opacity: 0.15;
-    }
-    
-    .auth-left > * {
-        position: relative;
-        z-index: 1;
-    }
-    
-    @media (max-width: 768px) {
-        .auth-card {
-            flex-direction: column;
-            min-height: auto;
-        }
-        
-        .auth-left {
-            width: 100%;
-            padding: 2rem;
-            min-height: 200px;
-        }
-        
-        .auth-right {
-            width: 100%;
-            padding: 2rem;
-        }
-        
-        .auth-page {
-            padding: 0 1rem 1.5rem 1rem;
-        }
-    }
-    
-    .auth-logo {
-        font-family: var(--font-serif);
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--accent-color);
-        margin-bottom: 1.5rem;
-    }
-    
-    .auth-right {
-        padding: 3.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 65%;
-        background: white;
-    }
-    
-    .form-icon {
-        position: absolute;
-        left: 15px;
-        top: 38px;
-        color: var(--text-muted);
-        z-index: 1;
-        pointer-events: none;
-    }
-    
-    .form-control-with-icon {
-        padding-left: 45px;
-    }
-    
-    
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(15, 23, 42, 0.15);
-    }
-    
-    .feature-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-        color: rgba(255, 255, 255, 0.9);
-    }
-    
-    .feature-item i {
-        margin-right: 0.75rem;
-        color: var(--accent-color);
-        font-size: 1.2rem;
-    }
-    
-    .is-invalid {
-        border-color: #dc3545 !important;
-    }
-    
-    .validation-error {
-        color: #dc3545;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
-</style>
 
 <div class="auth-page">
     <div class="auth-container">
@@ -206,7 +32,7 @@
             <!-- Right Side - Form -->
             <div class="auth-right">
                 <div class="text-center mb-3">
-                    <h2 class="h3 fw-bold mb-1" style="color: var(--primary-color);">Sign In</h2>
+                    <h2 class="h3 fw-bold mb-1 auth-form-title">Sign In</h2>
                     <p class="text-muted small">Access your account to continue</p>
                 </div>
                 
@@ -217,33 +43,31 @@
                         <label for="email" class="form-label fw-bold small text-uppercase text-muted mb-1">Email Address</label>
                         <i class="bi bi-envelope form-icon" aria-hidden="true"></i>
                         <input type="email" 
-                               class="form-control form-control-lg form-control-with-icon" 
+                               class="form-control form-control-lg form-control-with-icon auth-input-rounded" 
                                id="email" 
                                name="email" 
                                placeholder="Enter your email"
                                required
                                maxlength="255"
                                autocomplete="email"
-                               value="{{ email or '' }}"
-                               style="border-radius: 10px;">
+                               value="{{ email or '' }}">
                     </div>
                     
                     <div class="mb-2 position-relative">
                         <label for="password" class="form-label fw-bold small text-uppercase text-muted mb-1">Password</label>
                         <i class="bi bi-lock form-icon" aria-hidden="true"></i>
                         <input type="password" 
-                               class="form-control form-control-lg form-control-with-icon" 
+                               class="form-control form-control-lg form-control-with-icon auth-input-rounded" 
                                id="password" 
                                name="password" 
                                placeholder="Enter your password"
                                required
                                maxlength="128"
-                               autocomplete="current-password"
-                               style="border-radius: 10px;">
+                               autocomplete="current-password">
                     </div>
                     
-                    <div class="d-grid gap-2 mb-3" style="margin-top: 1.5rem;">
-                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-2" style="border-radius: 10px; background-color: var(--primary-color); border: none;">
+                    <div class="d-grid gap-2 mb-3 auth-form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-2 auth-submit-btn">
                             <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>Sign In
                         </button>
                     </div>
@@ -252,7 +76,7 @@
                 <div class="text-center">
                     <p class="text-muted mb-0">
                         Don't have an account? 
-                        <a href="{{ url_for('auth.register') }}" class="fw-bold" style="color: var(--primary-color); text-decoration: none;">
+                        <a href="{{ url_for('auth.register') }}" class="fw-bold auth-link">
                             Create one now
                         </a>
                     </p>
@@ -266,33 +90,5 @@
 
 {% block extra_scripts %}
 <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    
-    // Setup field validation
-    setupFieldValidation(emailInput, validateEmail, 'Email');
-    
-    // Form submission validation
-    form.addEventListener('submit', function(e) {
-        const emailResult = validateEmail(emailInput.value);
-        
-        if (!emailResult.valid) {
-            e.preventDefault();
-            showValidationError(emailInput, emailResult.message);
-            emailInput.focus();
-            return false;
-        }
-        
-        if (!passwordInput.value || passwordInput.value.trim() === '') {
-            e.preventDefault();
-            showValidationError(passwordInput, 'Password is required');
-            passwordInput.focus();
-            return false;
-        }
-    });
-});
-</script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

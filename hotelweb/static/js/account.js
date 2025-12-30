@@ -1,35 +1,72 @@
 // Collapsible List Functions
 function toggleCollapseList(button) {
-    const listId = button.getAttribute('data-list-id');
+    if (!button) return;
+    
     const list = button.closest('.card').querySelector('.collapsible-list');
-    if (!list) return;
+    if (!list) {
+        console.warn('toggleCollapseList: collapsible-list not found');
+        return;
+    }
     
     const items = list.querySelectorAll('.collapsible-item');
+    if (items.length === 0) {
+        console.warn('toggleCollapseList: no collapsible-item found');
+        return;
+    }
+    
     const showMoreText = button.querySelector('.show-more-text');
     const showLessText = button.querySelector('.show-less-text');
     const defaultShow = parseInt(list.getAttribute('data-default-show')) || 5;
     
-    // Check if currently showing all items
-    const isExpanded = Array.from(items).every((item, index) => {
-        return index < defaultShow || item.style.display !== 'none';
+    // Helper function to check if item is visible
+    function isItemVisible(item) {
+        // Check computed style - if hidden class is present, computed display will be 'none'
+        const style = window.getComputedStyle(item);
+        return style.display !== 'none';
+    }
+    
+    // Check if currently showing all items (expanded state)
+    // Count how many items are visible
+    let visibleCount = 0;
+    items.forEach((item) => {
+        if (isItemVisible(item)) {
+            visibleCount++;
+        }
     });
+    
+    // If all items are visible, we're expanded; otherwise collapsed
+    const isExpanded = visibleCount === items.length;
     
     if (isExpanded) {
         // Collapse: hide items beyond defaultShow
         items.forEach((item, index) => {
             if (index >= defaultShow) {
                 item.style.display = 'none';
+                item.classList.add('hidden');
             }
         });
-        showMoreText.style.display = 'inline';
-        showLessText.style.display = 'none';
+        if (showMoreText) {
+            showMoreText.style.display = 'inline';
+            showMoreText.classList.remove('hidden');
+        }
+        if (showLessText) {
+            showLessText.style.display = 'none';
+            showLessText.classList.add('hidden');
+        }
     } else {
         // Expand: show all items
         items.forEach((item) => {
             item.style.display = '';
+            item.classList.remove('hidden');
         });
-        showMoreText.style.display = 'none';
-        showLessText.style.display = 'inline';
+        if (showMoreText) {
+            showMoreText.style.display = 'none';
+            showMoreText.classList.add('hidden');
+        }
+        if (showLessText) {
+            showLessText.style.display = 'inline';
+            showLessText.classList.remove('hidden');
+        }
     }
 }
 
@@ -109,14 +146,24 @@ function switchTab(tabName, event) {
 
 function switchTracker(type) {
     // Hide all trackers
-    document.querySelectorAll('.tracker-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tracker-content').forEach(el => {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+    });
     
     // Deactivate all toggles
     document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
     
     // Show selected tracker
-    document.getElementById(type + '-tracker').style.display = 'block';
-    document.getElementById(type + '-toggle').classList.add('active');
+    const selectedTracker = document.getElementById(type + '-tracker');
+    if (selectedTracker) {
+        selectedTracker.classList.remove('hidden');
+        selectedTracker.style.display = 'block';
+    }
+    const selectedToggle = document.getElementById(type + '-toggle');
+    if (selectedToggle) {
+        selectedToggle.classList.add('active');
+    }
 }
 
 function toggleBenefitsComparison(event) {
@@ -139,7 +186,13 @@ function toggleBenefitsComparison(event) {
 function toggleRetentionRules() {
     const modal = document.getElementById('retention-rules-modal');
     if (modal) {
-        modal.style.display = (modal.style.display === 'flex' ? 'none' : 'flex');
+        if (modal.classList.contains('show') || modal.style.display === 'flex') {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        } else {
+            modal.classList.add('show');
+            modal.style.display = 'flex';
+        }
     }
 }
 
@@ -201,6 +254,59 @@ function updateProfile() {
     });
 }
 
+// Update password via AJAX
+function updatePassword() {
+    const form = document.getElementById('passwordForm');
+    if (!form) return;
+    
+    const formData = new FormData(form);
+    
+    // Validate that new password and confirm password match
+    const newPassword = formData.get('new_password');
+    const confirmPassword = formData.get('confirm_password');
+    
+    if (newPassword !== confirmPassword) {
+        showFlashMessage('New password and confirmation do not match.', 'danger');
+        return;
+    }
+    
+    // Disable submit button
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.textContent : 'Change Password';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Changing...';
+    }
+    
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showFlashMessage(data.message, 'success');
+            // Reset form and exit edit mode
+            cancelPasswordEdit();
+        } else {
+            showFlashMessage(data.message || 'Failed to change password.', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showFlashMessage('An error occurred while changing your password. Please try again.', 'danger');
+    })
+    .finally(() => {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+}
+
 // Update profile view values
 function updateProfileView(userData) {
     const formatDate = (dateStr) => {
@@ -224,66 +330,185 @@ function updateProfileView(userData) {
 }
 
 function toggleEdit() {
-    // Enable inputs
-    document.querySelectorAll('.profile-input').forEach(input => {
-        input.style.display = 'block';
-    });
+    // If add card form is open, close it first
+    const addCardForm = document.getElementById('add-card-form');
+    const addCardBtn = document.getElementById('add-card-btn');
+    if (addCardForm && !addCardForm.classList.contains('hidden') && addCardForm.style.display !== 'none') {
+        cancelAddCard();
+    }
+    
+    // If password edit is open, close it first
+    const passwordFields = document.getElementById('passwordFields');
+    if (passwordFields && !passwordFields.classList.contains('hidden')) {
+        cancelPasswordEdit();
+    }
+    
+    // Enable inputs in profile form only - remove hidden class and show
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.querySelectorAll('.profile-input').forEach(input => {
+            input.classList.remove('hidden');
+            input.style.display = 'block';
+        });
+    }
     
     // Hide static text
-    document.getElementById('view-username').style.display = 'none';
-    document.getElementById('view-email').style.display = 'none';
-    document.getElementById('view-phone').style.display = 'none';
-    document.getElementById('view-birthday').style.display = 'none';
-    document.getElementById('view-address').style.display = 'none';
-    document.getElementById('view-city').style.display = 'none';
-    document.getElementById('view-country').style.display = 'none';
-    document.getElementById('view-postal').style.display = 'none';
+    const viewElements = ['view-username', 'view-email', 'view-phone', 'view-birthday', 
+                         'view-address', 'view-city', 'view-country', 'view-postal'];
+    viewElements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'none';
+        }
+    });
     
     // Show buttons
-    document.getElementById('formActions').style.display = 'flex';
+    const formActions = document.getElementById('formActions');
+    if (formActions) {
+        formActions.classList.remove('hidden');
+        formActions.style.display = 'flex';
+    }
     
-    // Hide edit button
-    document.querySelector('.btn-edit').style.display = 'none';
+    // Hide edit profile button specifically
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (editProfileBtn) {
+        editProfileBtn.style.display = 'none';
+    }
 }
 
 function cancelEdit() {
-    // Hide inputs
-    document.querySelectorAll('.profile-input').forEach(input => {
-        input.style.display = 'none';
-    });
+    // Hide inputs in profile form only - add hidden class
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.querySelectorAll('.profile-input').forEach(input => {
+            input.classList.add('hidden');
+            input.style.display = 'none';
+        });
+    }
     
     // Show static text
-    document.getElementById('view-username').style.display = 'inline';
-    document.getElementById('view-email').style.display = 'inline';
-    document.getElementById('view-phone').style.display = 'inline';
-    document.getElementById('view-birthday').style.display = 'inline';
-    document.getElementById('view-address').style.display = 'inline';
-    document.getElementById('view-city').style.display = 'inline';
-    document.getElementById('view-country').style.display = 'inline';
-    document.getElementById('view-postal').style.display = 'inline';
+    const viewElements = ['view-username', 'view-email', 'view-phone', 'view-birthday', 
+                         'view-address', 'view-city', 'view-country', 'view-postal'];
+    viewElements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'inline';
+        }
+    });
     
     // Hide buttons
-    document.getElementById('formActions').style.display = 'none';
+    const formActions = document.getElementById('formActions');
+    if (formActions) {
+        formActions.classList.add('hidden');
+        formActions.style.display = 'none';
+    }
     
-    // Show edit button
-    document.querySelector('.btn-edit').style.display = 'block';
+    // Show edit profile button specifically
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (editProfileBtn) {
+        editProfileBtn.style.display = 'block';
+    }
 }
 
 function toggleAddCard() {
+    // If profile edit is open, close it first
+    const formActions = document.getElementById('formActions');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (formActions && !formActions.classList.contains('hidden') && formActions.style.display !== 'none') {
+        cancelEdit();
+    }
+    
+    // If password edit is open, close it first
+    const passwordFields = document.getElementById('passwordFields');
+    if (passwordFields && !passwordFields.classList.contains('hidden')) {
+        cancelPasswordEdit();
+    }
+    
     const form = document.getElementById('add-card-form');
     const btn = document.getElementById('add-card-btn');
-    if (form.style.display === 'none') {
+    if (!form || !btn) return;
+    
+    if (form.classList.contains('hidden') || form.style.display === 'none') {
+        form.classList.remove('hidden');
         form.style.display = 'block';
         btn.style.display = 'none';
     } else {
+        form.classList.add('hidden');
         form.style.display = 'none';
         btn.style.display = 'block';
     }
 }
 
+function togglePasswordEdit() {
+    // If profile edit is open, close it first
+    const formActions = document.getElementById('formActions');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (formActions && !formActions.classList.contains('hidden') && formActions.style.display !== 'none') {
+        cancelEdit();
+    }
+    
+    // If add card form is open, close it first
+    const addCardForm = document.getElementById('add-card-form');
+    const addCardBtn = document.getElementById('add-card-btn');
+    if (addCardForm && !addCardForm.classList.contains('hidden') && addCardForm.style.display !== 'none') {
+        cancelAddCard();
+    }
+    
+    const passwordFields = document.getElementById('passwordFields');
+    const passwordFormActions = document.getElementById('passwordFormActions');
+    const editPasswordBtn = document.getElementById('edit-password-btn');
+    
+    if (!passwordFields || !passwordFormActions || !editPasswordBtn) return;
+    
+    if (passwordFields.classList.contains('hidden')) {
+        // Show password fields
+        passwordFields.classList.remove('hidden');
+        passwordFields.style.display = '';
+        passwordFormActions.classList.remove('hidden');
+        passwordFormActions.style.display = 'flex';
+        editPasswordBtn.style.display = 'none';
+    } else {
+        // Hide password fields
+        cancelPasswordEdit();
+    }
+}
+
+function cancelPasswordEdit() {
+    const passwordFields = document.getElementById('passwordFields');
+    const passwordFormActions = document.getElementById('passwordFormActions');
+    const editPasswordBtn = document.getElementById('edit-password-btn');
+    const passwordForm = document.getElementById('passwordForm');
+    
+    if (passwordFields) {
+        passwordFields.classList.add('hidden');
+        passwordFields.style.display = 'none';
+    }
+    
+    if (passwordFormActions) {
+        passwordFormActions.classList.add('hidden');
+        passwordFormActions.style.display = 'none';
+    }
+    
+    if (editPasswordBtn) {
+        editPasswordBtn.style.display = 'block';
+    }
+    
+    // Reset form
+    if (passwordForm) {
+        passwordForm.reset();
+    }
+}
+
 function cancelAddCard() {
-    document.getElementById('add-card-form').style.display = 'none';
-    document.getElementById('add-card-btn').style.display = 'block';
+    const addCardForm = document.getElementById('add-card-form');
+    const addCardBtn = document.getElementById('add-card-btn');
+    if (addCardForm) {
+        addCardForm.classList.add('hidden');
+        addCardForm.style.display = 'none';
+    }
+    if (addCardBtn) {
+        addCardBtn.style.display = 'block';
+    }
     // Reset form
     const form = document.getElementById('addCardForm');
     if (form) {

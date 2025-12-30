@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}">
 
 <head>
     <meta charset="UTF-8">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=2">
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light">
@@ -28,7 +29,7 @@
         <div class="container">
             <a class="navbar-brand fs-3 fw-bold font-serif" href="{{ url_for('main.index') }}" aria-label="Lumina Hospitality Home">
                 <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Lumina Hospitality Logo"
-                    style="height: 40px; margin-right: 10px;">
+                    class="navbar-logo">
                 <span class="text-warning">Lumina</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -38,13 +39,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ url_for('main.index') }}">Home</a>
+                        <a class="nav-link px-3" href="{{ url_for('main.index') }}">{{ t('home') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ url_for('main.brands') }}">Brands</a>
+                        <a class="nav-link px-3" href="{{ url_for('main.brands') }}">{{ t('brands') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ url_for('main.destinations') }}">Destinations</a>
+                        <a class="nav-link px-3" href="{{ url_for('main.destinations') }}">{{ t('destinations') }}</a>
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown ms-2">
@@ -54,21 +55,41 @@
                             <span class="badge bg-warning text-dark ms-1">{{ current_user.points }} pts</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('main.account') }}">My Account & Status</a>
+                            <li><a class="dropdown-item" href="{{ url_for('main.account') }}">{{ t('my_account') }}</a>
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.my_stays') }}">My Stays</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.my_stays') }}">{{ t('my_stays') }}</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">{{ t('logout') }}</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item ms-2">
                         <a class="nav-link btn btn-outline-light rounded-pill px-4 text-white"
-                            href="{{ url_for('auth.login') }}">Login / Join</a>
+                            href="{{ url_for('auth.login') }}">{{ t('login_join') }}</a>
                     </li>
                     {% endif %}
+                    <!-- Language Switcher -->
+                    <li class="nav-item dropdown ms-2">
+                        <a class="nav-link px-3" href="#" id="languageDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language selector">
+                            <span class="language-code">{{ current_language.upper() }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="languageDropdown">
+                            {% for lang_code, lang_name in supported_languages.items() %}
+                            <li>
+                                <a class="dropdown-item {% if current_language == lang_code %}active{% endif %}" 
+                                   href="{{ url_for('main.set_language_route', lang_code=lang_code) }}">
+                                    {{ lang_name }}
+                                    {% if current_language == lang_code %}
+                                    <i class="bi bi-check ms-2" aria-hidden="true"></i>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -99,18 +120,17 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-5 mt-auto" style="background: #0f172a !important;">
+    <footer class="bg-dark text-white py-5 mt-auto footer-custom-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <h5 class="font-serif text-warning fw-bold mb-3">Lumina Hospitality</h5>
-                    <p class="small text-white-50 mb-4">Redefining luxury and comfort across the globe. Experience the
-                        extraordinary with our collection of distinct brands.</p>
+                    <p class="small text-white-50 mb-4">{{ t('redefining_luxury_comfort') }}</p>
                     <!-- Logos Section -->
                     <div class="d-flex flex-wrap align-items-center gap-3">
                         <!-- Group Logo -->
                         <div>
-                            <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Lumina Hospitality" style="height: 40px; opacity: 0.9;">
+                            <img src="{{ url_for('static', filename='img/logo_group.png') }}" alt="Lumina Hospitality" class="footer-logo">
                         </div>
                         <!-- Brand Logos -->
                         {% set logo_map = {
@@ -124,29 +144,38 @@
                             <a href="{{ url_for('main.brand_detail', brand_id=brand.id) }}" class="text-decoration-none">
                                 <img src="{{ url_for('static', filename='img/' + logo_map.get(brand.name, 'logo_group.png')) }}" 
                                      alt="{{ brand.name }}" 
-                                     style="height: 40px; opacity: 0.9; transition: opacity 0.2s;"
-                                     onmouseover="this.style.opacity='1'" 
-                                     onmouseout="this.style.opacity='0.9'">
+                                     class="footer-brand-logo">
                             </a>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
                 <div class="col-md-4 mb-4 text-center">
-                    <h6 class="footer-heading">Quick Links</h6>
+                    <h6 class="footer-heading">{{ t('quick_links') }}</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ url_for('main.about') }}"
-                                class="text-white-50 text-decoration-none hover-white">About Us</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.sustainability') }}" class="text-white-50 text-decoration-none hover-white">Sustainability</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.careers') }}" class="text-white-50 text-decoration-none hover-white">Careers</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="text-white-50 text-decoration-none hover-white">Contact Us</a></li>
+                                class="text-white-50 text-decoration-none hover-white">{{ t('about_us') }}</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.sustainability') }}" class="text-white-50 text-decoration-none hover-white">{{ t('sustainability') }}</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.careers') }}" class="text-white-50 text-decoration-none hover-white">{{ t('careers') }}</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="text-white-50 text-decoration-none hover-white">{{ t('contact_us') }}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4 text-center">
-                    <h6 class="footer-heading">Contact</h6>
+                    <h6 class="footer-heading">{{ t('contact') }}</h6>
                     <p class="small text-white-50 mb-2">info@luminahotels.com</p>
-                    <p class="small text-white-50 mb-2">&copy; 2025 Lumina Hospitality.</p>
-                    <p class="small text-white-50">All rights reserved.</p>
+                    <p class="small text-white-50 mb-2">&copy; 2025 Lumina Hospitality. {{ t('all_rights_reserved') }}.</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a href="#" id="tour-guide-link" class="text-warning text-decoration-none hover-white footer-link-icon">
+                                <i class="bi bi-question-circle me-1"></i>{{ t('tour_guide') }}
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" id="keyboard-shortcuts-link" class="text-warning text-decoration-none hover-white footer-link-icon">
+                                <i class="bi bi-keyboard me-1"></i>{{ t('keyboard_shortcuts') }}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -178,27 +207,130 @@
             <button class="celebration-btn" id="celebration-btn">Awesome!</button>
             
             <!-- Confetti -->
-            <div class="confetti" style="left: 10%; animation-delay: 0s; background-color: #f00;"></div>
-            <div class="confetti" style="left: 20%; animation-delay: 1s; background-color: #0f0;"></div>
-            <div class="confetti" style="left: 30%; animation-delay: 2s; background-color: #00f;"></div>
-            <div class="confetti" style="left: 40%; animation-delay: 0.5s; background-color: #ff0;"></div>
-            <div class="confetti" style="left: 50%; animation-delay: 1.5s; background-color: #0ff;"></div>
-            <div class="confetti" style="left: 60%; animation-delay: 2.5s; background-color: #f0f;"></div>
-            <div class="confetti" style="left: 70%; animation-delay: 0.2s; background-color: #f80;"></div>
-            <div class="confetti" style="left: 80%; animation-delay: 1.2s; background-color: #08f;"></div>
-            <div class="confetti" style="left: 90%; animation-delay: 2.2s; background-color: #80f;"></div>
+            <div class="confetti confetti-1"></div>
+            <div class="confetti confetti-2"></div>
+            <div class="confetti confetti-3"></div>
+            <div class="confetti confetti-4"></div>
+            <div class="confetti confetti-5"></div>
+            <div class="confetti confetti-6"></div>
+            <div class="confetti confetti-7"></div>
+            <div class="confetti confetti-8"></div>
+            <div class="confetti confetti-9"></div>
         </div>
     </div>
     {% endif %}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Intro.js for Tour Guide -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
     <!-- Custom JS -->
     <!-- Auto-dismiss alerts and Active Nav Link Highlighter moved to main.js -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/celebration.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tour_guide.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/keyboard_navigation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language.js') }}"></script>
 
     {% block extra_scripts %}{% endblock %}
+
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div class="modal fade" id="keyboard-shortcuts-modal" tabindex="-1" aria-labelledby="keyboard-shortcuts-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="keyboard-shortcuts-modal-label">
+                        <i class="bi bi-keyboard me-2"></i>{{ t('keyboard_shortcuts') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-primary mb-3">Navigation</h6>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Go to Home</span>
+                                    <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">h</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Go to Brands</span>
+                                    <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">b</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Go to Destinations</span>
+                                    <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">d</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Go to Account</span>
+                                    <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">a</kbd>
+                                </div>
+                                <small class="text-muted">(Login required)</small>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Go to My Stays</span>
+                                    <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">s</kbd>
+                                </div>
+                                <small class="text-muted">(Login required)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-primary mb-3">Search & Actions</h6>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Focus Search</span>
+                                    <kbd class="shortcut-key">s</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Card Navigation Mode</span>
+                                    <kbd class="shortcut-key">/</kbd>
+                                </div>
+                                <small class="text-muted">(Use arrow keys to navigate, Enter to open, Esc to exit)</small>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Show This Help</span>
+                                    <kbd class="shortcut-key">?</kbd> <span class="mx-2">or</span> <kbd class="shortcut-key">g</kbd> <span class="mx-1">then</span> <kbd class="shortcut-key">k</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Start Tour Guide</span>
+                                    <kbd class="shortcut-key">t</kbd>
+                                </div>
+                            </div>
+                            <div class="shortcut-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Close Modals</span>
+                                    <kbd class="shortcut-key">Esc</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-4 mb-0">
+                        <small>
+                            <strong>Tip:</strong> For multi-key shortcuts (like "g" then "h"), press the keys in sequence. 
+                            You have 1 second to complete the sequence.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

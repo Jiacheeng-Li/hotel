@@ -6,47 +6,46 @@
 <div class="container py-5">
     <div class="row mb-5">
         <div class="col-12 text-center">
-            <h1 class="display-4 fw-bold text-primary">Contact Us</h1>
-            <p class="lead text-muted">We're here to help. Get in touch with us.</p>
+            <h1 class="display-4 fw-bold text-primary">{{ t('contact_us') }}</h1>
+            <p class="lead text-muted">{{ t('here_to_help') }}</p>
         </div>
     </div>
 
     <div class="row g-5">
         <div class="col-lg-6">
-            <h2 class="font-serif display-6 fw-bold mb-4">Get in Touch</h2>
+            <h2 class="font-serif display-6 fw-bold mb-4">{{ t('get_in_touch') }}</h2>
             <p class="text-muted mb-4">
-                Have a question or need assistance? Our team is ready to help you with any inquiries 
-                about reservations, services, or general information.
+                {{ t('have_question') }}
             </p>
 
             <div class="mb-4">
-                <h5 class="fw-bold mb-3"><i class="bi bi-envelope-fill text-primary me-2"></i>Email</h5>
+                <h5 class="fw-bold mb-3"><i class="bi bi-envelope-fill text-primary me-2"></i>{{ t('email') }}</h5>
                 <p class="text-muted mb-2">
-                    <strong>General Inquiries:</strong><br>
+                    <strong>{{ t('general_inquiries') }}</strong><br>
                     <a href="mailto:info@luminahotels.com" class="email-link">info@luminahotels.com</a>
                 </p>
                 <p class="text-muted mb-2">
-                    <strong>Reservations:</strong><br>
+                    <strong>{{ t('reservations_label') }}</strong><br>
                     <a href="mailto:reservations@luminahotels.com" class="email-link">reservations@luminahotels.com</a>
                 </p>
                 <p class="text-muted mb-2">
-                    <strong>Customer Service:</strong><br>
+                    <strong>{{ t('customer_service') }}</strong><br>
                     <a href="mailto:support@luminahotels.com" class="email-link">support@luminahotels.com</a>
                 </p>
             </div>
 
             <div class="mb-4">
-                <h5 class="fw-bold mb-3"><i class="bi bi-telephone-fill text-primary me-2"></i>Phone</h5>
+                <h5 class="fw-bold mb-3"><i class="bi bi-telephone-fill text-primary me-2"></i>{{ t('phone') }}</h5>
                 <p class="text-muted mb-2">
-                    <strong>Reservations:</strong> +1 (800) 555-LUMINA<br>
-                    <strong>Customer Service:</strong> +1 (800) 555-HELP
+                    <strong>{{ t('reservations_label') }}</strong> +1 (800) 555-LUMINA<br>
+                    <strong>{{ t('customer_service') }}</strong> +1 (800) 555-HELP
                 </p>
                 <p class="text-muted small">Monday - Friday: 8:00 AM - 8:00 PM EST<br>
                 Saturday - Sunday: 9:00 AM - 6:00 PM EST</p>
             </div>
 
             <div class="mb-4">
-                <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-primary me-2"></i>Corporate Office</h5>
+                <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-primary me-2"></i>{{ t('corporate_office') }}</h5>
                 <p class="text-muted">
                     Lumina Hospitality Group<br>
                     123 Hospitality Boulevard<br>
@@ -58,33 +57,33 @@
 
         <div class="col-lg-6">
             <div class="card shadow-sm border-0 p-4">
-                <h3 class="fw-bold mb-4">Send Us a Message</h3>
+                <h3 class="fw-bold mb-4">{{ t('send_us_message') }}</h3>
                 <form method="POST" action="{{ url_for('main.contact') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">{{ t('name') }}</label>
                         <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label">{{ t('email_label') }}</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="subject" class="form-label">Subject</label>
+                        <label for="subject" class="form-label">{{ t('subject') }}</label>
                         <select class="form-select" id="subject" name="subject" required>
-                            <option value="">Select a subject</option>
-                            <option value="reservation">Reservation Inquiry</option>
-                            <option value="service">Customer Service</option>
-                            <option value="feedback">Feedback</option>
-                            <option value="other">Other</option>
+                            <option value="">{{ t('select_subject') }}</option>
+                            <option value="reservation">{{ t('reservation_inquiry') }}</option>
+                            <option value="service">{{ t('service') }}</option>
+                            <option value="feedback">{{ t('feedback') }}</option>
+                            <option value="other">{{ t('other') }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
+                        <label for="message" class="form-label">{{ t('message') }}</label>
                         <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-send me-2"></i>Send Message
+                        <i class="bi bi-send me-2"></i>{{ t('send_message') }}
                     </button>
                 </form>
             </div>

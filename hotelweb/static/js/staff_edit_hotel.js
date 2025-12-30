@@ -76,5 +76,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Edit room button handlers - load room data when edit button is clicked
+    document.querySelectorAll('.edit-room-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const roomId = parseInt(this.getAttribute('data-room-id'));
+            const name = this.getAttribute('data-room-name');
+            const capacity = parseInt(this.getAttribute('data-room-capacity'));
+            const price = parseFloat(this.getAttribute('data-room-price'));
+            const inventory = parseInt(this.getAttribute('data-room-inventory'));
+            const description = this.getAttribute('data-room-description') || '';
+            const imageUrl = this.getAttribute('data-room-image') || '';
+            const amenitiesJson = this.getAttribute('data-room-amenities');
+            let amenityIds = [];
+            try {
+                amenityIds = JSON.parse(amenitiesJson);
+            } catch (e) {
+                console.error('Error parsing amenities:', e);
+            }
+            
+            loadRoomData(roomId, name, capacity, price, inventory, description, imageUrl, amenityIds);
+        });
+    });
 });
 

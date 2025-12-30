@@ -157,10 +157,17 @@
                         <td>${{ "%.2f"|format(room.price_per_night) }}</td>
                         <td>{{ room.inventory }}</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                            <button type="button" class="btn btn-sm btn-outline-primary edit-room-btn" 
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#editRoom_{{ room.id }}"
-                                    onclick="loadRoomData({{ room.id }}, '{{ room.name|e }}', {{ room.capacity }}, {{ room.price_per_night }}, {{ room.inventory }}, '{{ room.description|e }}', '{{ room.image_url|e }}', [{% for amenity in room.amenities %}{{ amenity.id }}{% if not loop.last %},{% endif %}{% endfor %}])">
+                                    data-room-id="{{ room.id }}"
+                                    data-room-name="{{ room.name|e }}"
+                                    data-room-capacity="{{ room.capacity }}"
+                                    data-room-price="{{ room.price_per_night }}"
+                                    data-room-inventory="{{ room.inventory }}"
+                                    data-room-description="{{ room.description|e }}"
+                                    data-room-image="{{ room.image_url|e }}"
+                                    data-room-amenities="[{% for amenity in room.amenities %}{{ amenity.id }}{% if not loop.last %},{% endif %}{% endfor %}]">
                                 <i class="bi bi-pencil"></i> Edit
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-danger delete-room-btn" 

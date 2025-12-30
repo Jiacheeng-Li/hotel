@@ -153,6 +153,9 @@ hotel/
 │   │   ├── css/                 # Stylesheets (main, admin, staff)
 │   │   ├── js/                  # JavaScript files (all externalized)
 │   │   └── img/                 # Images (logos, hotel photos)
+│   │       ├── hotels/          # Hotel images (sourced from Unsplash/Pexels)
+│   │       ├── rooms/           # Room type images (sourced from Unsplash/Pexels)
+│   │       └── cities/          # City background images (sourced from Unsplash/Pexels)
 │   ├── templates/               # Jinja2 templates
 │   │   ├── base.html            # Base template
 │   │   ├── auth/                # Authentication templates
@@ -226,6 +229,14 @@ hotel/
 - All CSS is in separate files in `static/css/`
 - Database migrations are archived in `migrations/` directory
 - The application uses Flask's application factory pattern for easy testing and deployment
+
+## 📸 Image Credits
+
+All photos used in this application (hotels, rooms, cities, backgrounds) are sourced from:
+- **Unsplash** (https://unsplash.com)
+- **Pexels** (https://www.pexels.com)
+
+These images have been downloaded and stored locally in the `static/img/` directory for use in the application.
 
 ## 📄 License
 
