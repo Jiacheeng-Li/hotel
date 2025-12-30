@@ -180,15 +180,10 @@
         );
 
         // Don't handle shortcuts when typing in inputs (except for '?' and 'Esc')
+        // Completely ignore all shortcuts when in any input/textarea to allow normal typing
         if (isInputFocused && event.key !== '?' && event.key !== 'Escape') {
-            // But allow 's' to focus search if not already in a search input
-            if (event.key === 's' || event.key === 'S') {
-                const isSearchInput = activeElement.matches('input[name="city"], input[name="destination"], #city, #destination');
-                if (!isSearchInput) {
-                    event.preventDefault();
-                    focusSearch();
-                }
-            }
+            // Do not intercept any keys when user is typing in input fields
+            // This allows normal typing of 's', 'g', etc. in forms
             return;
         }
 
