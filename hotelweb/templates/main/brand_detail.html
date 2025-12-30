@@ -82,7 +82,6 @@
                     {% if current_user.is_authenticated %}
                     {% set is_fav = hotel.id in favorite_hotel_ids if favorite_hotel_ids else False %}
                     <button type="button" class="hotel-card-favorite {% if is_fav %}favorited{% endif %}" 
-                            onclick="toggleFavorite({{ hotel.id }})" 
                             data-hotel-id="{{ hotel.id }}"
                             aria-label="{% if is_fav %}Remove from favorites{% else %}Add to favorites{% endif %}">
                         <i class="bi {% if is_fav %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
