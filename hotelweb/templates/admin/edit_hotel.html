@@ -43,7 +43,7 @@
             
             <div class="mb-3">
                 <label for="image_url" class="form-label">Image URL</label>
-                <input type="url" class="form-control" id="image_url" name="image_url" value="{{ hotel.image_url or '' }}">
+                <input type="text" class="form-control" id="image_url" name="image_url" value="{{ hotel.image_url or '' }}">
             </div>
             
             <button type="submit" class="btn btn-primary">Save Hotel Information</button>
@@ -97,7 +97,7 @@
                         
                         <div class="col-md-6 mb-3">
                             <label for="room_image_url" class="form-label">Image URL</label>
-                            <input type="url" class="form-control" id="room_image_url" name="room_image_url">
+                            <input type="text" class="form-control" id="room_image_url" name="room_image_url">
                         </div>
                     </div>
                     
@@ -218,7 +218,7 @@
                                         
                                         <div class="col-md-6 mb-3">
                                             <label for="room_image_url_{{ room.id }}" class="form-label">Image URL</label>
-                                            <input type="url" class="form-control" id="room_image_url_{{ room.id }}" 
+                                            <input type="text" class="form-control" id="room_image_url_{{ room.id }}" 
                                                    name="room_image_url">
                                         </div>
                                     </div>

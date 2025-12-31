@@ -6,7 +6,6 @@
  * - g + b: Go to Brands
  * - g + d: Go to Destinations
  * - g + a: Go to Account (login required)
- * - g + s: Go to My Stays (login required)
  * - g + k: Show keyboard shortcuts help
  * - s: Focus search bar
  * - ?: Show keyboard shortcuts help
@@ -27,7 +26,7 @@
         brands: '/brands',
         destinations: '/destinations',
         account: '/account',
-        my_stays: '/my_stays'
+        my_stays: '/my/stays'
     };
 
     /**
@@ -263,19 +262,6 @@
                     } else {
                         // Redirect to login
                         window.location.href = '/login?next=' + encodeURIComponent(urls.account);
-                        resetSequence();
-                        return;
-                    }
-                    break;
-
-                case 's':
-                    // Go to My Stays (login required)
-                    if (isAuthenticated()) {
-                        targetUrl = urls.my_stays;
-                        shouldNavigate = true;
-                    } else {
-                        // Redirect to login
-                        window.location.href = '/login?next=' + encodeURIComponent(urls.my_stays);
                         resetSequence();
                         return;
                     }

@@ -377,12 +377,8 @@ def search():
     # Sorting Logic for Grouped Results
     if sort_by == 'lowest_price':
         final_results.sort(key=lambda x: x['min_price'])
-    elif sort_by == 'highest_price':
-        final_results.sort(key=lambda x: x['max_price'], reverse=True)
     elif sort_by == 'highest_rating':
         final_results.sort(key=lambda x: x['avg_rating'], reverse=True)
-    elif sort_by == 'lowest_rating':
-        final_results.sort(key=lambda x: x['avg_rating'])
     elif sort_by == 'highest_stars':
         final_results.sort(key=lambda x: x['hotel'].stars if x['hotel'].stars else 0, reverse=True)
     elif sort_by == 'lowest_stars':

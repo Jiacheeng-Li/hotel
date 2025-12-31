@@ -229,8 +229,8 @@
             setTimeout(() => {
                 indicator.style.display = 'none';
             }, 2000);
-            return;
-        }
+                return;
+            }
 
         isActive = true;
         currentIndex = 0;
@@ -360,7 +360,7 @@
      */
     function openCard() {
         if (!isActive || currentIndex < 0 || currentIndex >= cards.length) {
-            return;
+                return;
         }
 
         const card = cards[currentIndex];
@@ -368,7 +368,7 @@
 
         if (link) {
             link.click();
-        } else {
+            } else {
             // If no link found, try to make card clickable
             card.click();
         }
@@ -450,8 +450,8 @@
                 }
                 return;
             }
-        }
-
+            }
+            
         // Only handle navigation keys when active
         if (!isActive) {
             return;

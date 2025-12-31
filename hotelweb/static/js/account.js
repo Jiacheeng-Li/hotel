@@ -46,11 +46,11 @@ function toggleCollapseList(button) {
             }
         });
         if (showMoreText) {
-            showMoreText.style.display = 'inline';
+        showMoreText.style.display = 'inline';
             showMoreText.classList.remove('hidden');
         }
         if (showLessText) {
-            showLessText.style.display = 'none';
+        showLessText.style.display = 'none';
             showLessText.classList.add('hidden');
         }
     } else {
@@ -60,11 +60,11 @@ function toggleCollapseList(button) {
             item.classList.remove('hidden');
         });
         if (showMoreText) {
-            showMoreText.style.display = 'none';
+        showMoreText.style.display = 'none';
             showMoreText.classList.add('hidden');
         }
         if (showLessText) {
-            showLessText.style.display = 'inline';
+        showLessText.style.display = 'inline';
             showLessText.classList.remove('hidden');
         }
     }
@@ -347,9 +347,9 @@ function toggleEdit() {
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.querySelectorAll('.profile-input').forEach(input => {
-            input.classList.remove('hidden');
-            input.style.display = 'block';
-        });
+        input.classList.remove('hidden');
+        input.style.display = 'block';
+    });
     }
     
     // Hide static text
@@ -381,9 +381,9 @@ function cancelEdit() {
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.querySelectorAll('.profile-input').forEach(input => {
-            input.classList.add('hidden');
-            input.style.display = 'none';
-        });
+        input.classList.add('hidden');
+        input.style.display = 'none';
+    });
     }
     
     // Show static text

@@ -84,9 +84,7 @@
                     <select name="sort_by" id="sort_by" class="form-select form-select-sm" aria-label="Sort search results">
                         <option value="best_match" {% if sort_by=='best_match' %}selected{% endif %}>{{ t('best_match') }}</option>
                         <option value="lowest_price" {% if sort_by=='lowest_price' %}selected{% endif %}>{{ t('lowest_price') }}</option>
-                        <option value="highest_price" {% if sort_by=='highest_price' %}selected{% endif %}>{{ t('highest_price') }}</option>
                         <option value="highest_rating" {% if sort_by=='highest_rating' %}selected{% endif %}>{{ t('highest_rating') }}</option>
-                        <option value="lowest_rating" {% if sort_by=='lowest_rating' %}selected{% endif %}>{{ t('lowest_rating') }}</option>
                         <option value="highest_stars" {% if sort_by=='highest_stars' %}selected{% endif %}>{{ t('highest_stars') }}</option>
                         <option value="lowest_stars" {% if sort_by=='lowest_stars' %}selected{% endif %}>{{ t('lowest_stars') }}</option>
                     </select>

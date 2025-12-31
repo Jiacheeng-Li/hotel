@@ -1,5 +1,10 @@
 import os
-from dotenv import load_dotenv
+try:
+    # Optional dependency: allows local `.env` loading in development.
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover
+    def load_dotenv(*args, **kwargs):
+        return False
 
 # Load environment variables from .env file
 # Get the base directory (project root, one level up from hotelweb/)

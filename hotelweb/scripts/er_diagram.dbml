@@ -1,0 +1,170 @@
+// Hotel Booking System ER Diagram
+// Generated from SQLAlchemy models
+// Paste this into https://dbdiagram.io to view the diagram
+
+Table amenity {
+  id integer [primary key]
+  name varchar(50) [not null, unique]
+}
+
+Table booking {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  roomtype_id integer [not null, ref: > room_type.id]
+  check_in date [not null]
+  check_out date [not null]
+  rooms_count integer [not null]
+  status varchar(20)
+  created_at datetime
+  base_rate decimal(10,2)
+  subtotal decimal(10,2)
+  taxes decimal(10,2)
+  fees decimal(10,2)
+  total_cost decimal(10,2)
+  points_earned integer
+  points_used integer
+  breakfast_included boolean
+  breakfast_price_per_room decimal(10,2)
+  breakfast_voucher_used integer [ref: > milestone_reward.id]
+  payment_method varchar(20)
+}
+
+Table brand {
+  id integer [primary key]
+  name varchar(50) [not null, unique]
+  description text
+  logo_color varchar(20)
+}
+
+Table contact_message {
+  id integer [primary key]
+  name varchar(100) [not null]
+  email varchar(120) [not null]
+  subject varchar(50) [not null]
+  message text [not null]
+  created_at datetime
+  is_read boolean
+  user_id integer [ref: > user.id]
+}
+
+Table favorite_hotel {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  hotel_id integer [not null, ref: > hotel.id]
+  created_at datetime
+}
+
+Table hotel {
+  id integer [primary key]
+  brand_id integer [ref: > brand.id]
+  name varchar(100) [not null]
+  city varchar(50) [not null]
+  address varchar(200) [not null]
+  description text
+  image_url varchar(200)
+  stars integer
+  latitude float
+  longitude float
+  breakfast_price decimal(10,2)
+}
+
+Table milestone_reward {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  milestone_nights integer
+  reward_type varchar(20) [not null]
+  reward_value integer
+  breakfasts_used integer
+  source varchar(50)
+  description varchar(200)
+  claimed_at datetime
+  created_at datetime
+}
+
+Table payment_method {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  card_type varchar(20) [not null]
+  last4 varchar(4) [not null]
+  expiry_month varchar(2) [not null]
+  expiry_year varchar(4) [not null]
+  cardholder_name varchar(100) [not null]
+  is_default boolean
+  created_at datetime
+}
+
+Table points_transaction {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  booking_id integer [ref: > booking.id]
+  points integer [not null]
+  transaction_type varchar(20) [not null]
+  description varchar(200)
+  created_at datetime
+}
+
+Table review {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  hotel_id integer [not null, ref: > hotel.id]
+  booking_id integer [ref: > booking.id]
+  rating integer [not null]
+  comment text
+  created_at datetime
+}
+
+Table room_type {
+  id integer [primary key]
+  hotel_id integer [not null, ref: > hotel.id]
+  name varchar(100) [not null]
+  capacity integer [not null]
+  price_per_night decimal(10,2) [not null]
+  inventory integer [not null]
+  description text
+  image_url varchar(200)
+}
+
+Table roomtype_amenity {
+  roomtype_id integer [primary key, ref: > room_type.id]
+  amenity_id integer [primary key, ref: > amenity.id]
+}
+
+Table staff_hotel {
+  user_id integer [primary key, ref: > user.id]
+  hotel_id integer [primary key, ref: > hotel.id]
+}
+
+Table user {
+  id integer [primary key]
+  username varchar(80) [not null, unique]
+  email varchar(120) [not null, unique]
+  password_hash varchar(128)
+  created_at datetime
+  role varchar(20) [not null]
+  points integer
+  lifetime_points integer
+  nights_stayed integer
+  membership_level varchar(20)
+  member_number varchar(20) [unique]
+  tier_earned_date date
+  tier_expiry_date date
+  current_year_nights integer
+  current_year_points integer
+  phone varchar(20)
+  address varchar(200)
+  city varchar(100)
+  country varchar(100)
+  postal_code varchar(20)
+  birthday date
+}
+
+Table user_event {
+  id integer [primary key]
+  user_id integer [not null, ref: > user.id]
+  event_type varchar(50) [not null]
+  event_year integer [not null]
+  description varchar(200)
+  reward_type varchar(20)
+  reward_amount integer
+  created_at datetime
+}

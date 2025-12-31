@@ -37,7 +37,7 @@ def create_app(config_class=Config):
     def inject_csrf():
         from .utils.security import generate_csrf_token
         return dict(csrf_token=generate_csrf_token)
-    
+
     # Context processor to make language variables available in all templates
     @app.context_processor
     def inject_language():
